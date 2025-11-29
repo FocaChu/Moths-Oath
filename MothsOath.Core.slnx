@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MothsOath.Core/MothsOath.Core.csproj" />
+  <Project Path="MothsOath.UI/MothsOath.UI.csproj" />
+</Solution>
