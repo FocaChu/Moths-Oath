@@ -1,1 +1,1 @@
-# MothsOath.Core
+# Moth's Oath
