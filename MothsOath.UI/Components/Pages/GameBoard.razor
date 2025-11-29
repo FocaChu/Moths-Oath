@@ -16,7 +16,7 @@
                 <div class="enemy-container">
                     @foreach (var enemy in GameState.Enemies)
                     {
-                        <div class="enemy-card">
+                        <div class="enemy-card" @onclick="() => TargetEnemy(enemy)">
                             <p><strong>@enemy.Name</strong></p>
                             <p>HP: @enemy.CurrentHP / @enemy.MaxHP</p>
                         </div>
@@ -47,13 +47,37 @@
         <div class="hand">
             @foreach (var card in GameState.Player.Hand)
             {
-                <CardComponent CardData="card" />
+                <div @onclick="() => SelectCard(card)">
+                    <CardComponent CardData="card" />
+                </div>
             }
         </div>
     </div>
 }
 
 @code {
+
+    private BaseCard? selectedCard; 
+
+    private void SelectCard(BaseCard card)
+    {
+        selectedCard = card;
+        Console.WriteLine($"Carta selecionada: {card.Name}");
+    }
+
+    private void TargetEnemy(Enemy enemy)
+    {
+        if (selectedCard == null)
+        {
+            Console.WriteLine("Nenhuma carta selecionada para atacar.");
+            return;
+        }
+
+        Console.WriteLine($"Inimigo alvo: {enemy.Name}");
+        GameState.PlayCard(selectedCard, enemy);
+        selectedCard = null; 
+    }
+
     private void StartGame()
     {
         GameState.StartNewCombat();

@@ -1,4 +1,5 @@
-﻿using MothsOath.Core.Entities;
+﻿using MothsOath.Core.Common;
+using MothsOath.Core.Entities;
 
 namespace MothsOath.Core;
 
@@ -24,5 +25,18 @@ public class GameStateManager
         Player.Hand.Add(new StandartCard { Name = "Defesa Básica", Description = "Ganha 5 de escudo." });
 
         Console.WriteLine("New Combat Started!");
+    }
+
+    public void PlayCard(BaseCard card, Character target)
+    {
+        Console.WriteLine($"Jogador jogou a carta '{card.Name}' no alvo '{target.Name}'.");
+
+        if (card.Name == "Golpe Simples")
+        {
+            target.CurrentHP -= 5;
+            if (target.CurrentHP < 0) target.CurrentHP = 0;
+        }
+
+        Player?.Hand.Remove(card);
     }
 }
