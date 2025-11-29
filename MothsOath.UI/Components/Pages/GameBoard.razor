@@ -6,46 +6,52 @@
 
 <h1>Moth's Oath - Tabuleiro de Jogo</h1>
 
-@if (GameState.Player != null)
-{
-    <div>
-        <h2>Inimigos</h2>
-        @if (GameState.Enemies.Any())
+<div class="game-board-grid">
+    <section class="board-area">
+        @if (GameState.Player != null)
         {
-            <div class="enemy-container">
-                @foreach (var enemy in GameState.Enemies)
-                {
-                    <div class="enemy-card">
-                        <p><strong>@enemy.Name</strong></p>
-                        <p>HP: @enemy.CurrentHP / @enemy.MaxHP</p>
-                    </div>
-                }
-            </div>
+            <h2>Inimigos</h2>
+            @if (GameState.Enemies.Any())
+            {
+                <div class="enemy-container">
+                    @foreach (var enemy in GameState.Enemies)
+                    {
+                        <div class="enemy-card">
+                            <p><strong>@enemy.Name</strong></p>
+                            <p>HP: @enemy.CurrentHP / @enemy.MaxHP</p>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>Nenhum inimigo no campo.</p>
+            }
         }
         else
         {
-            <p>Nenhum inimigo no campo.</p>
+            <p>O jogo ainda não começou.</p>
         }
-    </div>
+    </section>
 
-    <hr />
-
-    <div>
-        <h2>Jogador</h2>
-        <div class="player-card">
-            <p><strong>@GameState.Player.Name</strong></p>
-            <p>HP: @GameState.Player.CurrentHP / @GameState.Player.MaxHP</p>
-        </div>
-    </div>
-}
-else
-{
-    <p>O jogo ainda não começou.</p>
-}
+</div>
 
 <hr />
 
-<button class="start-button" @onclick="StartGame">Iniciar Novo Combate</button>
+<button class="start-button floating-start-button" @onclick="StartGame">Iniciar Novo Combate</button>
+
+@if (GameState.Player != null && GameState.Player.Hand.Any())
+{
+    <div class="player-hand-container">
+        <h3>Sua Mão</h3>
+        <div class="hand">
+            @foreach (var card in GameState.Player.Hand)
+            {
+                <CardComponent CardData="card" />
+            }
+        </div>
+    </div>
+}
 
 @code {
     private void StartGame()

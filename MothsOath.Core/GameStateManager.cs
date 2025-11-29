@@ -18,6 +18,11 @@ public class GameStateManager
             new Enemy { Name = "Cultista Desatento", MaxHP = 35, CurrentHP = 35 }
         };
 
+        Player.Hand.Clear();
+        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
+        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
+        Player.Hand.Add(new StandartCard { Name = "Defesa Básica", Description = "Ganha 5 de escudo." });
+
         Console.WriteLine("New Combat Started!");
     }
 }

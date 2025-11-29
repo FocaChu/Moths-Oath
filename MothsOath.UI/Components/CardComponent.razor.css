@@ -1,0 +1,21 @@
+﻿.card-display {
+    border: 1px solid white;
+    padding: 0.6rem;
+    border-radius: 8px;
+    width: 96px;
+    min-width: 80px;
+    max-width: 110px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s ease-in-out;
+    background: rgba(255,255,255,0.02);
+}
+
+.card-display:hover {
+    transform: translateY(-4px);
+    border-color: gold;
+}
+
+.card-display .title {
+    font-size: 0.9rem;
+}
