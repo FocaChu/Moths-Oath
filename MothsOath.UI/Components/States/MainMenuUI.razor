@@ -1,0 +1,29 @@
+﻿<div class="main-menu-container">
+    <h1>Moth's Oath</h1>
+    <div class="hamburger-menu">
+        <button class="hamburger-btn" @onclick="StartNewGame">
+            <span class="hamburger-icon"><div></div></span>
+            <span>Novo Jogo</span>
+        </button>
+
+        <button class="hamburger-btn" disabled>
+            <span class="hamburger-icon"><div></div></span>
+            <span>Carregar Jogo (Em Breve)</span>
+        </button>
+
+        <button class="hamburger-btn" disabled>
+            <span class="hamburger-icon"><div></div></span>
+            <span>Opções (Em Breve)</span>
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public MainMenuState MenuState { get; set; }
+
+    private void StartNewGame()
+    {
+        MenuState.StartNewGame();
+    }
+}

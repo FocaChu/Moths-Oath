@@ -1,0 +1,31 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject GameManager GameManager
+@using MothsOath.UI.Components.States
+
+<PageTitle>Moth's Oath</PageTitle>
+
+@if (GameManager.CurrentState is MainMenuState menuState)
+{
+    <MainMenuUI MenuState="menuState" />
+}
+else if (GameManager.CurrentState is CombatState combatState)
+{
+    <CombatUI CombatState="combatState" />
+}
+else
+{
+    <p>Carregando...</p>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        GameManager.OnStateChanged += (newState) => InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        GameManager.OnStateChanged -= (newState) => InvokeAsync(StateHasChanged);
+    }
+}

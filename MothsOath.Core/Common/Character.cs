@@ -24,6 +24,7 @@ public abstract class Character
 
     public int TotalDefense => BaseDefense + BonusDefense;
 
+    public bool IsAlive => CurrentHP > 0;
 
     public event Action<Character, int> OnDamageTaken;
 

@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Abilities;
 using MothsOath.Core.Common;
+using MothsOath.Core.States;
 
 namespace MothsOath.Core.Factories;
 
@@ -42,7 +43,7 @@ public class NullAbility : IAbility
         Id = $"missing_ability_{missingId}";
     }
 
-    public void Execute(Character source, Character target, GameStateManager gameState)
+    public void Execute(Character source, Character target, CombatState gameState)
     {
         Console.WriteLine($"[AVISO] Tentativa de executar uma habilidade não encontrada com ID '{Id}'. Nenhuma ação foi tomada.");
     }

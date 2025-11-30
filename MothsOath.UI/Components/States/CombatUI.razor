@@ -1,0 +1,80 @@
+﻿<div class="combat-container">
+    <div class="enemy-area">
+        @foreach (var enemy in CombatState.Enemies)
+        {
+            <div class="@(GetEnemyCardClass(enemy))"
+                 @onclick="() => TargetEnemy(enemy)"
+                 @onmouseover="() => OnEnemyHover(enemy)"
+                 @onmouseout="() => OnEnemyOut(enemy)">
+                <p>@enemy.Name</p>
+                <p>HP: @enemy.CurrentHP / @enemy.MaxHP</p>
+            </div>
+        }
+    </div>
+
+    <div class="player-area">
+        <div class="player-hand-container">
+            <div class="hand">
+            @foreach (var card in CombatState.Player.Hand)
+            {
+                <div @onclick="() => SelectCard(card)">
+                    <CardComponent CardData="card" />
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public CombatState CombatState { get; set; }
+
+    private BaseCard? selectedCard;
+    private Enemy? hoveredEnemy;
+
+    private void SelectCard(BaseCard card)
+    {
+        selectedCard = card;
+    }
+
+    private void TargetEnemy(Enemy enemy)
+    {
+        if (selectedCard != null)
+        {
+            CombatState.PlayCard(selectedCard, enemy);
+            selectedCard = null;
+            hoveredEnemy = null;
+        }
+    }
+
+    private void OnEnemyHover(Enemy enemy)
+    {
+        if (selectedCard != null)
+        {
+            hoveredEnemy = enemy;
+        }
+    }
+
+    private void OnEnemyOut(Enemy enemy)
+    {
+        if (hoveredEnemy == enemy)
+        {
+            hoveredEnemy = null;
+        }
+    }
+
+    private string GetEnemyCardClass(Enemy enemy)
+    {
+        var classes = "enemy-card";
+        if (selectedCard != null)
+        {
+            classes += " selectable";
+        }
+        if (hoveredEnemy == enemy && selectedCard != null)
+        {
+            classes += " hovered";
+        }
+        return classes;
+    }
+}

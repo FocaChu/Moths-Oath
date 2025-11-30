@@ -1,0 +1,65 @@
+.combat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.enemy-area {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.enemy-card {
+    min-width: 140px;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+}
+
+.enemy-card.selectable {
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.enemy-card.hovered {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+    border-color: rgba(255,215,0,0.9);
+}
+
+.player-area {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.player-hand-container {
+    margin-top: 0.6rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.hand {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0.25rem 0.5rem;
+}
+
+.hand > * { flex: 0 0 auto; }
+
+@media (max-width: 800px) {
+    .enemy-area { flex-wrap: wrap; gap: 0.5rem; }
+    .enemy-card { min-width: 120px; }
+}

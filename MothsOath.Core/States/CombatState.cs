@@ -2,25 +2,25 @@
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
 
-namespace MothsOath.Core;
+namespace MothsOath.Core.States;
 
-public class GameStateManager
+public class CombatState : IGameState
 {
-    public Player? Player { get; private set; }
-    public List<Enemy> Enemies { get; private set; } = new List<Enemy>();
-
+    private readonly GameManager _gameManager;
     private readonly EnemyFactory _enemyFactory;
 
-    public event Action OnCombatStarted;
-    public event Action OnCardPlayed;
+    public Player Player { get; private set; }
+    public List<Enemy> Enemies { get; private set; } = new List<Enemy>();
 
-    public GameStateManager(EnemyFactory enemyFactory)
+    public CombatState(GameManager gameManager, EnemyFactory enemyFactory, Player player)
     {
+        _gameManager = gameManager;
         _enemyFactory = enemyFactory;
+        Player = player; 
     }
 
 
-    public void StartNewCombat()
+    public void OnEnter()
     {
         Player = new Player { Name = "Protagonista", MaxHP = 100, CurrentHP = 100 };
 
@@ -33,8 +33,14 @@ public class GameStateManager
         Player.Hand.Add(new StandartCard { Name = "Defesa Básica", Description = "Ganha 5 de escudo." });
 
         Console.WriteLine("New Combat Started!");
-        OnCombatStarted?.Invoke(); 
     }
+
+    public void OnExit()
+    {
+        Console.WriteLine("Saindo do estado de combate.");
+    }
+
+    public void Update() { }
 
     public void PlayCard(BaseCard card, Character target)
     {
@@ -49,6 +55,9 @@ public class GameStateManager
 
         Player.Hand.Remove(card);
 
-        OnCardPlayed?.Invoke();
+        if (Enemies.All(e => !e.IsAlive))
+        {
+            //_gameManager.TransitionToState(new MapState(_gameManager, Player));
+        }
     }
 }

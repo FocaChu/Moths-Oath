@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Abilities;
 using MothsOath.Core.Common;
+using MothsOath.Core.States;
 
 namespace MothsOath.Core.Entities;
 
@@ -14,7 +15,7 @@ public class Enemy : Character
     public int CurrentCooldown { get; set; }
 
 
-    public void TakeTurn(GameStateManager gameState)
+    public void TakeTurn(CombatState gameState)
     {
         var target = gameState.Player;
 
