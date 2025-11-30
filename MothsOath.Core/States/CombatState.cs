@@ -8,14 +8,16 @@ public class CombatState : IGameState
 {
     private readonly GameManager _gameManager;
     private readonly EnemyFactory _enemyFactory;
+    private readonly StateFactory _stateFactory;
 
     public Player Player { get; private set; }
     public List<Enemy> Enemies { get; private set; } = new List<Enemy>();
 
-    public CombatState(GameManager gameManager, EnemyFactory enemyFactory, Player player)
+    public CombatState(GameManager gameManager, EnemyFactory enemyFactory, StateFactory stateFactory, Player player)
     {
         _gameManager = gameManager;
         _enemyFactory = enemyFactory;
+        _stateFactory = stateFactory;
         Player = player; 
     }
 
@@ -57,7 +59,8 @@ public class CombatState : IGameState
 
         if (Enemies.All(e => !e.IsAlive))
         {
-            //_gameManager.TransitionToState(new MapState(_gameManager, Player));
+            var nextState = _stateFactory.CreateMainMenuState(_gameManager);
+            _gameManager.TransitionToState(nextState);
         }
     }
 }
