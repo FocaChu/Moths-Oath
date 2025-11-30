@@ -11,5 +11,6 @@ public class BasicAttackAbility : IAbility
     {
         int damage = source.BaseStrength;
         target.TakeDamage(damage, false);
+        Console.WriteLine($"{source.Name} attacks {target.Name} for {damage} damage.");
     }
 }

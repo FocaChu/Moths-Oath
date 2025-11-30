@@ -11,5 +11,6 @@ public class PowerStrikeAbility : IAbility
     {
         int damage = source.BaseStrength * 2;
         target.TakeDamage(damage, false);
+        Console.WriteLine($"{source.Name} uses Power Strike on {target.Name} for {damage} damage.");
     }
 }

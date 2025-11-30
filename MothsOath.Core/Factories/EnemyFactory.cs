@@ -29,7 +29,8 @@ public class EnemyFactory
             BaseStrength = blueprint.BaseStrength,
             BasicAttack = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
             SpecialAbility = _abilityFactory.GetAbility(blueprint.SpecialAbilityId),
-            SpecialAbilityCooldown = blueprint.SpecialAbilityCooldown
+            SpecialAbilityCooldown = blueprint.SpecialAbilityCooldown,
+            CurrentCooldown = blueprint.SpecialAbilityCooldown,
         };
 
         return enemy;

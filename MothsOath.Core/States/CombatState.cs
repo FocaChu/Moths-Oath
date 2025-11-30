@@ -80,9 +80,9 @@ public class CombatState : IGameState
                 DeadEnemies.Add(defeated);
                 Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado!");
             }
-
-            CheckForCombatEnd();
         }
+
+        CheckForCombatEnd();
     }
 
     private void CheckForCombatEnd()

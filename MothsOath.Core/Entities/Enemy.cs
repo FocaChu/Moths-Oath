@@ -24,10 +24,12 @@ public class Enemy : Character
         {
             SpecialAbility.Execute(this, target, gameState);
             CurrentCooldown = SpecialAbilityCooldown;
+            Console.WriteLine($"{Name} usou {SpecialAbility.Id}!");
         }
         else
         {
             BasicAttack.Execute(this, target, gameState);
+            Console.WriteLine($"{Name} usou {BasicAttack.Id}!");
         }
         #nullable disable
 
