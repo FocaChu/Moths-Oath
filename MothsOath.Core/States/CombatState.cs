@@ -1,6 +1,7 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
+using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.States;
 
@@ -10,8 +11,13 @@ public class CombatState : IGameState
     private readonly EnemyFactory _enemyFactory;
     private readonly StateFactory _stateFactory;
 
+    public CombatPhase CurrentPhase { get; private set; }
     public Player Player { get; private set; }
     public List<Enemy> Enemies { get; private set; } = new List<Enemy>();
+    public List<Enemy> DeadEnemies { get; private set; } = new List<Enemy>();
+
+    public event Action OnPlayerTurnStart;
+    public event Action OnEnemyTurnStart;
 
     public CombatState(GameManager gameManager, EnemyFactory enemyFactory, StateFactory stateFactory, Player player)
     {
@@ -24,17 +30,19 @@ public class CombatState : IGameState
 
     public void OnEnter()
     {
-        Player = new Player { Name = "Protagonista", MaxHP = 100, CurrentHP = 100 };
-
         Enemies.Clear();
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
 
         Player.Hand.Clear();
         Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
+        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
+        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
         Player.Hand.Add(new StandartCard { Name = "Defesa Básica", Description = "Ganha 5 de escudo." });
 
         Console.WriteLine("New Combat Started!");
+
+        StartPlayerTurn();
     }
 
     public void OnExit()
@@ -46,7 +54,7 @@ public class CombatState : IGameState
 
     public void PlayCard(BaseCard card, Character target)
     {
-        if (Player == null) return; 
+        if (CurrentPhase != CombatPhase.PlayerTurn_Action || Player == null) return;
 
         Console.WriteLine($"Jogador jogou a carta '{card.Name}' no alvo '{target.Name}'.");
 
@@ -57,10 +65,88 @@ public class CombatState : IGameState
 
         Player.Hand.Remove(card);
 
-        if (Enemies.All(e => !e.IsAlive))
+        CheckForDeadEnemies();
+    }
+
+    private void CheckForDeadEnemies()
+    {
+        var defeatedEnemies = Enemies.Where(e => !e.IsAlive).ToList();
+
+        if (defeatedEnemies.Any()) 
         {
+            foreach (var defeated in defeatedEnemies)
+            {
+                Enemies.Remove(defeated);
+                DeadEnemies.Add(defeated);
+                Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado!");
+            }
+
+            CheckForCombatEnd();
+        }
+    }
+
+    private void CheckForCombatEnd()
+    {
+        if (Enemies.Count == 0)
+        {
+            Console.WriteLine("VITÓRIA!");
             var nextState = _stateFactory.CreateMainMenuState(_gameManager);
             _gameManager.TransitionToState(nextState);
         }
+        else if (!Player.IsAlive)
+        {
+            Console.WriteLine("DERROTA!");
+            var nextState = _stateFactory.CreateMainMenuState(_gameManager);
+            _gameManager.TransitionToState(nextState);
+        }
+    }
+
+    private void StartPlayerTurn()
+    {
+        CurrentPhase = CombatPhase.PlayerTurn_Start;
+        Console.WriteLine("--- Turno do Jogador Começou ---");
+
+        OnPlayerTurnStart?.Invoke(); 
+
+        //Player.DrawCards(5); 
+
+        CurrentPhase = CombatPhase.PlayerTurn_Action;
+    }
+
+    public void EndPlayerTurn()
+    {
+        CurrentPhase = CombatPhase.EnemyTurn_Start;
+        Console.WriteLine("--- Turno do Inimigo Começou ---");
+        OnEnemyTurnStart?.Invoke(); 
+
+        ExecuteEnemyTurns();
+    }
+
+    private void ExecuteEnemyTurns()
+    {
+        CurrentPhase = CombatPhase.EnemyTurn_Resolution;
+
+        foreach (var enemy in Enemies)
+        {
+            enemy.TakeTurn(this); 
+        }
+
+        EndTurn();
+    }
+
+    private void EndTurn()
+    {
+        CurrentPhase = CombatPhase.TurnEnd;
+        Console.WriteLine("--- Fim do Turno ---");
+
+        //Player.ProcessEndOfTurnEffects();
+        foreach (var enemy in Enemies)
+        {
+            //enemy.ProcessEndOfTurnEffects();
+        }
+
+        CheckForDeadEnemies();
+
+        StartPlayerTurn();
     }
 }

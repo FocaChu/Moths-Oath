@@ -32,5 +32,7 @@ public class Enemy : Character
         #nullable disable
 
         CurrentCooldown--;
+
+        Console.WriteLine($"{Name} terminou seu turno.");
     }
 }

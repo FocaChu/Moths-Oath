@@ -17,7 +17,7 @@ public class MainMenuState : IGameState
     public void StartNewGame()
     {
         Console.WriteLine("Iniciando novo jogo...");
-        var player = new Player();
+        var player = new Player { Name = "Jorge", MaxHP = 100, CurrentHP = 100};
 
         var nextState = _stateFactory.CreateCombatState(_gameManager, player);
 
