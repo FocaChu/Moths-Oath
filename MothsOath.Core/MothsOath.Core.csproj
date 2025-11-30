@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Blueprints\Enemies\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\Blueprints\Enemies\skeleton.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

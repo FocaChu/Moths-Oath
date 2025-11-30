@@ -17,4 +17,42 @@ public abstract class Character
     public int BaseDefense { get; set; }
 
     public int BonusDefense { get; set; } = 0;
+
+    public int Shield { get; set; } = 0;
+
+    public int TotalStrength => BaseStrength + BonusStrength;
+
+    public int TotalDefense => BaseDefense + BonusDefense;
+
+
+    public event Action<Character, int> OnDamageTaken;
+
+    public void TakeDamage(int damage, bool bypass)
+    {
+        if (damage > 0)
+        {
+            if(bypass)
+            {
+                this.CurrentHP -= damage;
+                return;
+            }
+
+            damage -= TotalDefense;
+
+            if (this.Shield > 0)
+            {
+                int absorvedDamage = Math.Min(damage, this.Shield);
+                damage -= absorvedDamage;
+                this.Shield -= absorvedDamage;
+            }
+
+            int finalDamage = Math.Max(damage, 0);
+
+            if (finalDamage > 0)
+            {
+                CurrentHP -= finalDamage;
+                OnDamageTaken?.Invoke(this, finalDamage); 
+            }
+        }
+    }
 }

@@ -1,10 +1,14 @@
-using MothsOath.UI.Components;
 using MothsOath.Core;
+using MothsOath.Core.Factories;
+using MothsOath.UI.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<AbilityFactory>();
+builder.Services.AddSingleton<EnemyFactory>();
 
 builder.Services.AddSingleton<GameStateManager>();
 
