@@ -1,5 +1,6 @@
 using MothsOath.Core;
 using MothsOath.Core.Factories;
+using MothsOath.Core.Services;
 using MothsOath.UI.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,8 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddSingleton<BlueprintLoader>();
 builder.Services.AddSingleton<AbilityFactory>();
 builder.Services.AddSingleton<EnemyFactory>();
+builder.Services.AddSingleton<CardFactory>();
+builder.Services.AddSingleton<PlayerFactory>();
 builder.Services.AddSingleton<StateFactory>();
 builder.Services.AddSingleton<GameStateManager>();
 

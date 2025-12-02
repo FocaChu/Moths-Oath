@@ -14,7 +14,7 @@ public abstract class Character
 
     public int BonusStrength { get; set; } = 0;
 
-    public int BaseDefense { get; set; }
+    public int BaseResistance { get; set; }
 
     public int BonusDefense { get; set; } = 0;
 
@@ -22,7 +22,7 @@ public abstract class Character
 
     public int TotalStrength => BaseStrength + BonusStrength;
 
-    public int TotalDefense => BaseDefense + BonusDefense;
+    public int TotalDefense => BaseResistance + BonusDefense;
 
     public bool IsAlive => CurrentHealth > 0;
 

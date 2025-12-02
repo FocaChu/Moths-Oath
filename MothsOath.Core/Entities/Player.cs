@@ -13,7 +13,9 @@ public class Player : Character
 
     public int CurrentStamina { get; set; }
 
-    public int Gold { get; set; }
+    public int Gold { get; set; } = 100;
+
+    public float XpMultiplier { get; set; } = 1;
 
     public int CardsByTurn { get; set; } = 5;
 

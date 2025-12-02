@@ -1,8 +1,9 @@
 {
   "Id": "skeleton_warrior",
   "Name": "Esqueleto Guerreiro",
-  "MaxHP": 30,
+  "Maxhealth": 30,
   "BaseStrength": 10,
+  "BaseResistance": 0,
   "BasicAttackAbilityId": "ability_basic_attack",
   "SpecialAbilityId": "ability_power_strike",
   "SpecialAbilityCooldown": 3

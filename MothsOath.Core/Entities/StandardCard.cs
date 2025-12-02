@@ -2,6 +2,6 @@
 
 namespace MothsOath.Core.Entities;
 
-public class StandartCard : BaseCard
+public class StandardCard : BaseCard
 {
 }

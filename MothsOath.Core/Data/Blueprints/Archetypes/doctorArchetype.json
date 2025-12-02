@@ -1,0 +1,12 @@
+{
+  "Id": "doctor",
+  "Name": "Doutor",
+  "Description": "Especialista em cura e suporte, o Doutor utiliza seu conhecimento médico para manter a equipe viva e saudável durante missões perigosas.",
+  "BonusHealth": 15,
+  "BonusMana": 0,
+  "BonusStamina": 0,
+  "BonusStrength": 0,
+  "BonusResistance": 1,
+  "InitialGold": 15,
+  "StartingCardIds": [ "strike_card" ]
+}

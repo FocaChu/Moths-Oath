@@ -5,7 +5,7 @@ namespace MothsOath.Core.Common;
 
 public class BaseCard
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get;} = Guid.NewGuid();
 
     public int HealthCost { get; set; } = 0;
 

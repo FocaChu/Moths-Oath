@@ -36,11 +36,6 @@ public class CombatState : IGameState
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
 
-        Player.Hand.Clear();
-        Player.Hand.Add(new StandartCard { Name = "Golpe Magico", Description = "Causa 5 de dano.", ManaCost = 10, Effect = new BasicAttackAbility() });
-        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano.", Effect = new BasicAttackAbility() });
-        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano.", Effect = new BasicAttackAbility() });
-
         Console.WriteLine("New Combat Started!");
 
         StartPlayerTurn();
@@ -102,16 +97,17 @@ public class CombatState : IGameState
         CurrentPhase = CombatPhase.PlayerTurn_Start;
         Console.WriteLine("--- Turno do Jogador Começou ---");
 
-        OnPlayerTurnStart?.Invoke(); 
+        OnPlayerTurnStart?.Invoke();
 
         if(Player.CardsByTurn > Player.Deck.Count)
         {
-            Player.DrawCards(Player.Deck.Count);
+            Player.DrawCards(Player.Deck.Count > 0 ? Player.Deck.Count : 1);
         }
         else
         {
             Player.DrawCards(Player.CardsByTurn);
         }
+        Player.DrawCards(Player.CardsByTurn);
 
         CurrentPhase = CombatPhase.PlayerTurn_Action;
     }
