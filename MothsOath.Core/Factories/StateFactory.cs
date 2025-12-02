@@ -16,12 +16,12 @@ public class StateFactory
         _enemyFactory = enemyFactory;
     }
 
-    public MainMenuState CreateMainMenuState(GameManager gameManager)
+    public MainMenuState CreateMainMenuState(GameStateManager gameManager)
     {
         return new MainMenuState(gameManager, this); 
     }
 
-    public CombatState CreateCombatState(GameManager gameManager, Player player)
+    public CombatState CreateCombatState(GameStateManager gameManager, Player player)
     {
         return new CombatState(gameManager, _enemyFactory, this, player);
     }

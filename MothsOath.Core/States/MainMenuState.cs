@@ -5,10 +5,10 @@ namespace MothsOath.Core.States;
 
 public class MainMenuState : IGameState
 {
-    private readonly GameManager _gameManager;
+    private readonly GameStateManager _gameManager;
     private readonly StateFactory _stateFactory;
 
-    public MainMenuState(GameManager gameManager, StateFactory stateFactory)
+    public MainMenuState(GameStateManager gameManager, StateFactory stateFactory)
     {
         _gameManager = gameManager;
         _stateFactory = stateFactory;
@@ -17,7 +17,7 @@ public class MainMenuState : IGameState
     public void StartNewGame()
     {
         Console.WriteLine("Iniciando novo jogo...");
-        var player = new Player { Name = "Jorge", MaxHP = 100, CurrentHP = 100};
+        var player = new Player { Name = "Jorge", MaxHealth = 100, CurrentHealth = 100, BaseStrength = 10};
 
         var nextState = _stateFactory.CreateCombatState(_gameManager, player);
 

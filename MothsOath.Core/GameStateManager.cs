@@ -3,13 +3,16 @@ using MothsOath.Core.States;
 
 namespace MothsOath.Core;
 
-public class GameManager
+public class GameStateManager
 {
     private readonly StateFactory _stateFactory;
-    public IGameState CurrentState { get; private set; }
+
+    public IGameState CurrentState { get; private set; } 
+
+
     public event Action<IGameState> OnStateChanged;
 
-    public GameManager(StateFactory stateFactory)
+    public GameStateManager(StateFactory stateFactory)
     {
         _stateFactory = stateFactory;
         CurrentState = _stateFactory.CreateMainMenuState(this);

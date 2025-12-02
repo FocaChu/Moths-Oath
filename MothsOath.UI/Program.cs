@@ -10,7 +10,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<AbilityFactory>();
 builder.Services.AddSingleton<EnemyFactory>();
 builder.Services.AddSingleton<StateFactory>();
-builder.Services.AddSingleton<GameManager>();
+builder.Services.AddSingleton<GameStateManager>();
 
 var app = builder.Build();
 

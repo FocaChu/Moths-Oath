@@ -6,9 +6,9 @@ public abstract class Character
 
     public string Name { get; set; } = string.Empty;
 
-    public int CurrentHP { get; set; }
+    public int MaxHealth { get; set; }
 
-    public int MaxHP { get; set; }
+    public int CurrentHealth { get; set; }
 
     public int BaseStrength { get; set; }
 
@@ -24,7 +24,7 @@ public abstract class Character
 
     public int TotalDefense => BaseDefense + BonusDefense;
 
-    public bool IsAlive => CurrentHP > 0;
+    public bool IsAlive => CurrentHealth > 0;
 
     public event Action<Character, int> OnDamageTaken;
 
@@ -34,7 +34,7 @@ public abstract class Character
         {
             if(bypass)
             {
-                this.CurrentHP -= damage;
+                this.CurrentHealth -= damage;
                 return;
             }
 
@@ -51,7 +51,7 @@ public abstract class Character
 
             if (finalDamage > 0)
             {
-                CurrentHP -= finalDamage;
+                CurrentHealth -= finalDamage;
                 OnDamageTaken?.Invoke(this, finalDamage); 
             }
         }

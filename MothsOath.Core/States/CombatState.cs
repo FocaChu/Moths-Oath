@@ -1,4 +1,5 @@
-﻿using MothsOath.Core.Common;
+﻿using MothsOath.Core.Abilities;
+using MothsOath.Core.Common;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
 using MothsOath.Core.Models.Enums;
@@ -7,7 +8,7 @@ namespace MothsOath.Core.States;
 
 public class CombatState : IGameState
 {
-    private readonly GameManager _gameManager;
+    private readonly GameStateManager _gameManager;
     private readonly EnemyFactory _enemyFactory;
     private readonly StateFactory _stateFactory;
 
@@ -19,7 +20,7 @@ public class CombatState : IGameState
     public event Action OnPlayerTurnStart;
     public event Action OnEnemyTurnStart;
 
-    public CombatState(GameManager gameManager, EnemyFactory enemyFactory, StateFactory stateFactory, Player player)
+    public CombatState(GameStateManager gameManager, EnemyFactory enemyFactory, StateFactory stateFactory, Player player)
     {
         _gameManager = gameManager;
         _enemyFactory = enemyFactory;
@@ -30,15 +31,15 @@ public class CombatState : IGameState
 
     public void OnEnter()
     {
-        Enemies.Clear();
+        Enemies.Clear(); 
+        DeadEnemies.Clear();
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
 
         Player.Hand.Clear();
-        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
-        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
-        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano." });
-        Player.Hand.Add(new StandartCard { Name = "Defesa Básica", Description = "Ganha 5 de escudo." });
+        Player.Hand.Add(new StandartCard { Name = "Golpe Magico", Description = "Causa 5 de dano.", ManaCost = 10, Effect = new BasicAttackAbility() });
+        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano.", Effect = new BasicAttackAbility() });
+        Player.Hand.Add(new StandartCard { Name = "Golpe Simples", Description = "Causa 5 de dano.", Effect = new BasicAttackAbility() });
 
         Console.WriteLine("New Combat Started!");
 
@@ -58,12 +59,7 @@ public class CombatState : IGameState
 
         Console.WriteLine($"Jogador jogou a carta '{card.Name}' no alvo '{target.Name}'.");
 
-        if (card.Name == "Golpe Simples")
-        {
-            target.TakeDamage(5, false);
-        }
-
-        Player.Hand.Remove(card);
+        Player.PlayCard(card, target, this);
 
         CheckForDeadEnemies();
     }
@@ -108,7 +104,14 @@ public class CombatState : IGameState
 
         OnPlayerTurnStart?.Invoke(); 
 
-        //Player.DrawCards(5); 
+        if(Player.CardsByTurn > Player.Deck.Count)
+        {
+            Player.DrawCards(Player.Deck.Count);
+        }
+        else
+        {
+            Player.DrawCards(Player.CardsByTurn);
+        }
 
         CurrentPhase = CombatPhase.PlayerTurn_Action;
     }

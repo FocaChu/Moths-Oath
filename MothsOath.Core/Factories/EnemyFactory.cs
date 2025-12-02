@@ -24,8 +24,8 @@ public class EnemyFactory
         var enemy = new Enemy
         {
             Name = blueprint.Name,
-            MaxHP = blueprint.MaxHP,
-            CurrentHP = blueprint.MaxHP,
+            MaxHealth = blueprint.MaxHP,
+            CurrentHealth = blueprint.MaxHP,
             BaseStrength = blueprint.BaseStrength,
             BasicAttack = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
             SpecialAbility = _abilityFactory.GetAbility(blueprint.SpecialAbilityId),
