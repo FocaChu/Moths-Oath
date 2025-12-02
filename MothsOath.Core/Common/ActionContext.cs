@@ -6,16 +6,16 @@ public class ActionContext
 {
     public Character Source { get; set; }
 
-    public Character Target { get; set; }
+    public List<Character> Targets { get; set; }
 
     public CombatState GameState { get; set; }
 
     public BaseCard? Card { get; set; }
 
-    public ActionContext(Character source, Character target, CombatState gameState, BaseCard? card)
+    public ActionContext(Character source, List<Character> targets, CombatState gameState, BaseCard? card)
     {
         Source = source;
-        Target = target;
+        Targets = targets;
         GameState = gameState;
         Card = card;
     }

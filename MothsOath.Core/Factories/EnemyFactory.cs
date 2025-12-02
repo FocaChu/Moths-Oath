@@ -7,11 +7,13 @@ namespace MothsOath.Core.Factories;
 public class EnemyFactory
 {
     private readonly Dictionary<string, EnemyBlueprint> _enemyBlueprints;
-    private readonly ActionFactory _abilityFactory; 
+    private readonly ActionFactory _abilityFactory;
+    private readonly BehaviorFactory _behaviorFactory;
 
-    public EnemyFactory(ActionFactory abilityFactory, BlueprintLoader blueprintLoader)
+    public EnemyFactory(ActionFactory abilityFactory, BehaviorFactory behaviorFactory , BlueprintLoader blueprintLoader)
     {
         _abilityFactory = abilityFactory;
+        _behaviorFactory = behaviorFactory;
         _enemyBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<EnemyBlueprint>("Enemies");
     }
 
@@ -28,6 +30,8 @@ public class EnemyFactory
             MaxHealth = blueprint.MaxHealth,
             CurrentHealth = blueprint.MaxHealth,
             BaseStrength = blueprint.BaseStrength,
+            NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
+            SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),
             BasicAttack = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
             SpecialAbility = _abilityFactory.GetAbility(blueprint.SpecialAbilityId),
             SpecialAbilityCooldown = blueprint.SpecialAbilityCooldown,

@@ -8,8 +8,11 @@ public class PowerStrikeAbility : IAction
 
     public void Execute(ActionContext context)
     {
+        var rng = new Random();
+        var target = context.Targets[rng.Next(context.Targets.Count)];
+
         int damage = context.Source.BaseStrength * 2;
-        context.Target.TakeDamage(damage, false);
-        Console.WriteLine($"{context.Source.Name} uses Power Strike on {context.Target.Name} for {damage} damage.");
+        target.TakeDamage(damage, false);
+        Console.WriteLine($"{context.Source.Name} uses Power Strike on {target.Name} for {damage} damage.");
     }
 }

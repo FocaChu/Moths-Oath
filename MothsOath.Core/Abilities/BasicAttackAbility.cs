@@ -8,8 +8,11 @@ public class BasicAttackAbility : IAction
 
     public void Execute(ActionContext context)
     {
+        var rng = new Random();
+        var target = context.Targets[rng.Next(context.Targets.Count)];
+
         int damage = context.Source.BaseStrength;
-        context.Target.TakeDamage(damage, false);
-        Console.WriteLine($"{context.Source.Name} attacks {context.Target.Name} for {damage} damage.");
+        target.TakeDamage(damage, false);
+        Console.WriteLine($"{context.Source.Name} attacks {target.Name} for {damage} damage.");
     }
 }

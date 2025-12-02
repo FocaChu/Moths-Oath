@@ -9,6 +9,7 @@
   <ItemGroup>
     <Folder Include="Data\Blueprints\Cards\" />
     <Folder Include="Data\Blueprints\Enemies\" />
+    <Folder Include="Entities\Archetypes\" />
   </ItemGroup>
 
   <ItemGroup>

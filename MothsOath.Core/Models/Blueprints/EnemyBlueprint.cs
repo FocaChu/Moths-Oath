@@ -14,6 +14,10 @@ public class EnemyBlueprint : IBlueprint
 
     public int BaseResistance { get; set; }
 
+    public string NormalBehaviorId { get; set; } = string.Empty;
+
+    public string SpecialBehaviorId { get; set; } = string.Empty;
+
     public string BasicAttackAbilityId { get; set; } = string.Empty;
 
     public string SpecialAbilityId { get; set; } = string.Empty;

@@ -4,6 +4,8 @@
   "Maxhealth": 30,
   "BaseStrength": 10,
   "BaseResistance": 0,
+  "NormalBehaviorId": "aggressive_behavior",
+  "SpecialBehaviorId": "aggressive_behavior",
   "BasicAttackAbilityId": "ability_basic_attack",
   "SpecialAbilityId": "ability_power_strike",
   "SpecialAbilityCooldown": 3

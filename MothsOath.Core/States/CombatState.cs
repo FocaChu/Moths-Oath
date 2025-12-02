@@ -54,7 +54,9 @@ public class CombatState : IGameState
 
         Console.WriteLine($"Jogador jogou a carta '{card.Name}' no alvo '{target.Name}'.");
 
-        var context = new ActionContext(Player, target, this, card);
+        List<Character> targets = new List<Character> { target };
+
+        var context = new ActionContext(Player, targets, this, card);
 
         Player.PlayCard(context);
 
