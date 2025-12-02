@@ -2,6 +2,8 @@
 using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
 using MothsOath.Core.States;
+using MothsOath.Core.StatusEffect;
+using MothsOath.Core.StatusEffect.Interfaces;
 
 namespace MothsOath.Core.Entities;
 
@@ -28,18 +30,52 @@ public class Enemy : Character
         return NormalBehavior.GetTargets(this, gameState);
     }
 
+    public ActionPlan CreateActionPlan(CombatState gameState)
+    {
+        var plan = new ActionPlan
+        {
+            Source = this,
+            BaseTargets = GetTargets(gameState)
+        };
+
+            plan.CanUseSpecial = CurrentCooldown <= 0;
+
+            var intentModifiers = System.Linq.Enumerable.ToList(
+                System.Linq.Enumerable.Where(
+                    System.Linq.Enumerable.OfType<BaseStatusEffect>(this.StatusEffects ?? System.Linq.Enumerable.Empty<BaseStatusEffect>()),
+                    e => e is IActionPlanModifier
+                )
+            );
+
+            foreach (var effect in intentModifiers)
+            {
+                ((IActionPlanModifier)effect).ModifyIntent(plan, gameState);
+            }
+
+        return plan;
+    }
+
     public void TakeTurn(CombatState gameState)
     {
-        var target = GetTargets(gameState);
+        var plan = CreateActionPlan(gameState);
 
-        var context = new ActionContext(this, target, gameState, null);
+
+        var context = new ActionContext(this, plan.FinalTargets, gameState, null);
 
 #nullable disable
-        if (CurrentCooldown <= 0)
+        if (!plan.CanProceed || plan.FinalTargets.Count == 0) return;
+
+        if (CurrentCooldown <= 0 && plan.CanUseSpecial)
         {
             SpecialAbility.Execute(context);
             CurrentCooldown = SpecialAbilityCooldown;
             Console.WriteLine($"{Name} usou {SpecialAbility.Id}!");
+        }
+        else if(CurrentCooldown <= 0 && !plan.CanUseSpecial)
+        {
+            CurrentCooldown = SpecialAbilityCooldown;
+            BasicAttack.Execute(context);
+            Console.WriteLine($"{Name} usou {BasicAttack.Id}!");
         }
         else
         {

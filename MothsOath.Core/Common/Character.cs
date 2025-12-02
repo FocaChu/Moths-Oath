@@ -1,4 +1,6 @@
-﻿namespace MothsOath.Core.Common;
+﻿using MothsOath.Core.StatusEffect;
+
+namespace MothsOath.Core.Common;
 
 public abstract class Character
 {
@@ -25,6 +27,8 @@ public abstract class Character
     public int TotalDefense => BaseResistance + BonusDefense;
 
     public bool IsAlive => CurrentHealth > 0;
+
+    public List<BaseStatusEffect> StatusEffects { get; set; } = new List<BaseStatusEffect>();
 
     public event Action<Character, int> OnDamageTaken;
 
