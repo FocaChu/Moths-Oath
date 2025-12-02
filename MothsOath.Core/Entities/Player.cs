@@ -54,22 +54,24 @@ public class Player : Character
         }
     }
 
-    public void PlayCard(BaseCard card, Character target, CombatState gameState)
+#nullable disable
+    public void PlayCard(ActionContext context)
     {
-        if (CanAfford(card))
+        if (CanAfford(context.Card))
         {
-            PayCosts(card);
+            PayCosts(context.Card);
 
-            card.PlayEffect(this, target, gameState);
+            context.Card.PlayEffect(context);
 
-            this.Hand.Remove(card);
-            this.DiscartPile.Add(card);
+            this.Hand.Remove(context.Card);
+            this.DiscartPile.Add(context.Card);
         }
         else 
         {
-            Console.WriteLine($"Cannot afford to play card: {card.Name}");
+            Console.WriteLine($"Cannot afford to play card: {context.Card.Name}");
         }
     }
+#nullable enable
 
     public bool CanAfford(BaseCard card)
     {

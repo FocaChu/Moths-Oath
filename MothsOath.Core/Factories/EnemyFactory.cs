@@ -7,9 +7,9 @@ namespace MothsOath.Core.Factories;
 public class EnemyFactory
 {
     private readonly Dictionary<string, EnemyBlueprint> _enemyBlueprints;
-    private readonly AbilityFactory _abilityFactory; 
+    private readonly ActionFactory _abilityFactory; 
 
-    public EnemyFactory(AbilityFactory abilityFactory, BlueprintLoader blueprintLoader)
+    public EnemyFactory(ActionFactory abilityFactory, BlueprintLoader blueprintLoader)
     {
         _abilityFactory = abilityFactory;
         _enemyBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<EnemyBlueprint>("Enemies");

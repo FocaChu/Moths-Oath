@@ -54,7 +54,9 @@ public class CombatState : IGameState
 
         Console.WriteLine($"Jogador jogou a carta '{card.Name}' no alvo '{target.Name}'.");
 
-        Player.PlayCard(card, target, this);
+        var context = new ActionContext(Player, target, this, card);
+
+        Player.PlayCard(context);
 
         CheckForDeadEnemies();
     }

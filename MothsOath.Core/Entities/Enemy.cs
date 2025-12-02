@@ -6,9 +6,9 @@ namespace MothsOath.Core.Entities;
 
 public class Enemy : Character
 {
-    public IAbility BasicAttack { get; set; } = null!;
+    public IAction BasicAttack { get; set; } = null!;
 
-    public IAbility SpecialAbility { get; set; } = null!;
+    public IAction SpecialAbility { get; set; } = null!;
 
     public int SpecialAbilityCooldown { get; set; }
 
@@ -19,19 +19,21 @@ public class Enemy : Character
     {
         var target = gameState.Player;
 
-        #nullable disable
+        var context = new ActionContext(this, target, gameState, null);
+
+#nullable disable
         if (CurrentCooldown <= 0)
         {
-            SpecialAbility.Execute(this, target, gameState);
+            SpecialAbility.Execute(context);
             CurrentCooldown = SpecialAbilityCooldown;
             Console.WriteLine($"{Name} usou {SpecialAbility.Id}!");
         }
         else
         {
-            BasicAttack.Execute(this, target, gameState);
+            BasicAttack.Execute(context);
             Console.WriteLine($"{Name} usou {BasicAttack.Id}!");
         }
-        #nullable disable
+#nullable disable
 
         CurrentCooldown--;
 

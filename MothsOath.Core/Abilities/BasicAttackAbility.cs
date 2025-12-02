@@ -1,16 +1,15 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.States;
 
 namespace MothsOath.Core.Abilities;
 
-public class BasicAttackAbility : IAbility
+public class BasicAttackAbility : IAction
 {
     public string Id => "ability_basic_attack";
 
-    public void Execute(Character source, Character target, CombatState gameState)
+    public void Execute(ActionContext context)
     {
-        int damage = source.BaseStrength;
-        target.TakeDamage(damage, false);
-        Console.WriteLine($"{source.Name} attacks {target.Name} for {damage} damage.");
+        int damage = context.Source.BaseStrength;
+        context.Target.TakeDamage(damage, false);
+        Console.WriteLine($"{context.Source.Name} attacks {context.Target.Name} for {damage} damage.");
     }
 }

@@ -8,9 +8,9 @@ namespace MothsOath.Core.Factories;
 public class CardFactory
 {
     private readonly Dictionary<string, JsonElement> _cardBlueprints;
-    private readonly AbilityFactory _abilityFactory;
+    private readonly ActionFactory _abilityFactory;
 
-    public CardFactory(BlueprintLoader blueprintLoader, AbilityFactory abilityFactory)
+    public CardFactory(BlueprintLoader blueprintLoader, ActionFactory abilityFactory)
     {
         _cardBlueprints = blueprintLoader.LoadAllRawBlueprints("Cards");
         _abilityFactory = abilityFactory;
@@ -65,14 +65,13 @@ public class CardFactory
             card.GoldCost = valueElement.GetInt32();
         }
 
-        if(blueprintJson.TryGetProperty("Effect", out valueElement) && valueElement.ValueKind != JsonValueKind.Null)
+        if(blueprintJson.TryGetProperty("Action", out valueElement) && valueElement.ValueKind != JsonValueKind.Null)
         {
             var abilityBlueprintId = valueElement.GetString();
             if (!string.IsNullOrEmpty(abilityBlueprintId))
             {
-                card.Effect = _abilityFactory.GetAbility(abilityBlueprintId);
+                card.Action = _abilityFactory.GetAbility(abilityBlueprintId);
             }
-
         }
 
         return card;

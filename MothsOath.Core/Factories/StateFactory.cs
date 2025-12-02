@@ -5,12 +5,12 @@ namespace MothsOath.Core.Factories;
 
 public class StateFactory
 {
-    private readonly AbilityFactory _abilityFactory;
+    private readonly ActionFactory _abilityFactory;
     private readonly EnemyFactory _enemyFactory;
     private readonly PlayerFactory _playerFactory;
 
     public StateFactory(
-        AbilityFactory abilityFactory,
+        ActionFactory abilityFactory,
         EnemyFactory enemyFactory,
         PlayerFactory playerFactory)
     {

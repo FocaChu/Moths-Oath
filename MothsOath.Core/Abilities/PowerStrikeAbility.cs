@@ -1,16 +1,15 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.States;
 
 namespace MothsOath.Core.Abilities;
 
-public class PowerStrikeAbility : IAbility
+public class PowerStrikeAbility : IAction
 {
     public string Id => "ability_power_strike";
 
-    public void Execute(Character source, Character target, CombatState gameState)
+    public void Execute(ActionContext context)
     {
-        int damage = source.BaseStrength * 2;
-        target.TakeDamage(damage, false);
-        Console.WriteLine($"{source.Name} uses Power Strike on {target.Name} for {damage} damage.");
+        int damage = context.Source.BaseStrength * 2;
+        context.Target.TakeDamage(damage, false);
+        Console.WriteLine($"{context.Source.Name} uses Power Strike on {context.Target.Name} for {damage} damage.");
     }
 }

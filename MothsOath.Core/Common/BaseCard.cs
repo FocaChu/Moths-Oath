@@ -19,10 +19,10 @@ public class BaseCard
 
     public string Description { get; set; } = string.Empty;
 
-    public IAbility Effect { get; set; } = null!;
+    public IAction Action { get; set; } = null!;
 
-    public virtual void PlayEffect(Character user, Character target, CombatState gameState)
+    public virtual void PlayEffect(ActionContext context)
     {
-        Effect.Execute(user, target, gameState);
+        Action.Execute(context);
     }
 }
