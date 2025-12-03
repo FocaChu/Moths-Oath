@@ -14,7 +14,7 @@
 
                     <p>
                         <strong>Força:</strong> @CharacterProfile.BaseStrength
-                        @if (CharacterProfile.BonusStrength > 0)
+                        @if (CharacterProfile.BonusStrength != 0)
                         {
                             <span> + @CharacterProfile.BonusStrength = @CharacterProfile.TotalStrength</span>
                         }
@@ -22,7 +22,7 @@
 
                     <p>
                         <strong>Inteligência:</strong> @CharacterProfile.BaseKnowledge
-                        @if (CharacterProfile.BonusKnowledge > 0)
+                        @if (CharacterProfile.BonusKnowledge != 0)
                         {
                             <span> + @CharacterProfile.BonusKnowledge = @CharacterProfile.TotalKnowledge</span>
                         }
@@ -30,14 +30,14 @@
 
                     <p>
                         <strong>Resistência:</strong> @CharacterProfile.BaseResistance
-                        @if (CharacterProfile.BonusResistance > 0)
+                        @if (CharacterProfile.BonusResistance != 0)
                         {
                             <span> + @CharacterProfile.BonusResistance = @CharacterProfile.TotalResistance</span>
                         }
                     </p>
 
                     <p>
-                        @if (CharacterProfile.Shield > 0)
+                        @if (CharacterProfile.Shield != 0)
                         {
                             <strong>Escudo: </strong> @CharacterProfile.Shield
                         }
