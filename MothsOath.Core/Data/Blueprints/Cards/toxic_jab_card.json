@@ -2,7 +2,7 @@
   "Id": "toxic_jab_card",
   "Type": "Standard",
   "Name": "Golpe Toxico",
-  "Description": "Um ataque envenenado que causa dano f�sico ao inimigo  equivalente a Força do personagem.",
+  "Description": "Causa dano equivalente a força e aplica veneno.",
   "StaminaCost": 30,
   "Action": "action_toxic_jab"
 }

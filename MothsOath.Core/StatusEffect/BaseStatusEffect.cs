@@ -14,6 +14,16 @@ public abstract class BaseStatusEffect
 
     public int Duration { get; set; }
 
+    public virtual bool IsActive()
+    {
+        if(Duration <= 0 || Level <= 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public virtual void TickTime(Character holder)
     {
         if (Duration > 0)

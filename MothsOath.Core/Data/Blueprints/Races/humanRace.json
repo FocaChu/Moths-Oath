@@ -6,7 +6,7 @@
   "BaseMana": 100,
   "BaseStamina": 100,
   "BaseStrength": 5,
-  "BaseResistance": 5,
+  "BaseResistance": 1,
   "BaseRegeneration": 0,
   "BonusXpMultiplier": 0.1,
   "PassiveDescription": "Ganho de Experiência aumentado em 10%.",

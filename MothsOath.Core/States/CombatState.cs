@@ -19,6 +19,7 @@ public class CombatState : IGameState
 
     public event Action OnPlayerTurnStart;
     public event Action OnEnemyTurnStart;
+    public event Action OnCombatStateChanged;
 
     public CombatState(GameStateManager gameManager, EnemyFactory enemyFactory, StateFactory stateFactory, Player player)
     {
@@ -37,6 +38,7 @@ public class CombatState : IGameState
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
 
         Console.WriteLine("New Combat Started!");
+        Console.WriteLine($"Player: S:{Player.BaseStrength} R:{Player.BaseResistance}");
 
         StartPlayerTurn();
     }
@@ -61,6 +63,8 @@ public class CombatState : IGameState
         Player.PlayCard(context);
 
         CheckForDeadEnemies();
+        
+        OnCombatStateChanged?.Invoke();
     }
 
     private void CheckForDeadEnemies()

@@ -23,6 +23,12 @@ public class ActionFactory
         var cry = new CryAction();
         _abilities.Add(cry.Id, cry);
 
+        var heal = new BasicHealAction();
+        _abilities.Add(heal.Id, heal);
+
+        var sharpCut = new SharpCutAction();
+        _abilities.Add(sharpCut.Id, sharpCut);
+
         Console.WriteLine($"AbilityFactory inicializado. {_abilities.Count} habilidades carregadas.");
     }
 

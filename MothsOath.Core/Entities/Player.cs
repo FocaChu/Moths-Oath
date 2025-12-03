@@ -92,9 +92,7 @@ public class Player : Character
 
     public void Restore()
     {
-        this.CurrentHealth += this.Regeneration;
-        if(CurrentHealth > MaxHealth)
-            this.CurrentHealth = this.MaxHealth;
+        CurrentHealth = Math.Min(CurrentHealth + this.Regeneration, MaxHealth);
 
         this.CurrentMana = this.MaxMana;
         this.CurrentStamina = this.MaxStamina;

@@ -9,5 +9,5 @@
   "BonusResistance": 1,
   "BonusRegeneration": 2,
   "InitialGold": 15,
-  "StartingCardIds": [ "toxic_jab_card" ]
+  "StartingCardIds": [ "toxic_jab_card", "heal_card", "sharp_cut_card" ]
 }

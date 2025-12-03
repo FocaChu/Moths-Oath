@@ -17,7 +17,7 @@ public class ToxicJabAction : IAction
         target.TakeDamage(damage, false);
         Console.WriteLine($"{context.Source.Name} uses Toxic Jab on {target.Name} for {damage} damage.");
 
-        var poisonEffect = new PoisonEffect(level: (int)(context.Source.BaseStrength /2), duration: 2);
+        var poisonEffect = new PoisonEffect(level: (int)(context.Source.BaseStrength /2), duration: 3);
 
         target.ApplyStatusEffect(poisonEffect);
         Console.WriteLine($"{target.Name} is poisoned!");

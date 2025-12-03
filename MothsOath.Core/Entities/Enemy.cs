@@ -41,11 +41,11 @@ public class Enemy : Character
         plan.CanUseSpecial = CurrentCooldown <= 0;
         plan.CanProceed = true;
 
-        var intentModifiers = this.StatusEffects.OfType<IActionPlanModifier>().ToList();
+        var actionModifiers = this.StatusEffects.OfType<IActionPlanModifier>().ToList();
 
-        foreach (var effect in intentModifiers)
+        foreach (var effect in actionModifiers)
         {
-            ((IActionPlanModifier)effect).ModifyIntent(plan, gameState);
+            ((IActionPlanModifier)effect).ModifyActionPlan(plan, gameState);
         }
 
         return plan;

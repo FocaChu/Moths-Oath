@@ -5,7 +5,7 @@ namespace MothsOath.Core.StatusEffect.Interfaces;
 
 public interface IActionPlanModifier
 {
-    public virtual void ModifyIntent(ActionPlan plan, CombatState context)
+    public virtual void ModifyActionPlan(ActionPlan plan, CombatState context)
     {
     }
 }

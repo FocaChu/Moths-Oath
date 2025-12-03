@@ -32,6 +32,9 @@ public class PoisonEffect : BaseStatusEffect, ITurnBasedEffect
 
     public void OnTurnEnd(Character target, CombatState context)
     {
+        if(!IsActive())
+            return;
+
         target.TakeDamage(Level, true);
         Console.WriteLine($"{target.Name} sofre {Level} de dano por veneno. HP:{target.CurrentHealth}");
     }

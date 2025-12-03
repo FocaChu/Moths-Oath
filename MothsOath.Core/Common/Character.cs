@@ -1,4 +1,5 @@
 ﻿using MothsOath.Core.StatusEffect;
+using MothsOath.Core.StatusEffect.Interfaces;
 
 namespace MothsOath.Core.Common;
 
@@ -60,6 +61,31 @@ public abstract class Character
                 CurrentHealth -= finalDamage;
                 OnDamageTaken?.Invoke(this, finalDamage); 
             }
+        }
+    }
+
+    public void Heal(HealPlan plan)
+    {
+        if(plan.BaseHealAmount <= 0)
+            return;
+
+        var healthModifiers = this.StatusEffects.OfType<IHealModifier>().ToList();
+
+        foreach (var effect in healthModifiers)
+        {
+            effect.ModifierHealthPlan(plan, this);
+        }
+
+        if (!plan.CanProceed || plan.FinalHealAmount == 0)
+            return;
+
+        CurrentHealth = Math.Min(CurrentHealth + plan.FinalHealAmount, MaxHealth);
+
+        var healthReactors = this.StatusEffects.OfType<IHealReactor>().ToList();
+
+        foreach (var effect in healthReactors)
+        {
+            effect.ReactToHeal(plan, this);
         }
     }
 
