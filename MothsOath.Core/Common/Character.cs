@@ -26,7 +26,7 @@ public abstract class Character
 
     public int BaseResistance { get; set; }
     public int BonusResistance { get; set; } = 0;
-    public int TotalDefense => BaseResistance + BonusResistance;
+    public int TotalResistance => BaseResistance + BonusResistance;
 
 
     public int Shield { get; set; } = 0;
@@ -47,7 +47,7 @@ public abstract class Character
                 return;
             }
 
-            damage -= TotalDefense;
+            damage -= TotalResistance;
 
             if (this.Shield > 0)
             {

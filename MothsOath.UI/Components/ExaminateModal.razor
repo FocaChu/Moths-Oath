@@ -1,0 +1,76 @@
+﻿@if (IsVisible)
+{
+    <div class="modal-backdrop fade show"></div>
+
+    <div class="modal" tabindex="-1" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes de @CharacterProfile.Name</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Saúde:</strong> @CharacterProfile.CurrentHealth/@CharacterProfile.MaxHealth</p>
+
+                    <p>
+                        <strong>Força:</strong> @CharacterProfile.BaseStrength
+                        @if (CharacterProfile.BonusStrength > 0)
+                        {
+                            <span> + @CharacterProfile.BonusStrength = @CharacterProfile.TotalStrength</span>
+                        }
+                    </p>
+
+                    <p>
+                        <strong>Inteligência:</strong> @CharacterProfile.BaseKnowledge
+                        @if (CharacterProfile.BonusKnowledge > 0)
+                        {
+                            <span> + @CharacterProfile.BonusKnowledge = @CharacterProfile.TotalKnowledge</span>
+                        }
+                    </p>
+
+                    <p>
+                        <strong>Resistência:</strong> @CharacterProfile.BaseResistance
+                        @if (CharacterProfile.BonusResistance > 0)
+                        {
+                            <span> + @CharacterProfile.BonusResistance = @CharacterProfile.TotalResistance</span>
+                        }
+                    </p>
+
+                    <p>
+                        @if (CharacterProfile.Shield > 0)
+                        {
+                            <strong>Escudo: </strong> @CharacterProfile.Shield
+                        }
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Character CharacterProfile { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    public bool IsVisible { get; set; } = false;
+
+    public void OpenModal(Character pessoa)
+    {
+        CharacterProfile = pessoa;
+        IsVisible = true;
+
+        StateHasChanged();
+    }
+
+    private async Task CloseModal()
+    {
+        IsVisible = false;
+        await OnClose.InvokeAsync();
+    }
+}

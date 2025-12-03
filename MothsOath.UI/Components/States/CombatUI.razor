@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="player-hand-container">
-            @if (selectedCard == null)
+            @if (selectedCard == null  && !examining)
             {
                 <div class="hand">
                     @foreach (var card in CombatState.Player.Hand)
@@ -38,18 +38,24 @@
             }
         </div>
         <div class="player-actions">
-            <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>
+            <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>           
+            <button @onclick="ExamineClicked" @onclick:stopPropagation="true">Examinar</button>
         </div>
     </div>
-</div>
+
+    </div> <ExaminateModal @ref="examinateModal" CharacterProfile="itemToExamine" OnClose="OnModalClosed" />
 
 @code {
+    private ExaminateModal? examinateModal;
+    private Character? itemToExamine;
+
     [Parameter]
-    public CombatState CombatState { get; set; }
+    public CombatState CombatState { get; set; } = default!;
 
     private BaseCard? selectedCard;
     private Enemy? hoveredEnemy;
     private bool isPlayerHovered;
+    private bool examining = false;
 
     protected override void OnInitialized()
     {
@@ -74,12 +80,26 @@
         selectedCard = null;
         hoveredEnemy = null;
         isPlayerHovered = false;
+        examining = false;
+        StateHasChanged();
+    }
+
+    private void OnModalClosed()
+    {
+        itemToExamine = null;
+        examining = false;
         StateHasChanged();
     }
 
     private void EndTurnClicked()
     {
         CombatState.EndPlayerTurn();
+    }
+
+    private void ExamineClicked()
+    {
+        examining = !examining;
+        StateHasChanged();
     }
 
     private void SelectCard(BaseCard card)
@@ -98,6 +118,14 @@
             isPlayerHovered = false;
             StateHasChanged();
         }
+        else if(examining)
+        {
+            itemToExamine = enemy;
+            if (examinateModal != null)
+            {
+                examinateModal.OpenModal(itemToExamine);
+            }
+        }
     }
 
     private void TargetPlayer()
@@ -109,6 +137,14 @@
             hoveredEnemy = null;
             isPlayerHovered = false;
             StateHasChanged();
+        }
+        else if(examining)
+        {
+            itemToExamine = CombatState.Player;
+            if (examinateModal != null)
+            {
+                examinateModal.OpenModal(itemToExamine);
+            }
         }
     }
 
