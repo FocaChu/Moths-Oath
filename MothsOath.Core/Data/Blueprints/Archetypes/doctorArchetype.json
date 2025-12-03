@@ -6,6 +6,7 @@
   "BonusMana": 0,
   "BonusStamina": 0,
   "BonusStrength": 0,
+  "BonusKnowledge": 3,
   "BonusResistance": 1,
   "BonusRegeneration": 2,
   "InitialGold": 15,

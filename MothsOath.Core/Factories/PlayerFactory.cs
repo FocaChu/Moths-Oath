@@ -32,6 +32,7 @@ public class PlayerFactory
             MaxStamina = raceBlueprint.BaseStamina + archetypeBlueprint.BonusStamina,
             CurrentStamina = raceBlueprint.BaseStamina + archetypeBlueprint.BonusStamina,
             BaseStrength = raceBlueprint.BaseStrength + archetypeBlueprint.BonusStrength,
+            BaseKnowledge = raceBlueprint.BaseKnowledge + archetypeBlueprint.BonusKnowledge,
             BaseResistance = raceBlueprint.BaseResistance + archetypeBlueprint.BonusResistance,
             Gold = 100 + archetypeBlueprint.InitialGold,
             Regeneration = raceBlueprint.BaseRegeneration + archetypeBlueprint.BonusRegeneration,

@@ -12,6 +12,8 @@ public class EnemyBlueprint : IBlueprint
 
     public int BaseStrength { get; set; }
 
+    public int BaseKnowledge { get; set; }
+
     public int BaseResistance { get; set; }
 
     public string NormalBehaviorId { get; set; } = string.Empty;

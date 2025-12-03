@@ -11,7 +11,7 @@ public class BasicHealAction : IAction
         var rng = new Random();
         var target = context.Targets[rng.Next(context.Targets.Count)];
 
-        var healPlan = new HealPlan(context.Source, (int)(context.Source.BaseStrength / 2));
+        var healPlan = new HealPlan(context.Source, (int)(context.Source.BaseKnowledge / 2));
 
         target.Heal(healPlan);
 

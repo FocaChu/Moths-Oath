@@ -3,6 +3,7 @@
   "Name": "Neko",
   "Maxhealth": 67,
   "BaseStrength": 13,
+  "BaseKnowledge": 5,
   "BaseResistance": 2,
   "NormalBehaviorId": "target_only_player_behavior",
   "SpecialBehaviorId": "target_random_behavior",

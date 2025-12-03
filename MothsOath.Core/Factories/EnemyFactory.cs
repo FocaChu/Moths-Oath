@@ -30,6 +30,8 @@ public class EnemyFactory
             MaxHealth = blueprint.MaxHealth,
             CurrentHealth = blueprint.MaxHealth,
             BaseStrength = blueprint.BaseStrength,
+            BaseKnowledge = blueprint.BaseKnowledge,
+            BaseResistance = blueprint.BaseResistance,
             NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
             SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),
             BasicAttack = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
