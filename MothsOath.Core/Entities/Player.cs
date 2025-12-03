@@ -49,15 +49,18 @@ public class Player : Character
             }
 
             var card = Deck[0];
-            Deck.RemoveAt(0);
+            Deck.Remove(card);
             Hand.Add(card);
         }
     }
 
-#nullable disable
     public void PlayCard(ActionContext context)
     {
-        if (CanAfford(context.Card))
+        if (!CanAfford(context.Card))
+        {
+            Console.WriteLine($"Cannot afford to play card: {context.Card.Name}");
+        }
+        else
         {
             PayCosts(context.Card);
 
@@ -66,12 +69,7 @@ public class Player : Character
             this.Hand.Remove(context.Card);
             this.DiscartPile.Add(context.Card);
         }
-        else 
-        {
-            Console.WriteLine($"Cannot afford to play card: {context.Card.Name}");
-        }
     }
-#nullable enable
 
     public bool CanAfford(BaseCard card)
     {
