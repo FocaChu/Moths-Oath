@@ -7,4 +7,5 @@ public interface IAction
     string Id { get; }
 
     void Execute(ActionContext context);
+
 }

@@ -11,23 +11,31 @@ public class ActionFactory
     {
         _abilities = new Dictionary<string, IAction>();
 
-        var basicAttack = new BasicAttackAction();
-        _abilities.Add(basicAttack.Id, basicAttack);
+        var assembly = typeof(ActionFactory).Assembly;
+        var actionTypes = assembly.GetTypes()
+            .Where(t => typeof(IAction).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
-        var powerStrike = new PowerStrikeAction();
-        _abilities.Add(powerStrike.Id, powerStrike);
-
-        var toxicJab = new ToxicJabAction();
-        _abilities.Add(toxicJab.Id, toxicJab);
-
-        var cry = new CryAction();
-        _abilities.Add(cry.Id, cry);
-
-        var heal = new BasicHealAction();
-        _abilities.Add(heal.Id, heal);
-
-        var sharpCut = new SharpCutAction();
-        _abilities.Add(sharpCut.Id, sharpCut);
+        foreach (var type in actionTypes)
+        {
+            try
+            {
+                if (Activator.CreateInstance(type) is IAction action)
+                {
+                    if (!_abilities.ContainsKey(action.Id))
+                    {
+                        _abilities.Add(action.Id, action);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[AVISO] Habilidade duplicada '{action.Id}' ignorada.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERRO] Não foi possível instanciar '{type.FullName}': {ex.Message}");
+            }
+        }
 
         Console.WriteLine($"AbilityFactory inicializado. {_abilities.Count} habilidades carregadas.");
     }
