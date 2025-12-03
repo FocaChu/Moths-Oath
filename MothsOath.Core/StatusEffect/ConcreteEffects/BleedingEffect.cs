@@ -6,23 +6,13 @@ namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
 public class BleedingEffect : BaseStatusEffect, IHealReactor, ITurnBasedEffect
 {
-    public override string Id
-    {
-        get => "bleeding_effect";
-        set { }
-    }
+    public override string Id { get; set; } = "bleeding_effect";
 
-    public override string Name
-    {
-        get => "Sangramento";
-        set { }
-    }
+    public override string Name { get; set; } = "Sangramento";
 
-    public override string Description
-    {
-        get => "Causa dano ao final de cada turno e ao ser atacado. Pode ser enfraquecido com cura.";
-        set { }
-    }
+    public override string Description { get; set; } = "Causa dano ao final de cada turno e ao ser atacado. Pode ser enfraquecido com cura.";
+
+    public override bool IsEndless { get; set; } = false;
 
     public BleedingEffect(int level, int duration)
     {

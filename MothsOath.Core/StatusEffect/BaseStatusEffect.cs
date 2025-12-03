@@ -14,6 +14,8 @@ public abstract class BaseStatusEffect
 
     public int Duration { get; set; }
 
+    public abstract bool IsEndless { get; set; }
+
     public virtual bool IsActive()
     {
         if(Duration <= 0 || Level <= 0)
