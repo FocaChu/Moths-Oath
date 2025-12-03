@@ -3,6 +3,7 @@ using MothsOath.Core.Common;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
 using MothsOath.Core.Models.Enums;
+using MothsOath.Core.StatusEffect.Interfaces;
 
 namespace MothsOath.Core.States;
 
@@ -25,13 +26,13 @@ public class CombatState : IGameState
         _gameManager = gameManager;
         _enemyFactory = enemyFactory;
         _stateFactory = stateFactory;
-        Player = player; 
+        Player = player;
     }
 
 
     public void OnEnter()
     {
-        Enemies.Clear(); 
+        Enemies.Clear();
         DeadEnemies.Clear();
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
@@ -67,7 +68,7 @@ public class CombatState : IGameState
     {
         var defeatedEnemies = Enemies.Where(e => !e.IsAlive).ToList();
 
-        if (defeatedEnemies.Any()) 
+        if (defeatedEnemies.Any())
         {
             foreach (var defeated in defeatedEnemies)
             {
@@ -103,7 +104,7 @@ public class CombatState : IGameState
 
         OnPlayerTurnStart?.Invoke();
 
-        if(Player.CardsByTurn > Player.Deck.Count)
+        if (Player.CardsByTurn > Player.Deck.Count)
         {
             Player.DrawCards(Player.Deck.Count > 0 ? Player.Deck.Count : 1);
         }
@@ -120,7 +121,7 @@ public class CombatState : IGameState
     {
         CurrentPhase = CombatPhase.EnemyTurn_Start;
         Console.WriteLine("--- Turno do Inimigo Começou ---");
-        OnEnemyTurnStart?.Invoke(); 
+        OnEnemyTurnStart?.Invoke();
 
         ExecuteEnemyTurns();
     }
@@ -131,7 +132,7 @@ public class CombatState : IGameState
 
         foreach (var enemy in Enemies)
         {
-            enemy.TakeTurn(this); 
+            enemy.TakeTurn(this);
         }
 
         EndTurn();
@@ -142,14 +143,20 @@ public class CombatState : IGameState
         CurrentPhase = CombatPhase.TurnEnd;
         Console.WriteLine("--- Fim do Turno ---");
 
-        //Player.ProcessEndOfTurnEffects();
         foreach (var enemy in Enemies)
         {
-            //enemy.ProcessEndOfTurnEffects();
+            if (enemy.StatusEffects.Any())
+            {
+                var effects = enemy.StatusEffects.OfType<ITurnBasedEffect>().ToList();
+                foreach (var effect in effects)
+                {
+                    effect.OnTurnEnd(enemy, this);
+                }
+            }
+
+            CheckForDeadEnemies();
+
+            StartPlayerTurn();
         }
-
-        CheckForDeadEnemies();
-
-        StartPlayerTurn();
     }
 }

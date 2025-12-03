@@ -4,5 +4,5 @@
   "Name": "Golpe",
   "Description": "Um ataque básico que causa dano físico ao inimigo  equivalente a Força do personagem.",
   "StaminaCost": 20,
-  "Action": "ability_basic_attack"
+  "Action": "action_basic_attack"
 }

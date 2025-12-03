@@ -2,11 +2,11 @@
 
 public abstract class BaseStatusEffect
 {
-    public Guid Id { get; set; } 
+    public abstract string Id { get; set; }
 
-    public string Name { get; set; } = string.Empty;
+    public abstract string Name { get; set; }
 
-    public string Description { get; set; } = string.Empty;
+    public abstract string Description { get; set; }
 
     public int Level { get; set; }
 
@@ -18,5 +18,11 @@ public abstract class BaseStatusEffect
         {
             Duration--;
         }
+    }
+
+    public virtual void StackEffect(BaseStatusEffect newEffect)
+    {
+        Level += newEffect.Level;
+        Duration = Math.Max(Duration, newEffect.Duration);
     }
 }

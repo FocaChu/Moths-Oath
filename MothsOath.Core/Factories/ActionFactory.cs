@@ -11,11 +11,14 @@ public class ActionFactory
     {
         _abilities = new Dictionary<string, IAction>();
 
-        var basicAttack = new BasicAttackAbility();
+        var basicAttack = new BasicAttackAction();
         _abilities.Add(basicAttack.Id, basicAttack);
 
-        var powerStrike = new PowerStrikeAbility();
+        var powerStrike = new PowerStrikeAction();
         _abilities.Add(powerStrike.Id, powerStrike);
+
+        var toxicJab = new ToxicJabAction();
+        _abilities.Add(toxicJab.Id, toxicJab);
 
         Console.WriteLine($"AbilityFactory inicializado. {_abilities.Count} habilidades carregadas.");
     }

@@ -19,6 +19,9 @@
     <None Update="Data\Blueprints\Cards\strike_card.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Blueprints\Cards\toxic_jab_card.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Blueprints\Enemies\skeleton.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

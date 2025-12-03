@@ -2,17 +2,17 @@
 
 namespace MothsOath.Core.Abilities;
 
-public class PowerStrikeAbility : IAction
+public class BasicAttackAction : IAction
 {
-    public string Id => "ability_power_strike";
+    public string Id => "action_basic_attack";
 
     public void Execute(ActionContext context)
     {
         var rng = new Random();
         var target = context.Targets[rng.Next(context.Targets.Count)];
 
-        int damage = context.Source.BaseStrength * 2;
+        int damage = context.Source.BaseStrength;
         target.TakeDamage(damage, false);
-        Console.WriteLine($"{context.Source.Name} uses Power Strike on {target.Name} for {damage} damage.");
+        Console.WriteLine($"{context.Source.Name} attacks {target.Name} for {damage} damage.");
     }
 }

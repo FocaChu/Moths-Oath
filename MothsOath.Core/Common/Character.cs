@@ -60,4 +60,16 @@ public abstract class Character
             }
         }
     }
+
+    public void ApplyStatusEffect(BaseStatusEffect statusEffect)
+    {
+        if (StatusEffects.Any(se => se.Id == statusEffect.Id))
+        {
+            var existingEffect = StatusEffects.First(se => se.Id == statusEffect.Id);
+            existingEffect.StackEffect(statusEffect);
+            return;
+        }
+
+        StatusEffects.Add(statusEffect);
+    }
 }

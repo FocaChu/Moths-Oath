@@ -6,7 +6,7 @@
   "BaseResistance": 0,
   "NormalBehaviorId": "aggressive_behavior",
   "SpecialBehaviorId": "aggressive_behavior",
-  "BasicAttackAbilityId": "ability_basic_attack",
-  "SpecialAbilityId": "ability_power_strike",
+  "BasicAttackAbilityId": "action_basic_attack",
+  "SpecialAbilityId": "action_power_strike",
   "SpecialAbilityCooldown": 3
 }
