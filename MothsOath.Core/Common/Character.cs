@@ -72,4 +72,17 @@ public abstract class Character
 
         StatusEffects.Add(statusEffect);
     }
+
+    public void TickStatusEffects()
+    {
+        if(!StatusEffects.Any())
+            return;
+
+        foreach (var statusEffect in StatusEffects)
+        {
+            statusEffect.TickTime(this);
+        }
+
+        StatusEffects.RemoveAll(se => se.Duration <= 0);
+    }
 }

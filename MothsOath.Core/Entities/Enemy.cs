@@ -37,7 +37,9 @@ public class Enemy : Character
             BaseTargets = GetTargets(gameState)
         };
 
+        plan.FinalTargets = plan.BaseTargets;
         plan.CanUseSpecial = CurrentCooldown <= 0;
+        plan.CanProceed = true;
 
         var intentModifiers = this.StatusEffects.OfType<IActionPlanModifier>().ToList();
 
@@ -52,7 +54,6 @@ public class Enemy : Character
     public void TakeTurn(CombatState gameState)
     {
         var plan = CreateActionPlan(gameState);
-
 
         var context = new ActionContext(this, plan.FinalTargets, gameState, null);
 

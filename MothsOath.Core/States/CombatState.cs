@@ -1,5 +1,4 @@
-﻿using MothsOath.Core.Abilities;
-using MothsOath.Core.Common;
+﻿using MothsOath.Core.Common;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
 using MothsOath.Core.Models.Enums;
@@ -100,7 +99,7 @@ public class CombatState : IGameState
     private void StartPlayerTurn()
     {
         CurrentPhase = CombatPhase.PlayerTurn_Start;
-        Console.WriteLine("--- Turno do Jogador Começou ---");
+        Console.WriteLine($"--- Turno do Jogador Começou HP:{Player.CurrentHealth} ---");
 
         OnPlayerTurnStart?.Invoke();
 
@@ -143,6 +142,15 @@ public class CombatState : IGameState
         CurrentPhase = CombatPhase.TurnEnd;
         Console.WriteLine("--- Fim do Turno ---");
 
+        ApplyStatusEffectsAtTurnEnd();
+
+        TickStatusEffects();
+
+        StartPlayerTurn();
+    }
+
+    private void ApplyStatusEffectsAtTurnEnd()
+    {
         foreach (var enemy in Enemies)
         {
             if (enemy.StatusEffects.Any())
@@ -153,10 +161,27 @@ public class CombatState : IGameState
                     effect.OnTurnEnd(enemy, this);
                 }
             }
-
-            CheckForDeadEnemies();
-
-            StartPlayerTurn();
         }
+
+        if(!Player.StatusEffects.Any()) return;
+
+        foreach (var effect in Player.StatusEffects.OfType<ITurnBasedEffect>())
+        {
+            effect.OnTurnEnd(Player, this);
+        }
+
+        CheckForDeadEnemies();
+    }
+
+    private void TickStatusEffects()
+    {
+        foreach (var enemy in Enemies)
+        {
+            enemy.TickStatusEffects();
+        }
+
+        Player.TickStatusEffects();
+
+        CheckForDeadEnemies();
     }
 }

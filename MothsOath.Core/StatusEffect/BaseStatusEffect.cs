@@ -1,4 +1,6 @@
-﻿namespace MothsOath.Core.StatusEffect;
+﻿using MothsOath.Core.Common;
+
+namespace MothsOath.Core.StatusEffect;
 
 public abstract class BaseStatusEffect
 {
@@ -12,7 +14,7 @@ public abstract class BaseStatusEffect
 
     public int Duration { get; set; }
 
-    public virtual void TickTime()
+    public virtual void TickTime(Character holder)
     {
         if (Duration > 0)
         {
