@@ -33,7 +33,7 @@ public class CombatState : IGameState
     {
         Enemies.Clear();
         DeadEnemies.Clear();
-        Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
+        Enemies.Add(_enemyFactory.CreateEnemy("neko"));
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
 
         Console.WriteLine("New Combat Started!");
@@ -183,5 +183,12 @@ public class CombatState : IGameState
         Player.TickStatusEffects();
 
         CheckForDeadEnemies();
+    }
+
+    public List<Character> GetAllCharacters()
+    {
+        List<Character> allCharacters = new List<Character> { Player };
+        allCharacters.AddRange(Enemies);
+        return allCharacters;
     }
 }

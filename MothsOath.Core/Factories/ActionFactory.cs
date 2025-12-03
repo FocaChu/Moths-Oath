@@ -20,6 +20,9 @@ public class ActionFactory
         var toxicJab = new ToxicJabAction();
         _abilities.Add(toxicJab.Id, toxicJab);
 
+        var cry = new CryAction();
+        _abilities.Add(cry.Id, cry);
+
         Console.WriteLine($"AbilityFactory inicializado. {_abilities.Count} habilidades carregadas.");
     }
 

@@ -12,8 +12,11 @@ public class BehaviorFactory
     {
         _behaviors = new Dictionary<string, IBehavior>();
 
-        var aggressiveBehavior = new AggressiveBehavior();
+        var aggressiveBehavior = new TargetOnlyPlayerBehavior();
         _behaviors.Add(aggressiveBehavior.Id, aggressiveBehavior);
+
+        var randomBehavior = new TargetRandomBehavior();
+        _behaviors.Add(randomBehavior.Id, randomBehavior);
 
         Console.WriteLine($"BehaviorFactory initialized. {_behaviors.Count} behaviors loaded.");
     }

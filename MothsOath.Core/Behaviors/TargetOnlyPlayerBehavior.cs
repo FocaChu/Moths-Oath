@@ -3,9 +3,9 @@ using MothsOath.Core.States;
 
 namespace MothsOath.Core.Behaviors;
 
-public class AggressiveBehavior : IBehavior
+public class TargetOnlyPlayerBehavior : IBehavior
 {
-    public string Id => "aggressive_behavior";
+    public string Id => "target_only_player_behavior";
 
     public List<Character> GetTargets(Character source, CombatState context)
     {

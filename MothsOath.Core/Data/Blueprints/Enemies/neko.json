@@ -1,0 +1,12 @@
+{
+  "Id": "neko",
+  "Name": "Neko",
+  "Maxhealth": 67,
+  "BaseStrength": 13,
+  "BaseResistance": 2,
+  "NormalBehaviorId": "target_only_player_behavior",
+  "SpecialBehaviorId": "target_random_behavior",
+  "BasicAttackAbilityId": "action_basic_attack",
+  "SpecialAbilityId": "action_cry",
+  "SpecialAbilityCooldown": 3
+}
