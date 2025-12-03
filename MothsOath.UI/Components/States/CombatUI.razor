@@ -1,9 +1,11 @@
-﻿<div class="combat-container">
+﻿@implements IDisposable
+
+<div class="combat-container" @onclick="CancelSelection">
     <div class="enemy-area">
         @foreach (var enemy in CombatState.Enemies)
         {
             <div class="@(GetEnemyCardClass(enemy))"
-                 @onclick="() => TargetEnemy(enemy)"
+                 @onclick="() => TargetEnemy(enemy)" @onclick:stopPropagation="true"
                  @onmouseover="() => OnEnemyHover(enemy)"
                  @onmouseout="() => OnEnemyOut(enemy)">
                 <p>@enemy.Name</p>
@@ -13,18 +15,30 @@
     </div>
 
     <div class="player-area">
-        <div class="player-hand-container">
-            <div class="hand">
-            @foreach (var card in CombatState.Player.Hand)
-            {
-                <div @onclick="() => SelectCard(card)">
-                    <CardComponent CardData="card" />
-                </div>
-            }
+        <div class="player-display-area">
+            <div class="@(GetPlayerCardClass())"
+                 @onclick="() => TargetPlayer()" @onclick:stopPropagation="true"
+                 @onmouseover="OnPlayerHover"
+                 @onmouseout="OnPlayerOut">
+                <p class="player-name">@CombatState.Player.Name</p>
+                <p class="player-hp">HP: @CombatState.Player.CurrentHealth / @CombatState.Player.MaxHealth</p>
             </div>
         </div>
+        <div class="player-hand-container">
+            @if (selectedCard == null)
+            {
+                <div class="hand">
+                    @foreach (var card in CombatState.Player.Hand)
+                    {
+                        <div @onclick="() => SelectCard(card)" @onclick:stopPropagation="true">
+                            <CardComponent CardData="card" />
+                        </div>
+                    }
+                </div>
+            }
+        </div>
         <div class="player-actions">
-            <button @onclick="EndTurnClicked">Finalizar Turno</button>
+            <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>
         </div>
     </div>
 </div>
@@ -35,6 +49,33 @@
 
     private BaseCard? selectedCard;
     private Enemy? hoveredEnemy;
+    private bool isPlayerHovered;
+
+    protected override void OnInitialized()
+    {
+        CombatState.OnCombatStateChanged += OnCombatStateChanged;
+    }
+
+    private void OnCombatStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (CombatState != null)
+        {
+            CombatState.OnCombatStateChanged -= OnCombatStateChanged;
+        }
+    }
+
+    private void CancelSelection()
+    {
+        selectedCard = null;
+        hoveredEnemy = null;
+        isPlayerHovered = false;
+        StateHasChanged();
+    }
 
     private void EndTurnClicked()
     {
@@ -44,6 +85,7 @@
     private void SelectCard(BaseCard card)
     {
         selectedCard = card;
+        StateHasChanged();
     }
 
     private void TargetEnemy(Enemy enemy)
@@ -53,6 +95,20 @@
             CombatState.PlayCard(selectedCard, enemy);
             selectedCard = null;
             hoveredEnemy = null;
+            isPlayerHovered = false;
+            StateHasChanged();
+        }
+    }
+
+    private void TargetPlayer()
+    {
+        if (selectedCard != null)
+        {
+            CombatState.PlayCard(selectedCard, CombatState.Player);
+            selectedCard = null;
+            hoveredEnemy = null;
+            isPlayerHovered = false;
+            StateHasChanged();
         }
     }
 
@@ -61,6 +117,7 @@
         if (selectedCard != null)
         {
             hoveredEnemy = enemy;
+            StateHasChanged();
         }
     }
 
@@ -69,7 +126,40 @@
         if (hoveredEnemy == enemy)
         {
             hoveredEnemy = null;
+            StateHasChanged();
         }
+    }
+
+    private void OnPlayerHover()
+    {
+        if (selectedCard != null)
+        {
+            isPlayerHovered = true;
+            StateHasChanged();
+        }
+    }
+
+    private void OnPlayerOut()
+    {
+        if (isPlayerHovered)
+        {
+            isPlayerHovered = false;
+            StateHasChanged();
+        }
+    }
+
+    private string GetPlayerCardClass()
+    {
+        var classes = "player-card";
+        if (selectedCard != null)
+        {
+            classes += " selectable";
+        }
+        if (isPlayerHovered && selectedCard != null)
+        {
+            classes += " hovered";
+        }
+        return classes;
     }
 
     private string GetEnemyCardClass(Enemy enemy)

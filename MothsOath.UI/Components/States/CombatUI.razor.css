@@ -1,9 +1,20 @@
 .combat-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+:root {
+    --font-base: 14px;
+    --font-large: 18px;
+    --font-xlarge: 20px;
 }
 
 .enemy-area {
@@ -11,7 +22,10 @@
     gap: 1rem;
     justify-content: center;
     align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+    padding: 0.5rem 0;
 }
 
 .enemy-card {
@@ -21,6 +35,7 @@
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.06);
     text-align: center;
+    font-size: var(--font-base);
 }
 
 .enemy-card.selectable {
@@ -36,8 +51,55 @@
 
 .player-area {
     width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    box-sizing: border-box;
+    margin-top: auto;
+    padding-bottom: 1rem;
+    gap: 1rem;
+}
+
+.player-display-area {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0.5rem 0;
+}
+
+.player-card {
+    min-width: 140px;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+    font-size: var(--font-base);
+}
+
+.player-card.selectable {
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.player-card.hovered {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+    border-color: rgba(255,215,0,0.9);
+}
+
+.player-card .player-name {
+    font-size: var(--font-large);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.player-card .player-hp {
+    font-size: var(--font-base);
+    margin: 0;
 }
 
 .player-hand-container {
@@ -45,21 +107,71 @@
     display: flex;
     justify-content: center;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
+
 
 .hand {
     display: flex;
     gap: 0.6rem;
     justify-content: center;
     align-items: flex-end;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 0.25rem 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-.hand > * { flex: 0 0 auto; }
+.hand > * { 
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-actions {
+    width: 100%;
+    max-width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
 
 @media (max-width: 800px) {
-    .enemy-area { flex-wrap: wrap; gap: 0.5rem; }
-    .enemy-card { min-width: 120px; }
+    .combat-container {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .enemy-area { 
+        flex-wrap: wrap; 
+        gap: 0.75rem; 
+    }
+    
+    .enemy-card { 
+        min-width: 120px; 
+    }
+    
+    .hand {
+        gap: 0.5rem;
+        padding: 0.25rem;
+    }
+    
+    .player-actions {
+        max-width: 100%;
+    }
+    
+    .player-card {
+        min-width: 120px;
+    }
+}
+
+.player-actions button {
+    padding: 0.9rem 1.2rem;
+    font-size: var(--font-large);
+    border-radius: 8px;
+    cursor: pointer;
 }

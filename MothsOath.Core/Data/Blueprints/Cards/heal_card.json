@@ -1,0 +1,8 @@
+{
+  "Id": "heal_card",
+  "Type": "Standard",
+  "Name": "heal",
+  "Description": "Cura vida do alvo igual metade da força.",
+  "ManaCost": 20,
+  "Action": "action_heal"
+}

@@ -3,12 +3,19 @@
     padding: 0.6rem;
     border-radius: 8px;
     width: 96px;
-    min-width: 80px;
-    max-width: 110px;
+    min-width: 96px;
+    max-width: 96px;
     text-align: center;
     cursor: pointer;
     transition: transform 0.15s ease-in-out;
     background: rgba(255,255,255,0.02);
+    font-size: var(--font-base);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .card-display:hover {
@@ -17,5 +24,28 @@
 }
 
 .card-display .title {
-    font-size: 0.9rem;
+    font-size: var(--font-base);
+}
+
+.card-display h5 {
+    margin: 0 0 0.4rem 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.card-display p {
+    margin: 0;
+    font-size: 0.65rem;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+:root {
+    --font-base: 8px;
+    --font-large: 16px;
+    --font-xlarge: 18px;
 }
