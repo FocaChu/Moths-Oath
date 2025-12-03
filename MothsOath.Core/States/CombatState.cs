@@ -98,6 +98,8 @@ public class CombatState : IGameState
 
     private void StartPlayerTurn()
     {
+        Player.Restore();
+
         CurrentPhase = CombatPhase.PlayerTurn_Start;
         Console.WriteLine($"--- Turno do Jogador Começou HP:{Player.CurrentHealth} ---");
 

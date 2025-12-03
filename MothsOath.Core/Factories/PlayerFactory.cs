@@ -34,6 +34,7 @@ public class PlayerFactory
             BaseStrength = raceBlueprint.BaseStrength + archetypeBlueprint.BonusStrength,
             BaseResistance = raceBlueprint.BaseResistance + archetypeBlueprint.BonusResistance,
             Gold = 100 + archetypeBlueprint.InitialGold,
+            Regeneration = raceBlueprint.BaseRegeneration + archetypeBlueprint.BonusRegeneration,
             XpMultiplier = 1 + raceBlueprint.BonusXpMultiplier,
         };
 

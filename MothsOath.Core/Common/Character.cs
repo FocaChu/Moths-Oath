@@ -22,6 +22,8 @@ public abstract class Character
 
     public int Shield { get; set; } = 0;
 
+    public int Regeneration { get; set; } = 0;
+
     public int TotalStrength => BaseStrength + BonusStrength;
 
     public int TotalDefense => BaseResistance + BonusDefense;

@@ -7,6 +7,7 @@
   "BonusStamina": 0,
   "BonusStrength": 0,
   "BonusResistance": 1,
+  "BonusRegeneration": 2,
   "InitialGold": 15,
   "StartingCardIds": [ "toxic_jab_card" ]
 }

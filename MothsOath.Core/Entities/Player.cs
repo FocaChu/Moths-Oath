@@ -89,4 +89,14 @@ public class Player : Character
         
         this.Gold -= card.GoldCost;
     }
+
+    public void Restore()
+    {
+        this.CurrentHealth += this.Regeneration;
+        if(CurrentHealth > MaxHealth)
+            this.CurrentHealth = this.MaxHealth;
+
+        this.CurrentMana = this.MaxMana;
+        this.CurrentStamina = this.MaxStamina;
+    }
 }

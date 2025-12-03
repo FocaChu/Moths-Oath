@@ -20,6 +20,8 @@ public class ArchetypeBlueprint : IBlueprint
 
     public int BonusResistance { get; set; } = 0;
 
+    public int BonusRegeneration { get; set; } = 0;
+
     public int InitialGold { get; set; } = 0;
 
     public List<string> StartingCardIds { get; set; } = new List<string>();

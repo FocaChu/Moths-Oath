@@ -7,6 +7,7 @@
   "BaseStamina": 100,
   "BaseStrength": 5,
   "BaseResistance": 5,
+  "BaseRegeneration": 0,
   "BonusXpMultiplier": 0.1,
   "PassiveDescription": "Ganho de Experiência aumentado em 10%.",
   "StartingCardIds": [ "strike_card", "strike_card" ]
