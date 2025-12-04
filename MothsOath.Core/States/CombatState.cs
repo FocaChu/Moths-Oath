@@ -1,8 +1,8 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.EffectInterfaces;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
 using MothsOath.Core.Models.Enums;
-using MothsOath.Core.StatusEffect.Interfaces;
 
 namespace MothsOath.Core.States;
 
@@ -58,7 +58,7 @@ public class CombatState : IGameState
 
         List<Character> targets = new List<Character> { target };
 
-        var context = new ActionContext(Player, targets, this, card);
+        var context = new ActionContext(Player, targets, this, card, null, true, true);
 
         Player.PlayCard(context);
 
@@ -161,7 +161,7 @@ public class CombatState : IGameState
         {
             if (enemy.StatusEffects.Any())
             {
-                var effects = enemy.StatusEffects.OfType<ITurnBasedEffect>().ToList();
+                var effects = enemy.StatusEffects.OfType<ITurnEndReactor>().ToList();
                 foreach (var effect in effects)
                 {
                     effect.OnTurnEnd(enemy, this);
@@ -171,7 +171,7 @@ public class CombatState : IGameState
 
         if(!Player.StatusEffects.Any()) return;
 
-        foreach (var effect in Player.StatusEffects.OfType<ITurnBasedEffect>())
+        foreach (var effect in Player.StatusEffects.OfType<ITurnEndReactor>())
         {
             effect.OnTurnEnd(Player, this);
         }

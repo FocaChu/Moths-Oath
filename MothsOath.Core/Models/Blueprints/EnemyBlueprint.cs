@@ -16,6 +16,8 @@ public class EnemyBlueprint : IBlueprint
 
     public int BaseResistance { get; set; }
 
+    public List<string> PassiveEffectIds { get; set; } = new();
+
     public string NormalBehaviorId { get; set; } = string.Empty;
 
     public string SpecialBehaviorId { get; set; } = string.Empty;

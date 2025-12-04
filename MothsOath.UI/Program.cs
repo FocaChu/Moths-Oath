@@ -9,6 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddSingleton<BlueprintLoader>();
+builder.Services.AddSingleton<PassiveEffectFactory>();
 builder.Services.AddSingleton<BehaviorFactory>();
 builder.Services.AddSingleton<ActionFactory>();
 builder.Services.AddSingleton<EnemyFactory>();

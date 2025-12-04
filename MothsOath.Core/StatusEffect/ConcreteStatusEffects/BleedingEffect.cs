@@ -1,10 +1,11 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.Plans;
 using MothsOath.Core.States;
-using MothsOath.Core.StatusEffect.Interfaces;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
-public class BleedingEffect : BaseStatusEffect, IHealReactor, ITurnBasedEffect
+public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEndReactor
 {
     public override string Id { get; set; } = "bleeding_effect";
 
@@ -25,11 +26,11 @@ public class BleedingEffect : BaseStatusEffect, IHealReactor, ITurnBasedEffect
         if(!IsActive())
             return;
 
-        target.TakeDamage(Level, true);
+        target.RecievePureDamage(Level);
         Console.WriteLine($"{target.Name} sofre {Level} de dano por sangramento. HP:{target.CurrentHealth}");
     }
 
-    public void ReactToHeal(HealPlan plan, Character target)
+    public void OnHealingReceived(HealPlan plan, Character target)
     {
         if (!IsActive() || plan.FinalHealAmount <= 0) 
             return;

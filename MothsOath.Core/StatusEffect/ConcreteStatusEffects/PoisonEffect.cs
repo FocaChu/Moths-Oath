@@ -1,10 +1,10 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.EffectInterfaces;
 using MothsOath.Core.States;
-using MothsOath.Core.StatusEffect.Interfaces;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
-public class PoisonEffect : BaseStatusEffect, ITurnBasedEffect
+public class PoisonEffect : BaseStatusEffect, ITurnEndReactor
 {
     public override string Id { get; set; } = "poison_effect";
 
@@ -26,7 +26,7 @@ public class PoisonEffect : BaseStatusEffect, ITurnBasedEffect
         if(!IsActive())
             return;
 
-        target.TakeDamage(Level, true);
+        target.RecievePureDamage(Level);
         Console.WriteLine($"{target.Name} sofre {Level} de dano por veneno. HP:{target.CurrentHealth}");
     }
 }

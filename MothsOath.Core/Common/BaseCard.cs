@@ -19,7 +19,7 @@ public class BaseCard
 
     public string Description { get; set; } = string.Empty;
 
-    public IAction Action { get; set; } = null!;
+    public BaseAction Action { get; set; } = null!;
 
     public virtual void PlayEffect(ActionContext context)
     {

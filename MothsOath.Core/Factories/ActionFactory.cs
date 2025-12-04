@@ -5,21 +5,21 @@ namespace MothsOath.Core.Factories;
 
 public class ActionFactory
 {
-    private readonly Dictionary<string, IAction> _abilities;
+    private readonly Dictionary<string, BaseAction> _abilities;
 
     public ActionFactory()
     {
-        _abilities = new Dictionary<string, IAction>();
+        _abilities = new Dictionary<string, BaseAction>();
 
         var assembly = typeof(ActionFactory).Assembly;
         var actionTypes = assembly.GetTypes()
-            .Where(t => typeof(IAction).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+            .Where(t => typeof(BaseAction).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
         foreach (var type in actionTypes)
         {
             try
             {
-                if (Activator.CreateInstance(type) is IAction action)
+                if (Activator.CreateInstance(type) is BaseAction action)
                 {
                     if (!_abilities.ContainsKey(action.Id))
                     {
@@ -40,7 +40,7 @@ public class ActionFactory
         Console.WriteLine($"AbilityFactory inicializado. {_abilities.Count} habilidades carregadas.");
     }
 
-    public IAction GetAbility(string abilityId)
+    public BaseAction GetAbility(string abilityId)
     {
         if (_abilities.TryGetValue(abilityId, out var ability))
         {
@@ -53,16 +53,18 @@ public class ActionFactory
     }
 }
 
-public class NullAbility : IAction
+public class NullAbility : BaseAction
 {
-    public string Id { get; }
+    public override string Id { get; }
+
 
     public NullAbility(string missingId)
     {
         Id = $"missing_ability_{missingId}";
     }
 
-    public void Execute(ActionContext context)
+
+    public override void Execute(ActionContext context)
     {
         Console.WriteLine($"[AVISO] Tentativa de executar uma habilidade não encontrada com ID '{Id}'. Nenhuma ação foi tomada.");
     }

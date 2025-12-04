@@ -9,11 +9,13 @@ public class EnemyFactory
     private readonly Dictionary<string, EnemyBlueprint> _enemyBlueprints;
     private readonly ActionFactory _abilityFactory;
     private readonly BehaviorFactory _behaviorFactory;
+    private readonly PassiveEffectFactory _passiveEffectFactory;
 
-    public EnemyFactory(ActionFactory abilityFactory, BehaviorFactory behaviorFactory , BlueprintLoader blueprintLoader)
+    public EnemyFactory(ActionFactory abilityFactory, BehaviorFactory behaviorFactory , PassiveEffectFactory passiveEffectFactory, BlueprintLoader blueprintLoader)
     {
         _abilityFactory = abilityFactory;
         _behaviorFactory = behaviorFactory;
+        _passiveEffectFactory = passiveEffectFactory;
         _enemyBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<EnemyBlueprint>("Enemies");
     }
 
@@ -32,6 +34,7 @@ public class EnemyFactory
             BaseStrength = blueprint.BaseStrength,
             BaseKnowledge = blueprint.BaseKnowledge,
             BaseResistance = blueprint.BaseResistance,
+            PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
             NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
             SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),
             BasicAttack = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
