@@ -39,9 +39,34 @@
                     <p>
                         @if (CharacterProfile.Shield != 0)
                         {
-                            <strong>Escudo: </strong> @CharacterProfile.Shield
+                            <strong>Escudo: </strong>
+                            @CharacterProfile.Shield
                         }
                     </p>
+
+                    @if (CharacterProfile.StatusEffects.Count == 0)
+                    {
+                        <p>Nenhum efeito ativo.</p>
+                    }
+                    else
+                    {
+                        <h6>Efeitos Ativos:</h6>
+                    }
+
+                    @foreach (var effect in @CharacterProfile.StatusEffects)
+                    {
+                        <div>
+                            <strong>@effect.Name</strong> &nbsp; - &nbsp; Nível: @effect.Level &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Duração:
+                            @if (effect.IsEndless)
+                            {
+                                <span> ???</span>
+                            }
+                            else
+                            {
+                                <span> @effect.Duration turnos</span>
+                            }
+                        </div>
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @onclick="CloseModal">Fechar</button>
