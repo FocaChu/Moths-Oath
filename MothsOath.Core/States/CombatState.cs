@@ -103,6 +103,7 @@ public class CombatState : IGameState
     private void StartPlayerTurn()
     {
         Player.Restore();
+        ApplyStatusEffectsAtTurnStart();
 
         CurrentPhase = CombatPhase.PlayerTurn_Start;
         Console.WriteLine($"--- Turno do Jogador Começou HP:{Player.CurrentHealth} ---");
@@ -174,6 +175,30 @@ public class CombatState : IGameState
         foreach (var effect in Player.StatusEffects.OfType<ITurnEndReactor>())
         {
             effect.OnTurnEnd(Player, this);
+        }
+
+        CheckForDeadEnemies();
+    }
+
+    private void ApplyStatusEffectsAtTurnStart()
+    {
+        foreach (var enemy in Enemies)
+        {
+            if (enemy.StatusEffects.Any())
+            {
+                var effects = enemy.StatusEffects.OfType<ITurnStartReactor>().ToList();
+                foreach (var effect in effects)
+                {
+                    effect.OnTurnStart(enemy, this);
+                }
+            }
+        }
+
+        if (!Player.StatusEffects.Any()) return;
+
+        foreach (var effect in Player.StatusEffects.OfType<ITurnStartReactor>())
+        {
+            effect.OnTurnStart(Player, this);
         }
 
         CheckForDeadEnemies();

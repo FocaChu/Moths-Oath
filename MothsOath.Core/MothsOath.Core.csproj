@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Blueprints\Cards\" />
     <Folder Include="Data\Blueprints\Enemies\" />
     <Folder Include="Entities\Archetypes\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Data\Blueprints\Archetypes\doctorArchetype.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Blueprints\Cards\karma_calling_card.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Blueprints\Cards\heal_card.json">
