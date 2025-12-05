@@ -1,0 +1,155 @@
+﻿.character-creation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 480px;
+    margin: 3rem auto;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+    .character-creation-container h2 {
+        font-size: var(--font-xlarge);
+        color: #ffd700;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+    }
+
+    .character-creation-container h3 {
+        font-size: var(--font-large);
+        margin: 0.5rem 0 1rem 0;
+        color: #fff;
+    }
+
+.selection-carousel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+    .selection-carousel .card {
+        flex-grow: 1;
+        min-height: 120px;
+        padding: 1rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        transition: all 0.2s ease;
+    }
+
+        .selection-carousel .card h3 {
+            font-size: var(--font-large);
+            margin: 0 0 0.5rem 0;
+            color: #ffd700;
+        }
+
+        .selection-carousel .card p {
+            font-size: var(--font-base);
+            color: #ccc;
+            line-height: 1.4;
+            max-height: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    .selection-carousel button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+        .selection-carousel button:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+        }
+
+.character-creation-container input {
+    width: 80%;
+    padding: 0.75rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: var(--font-base);
+    text-align: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .character-creation-container input:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    }
+
+.class-customization {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .class-customization h4 {
+        color: #a8dadc;
+        margin: 0;
+        font-size: var(--font-base);
+    }
+
+.character-creation-container > button {
+    width: 100%;
+    max-width: 250px;
+    padding: 0.75rem 1rem;
+    font-size: var(--font-large);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+    .character-creation-container > button:first-of-type {
+        background: #008080;
+        border: none;
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4);
+    }
+    f
+        .character-creation-container > button:first-of-type:hover {
+            background: #009999;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 128, 128, 0.6);
+        }
+
+    .character-creation-container > button:nth-last-child(2),
+    .character-creation-container > button:last-child {
+        background: transparent;
+        border: 1px solid #777;
+        color: #ccc;
+        font-size: var(--font-base);
+    }
+
+        .character-creation-container > button:nth-last-child(2):hover,
+        .character-creation-container > button:last-child:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+        }

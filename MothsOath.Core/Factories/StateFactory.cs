@@ -28,4 +28,9 @@ public class StateFactory
     {
         return new CombatState(gameManager, _enemyFactory, this, player);
     }
+
+    public PlayerCreationState CreatePlayerCreationState(GameStateManager gameManager)
+    {
+        return new PlayerCreationState(gameManager, _playerFactory);
+    }
 }

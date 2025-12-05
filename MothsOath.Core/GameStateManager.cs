@@ -5,7 +5,7 @@ namespace MothsOath.Core;
 
 public class GameStateManager
 {
-    private readonly StateFactory _stateFactory;
+    public StateFactory StateFactory;
 
     public IGameState CurrentState { get; private set; } 
 
@@ -14,8 +14,8 @@ public class GameStateManager
 
     public GameStateManager(StateFactory stateFactory)
     {
-        _stateFactory = stateFactory;
-        CurrentState = _stateFactory.CreateMainMenuState(this);
+        StateFactory = stateFactory;
+        CurrentState = StateFactory.CreateMainMenuState(this);
     }
 
     public void TransitionToState(IGameState newState)

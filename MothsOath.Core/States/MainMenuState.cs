@@ -20,12 +20,10 @@ public class MainMenuState : IGameState
     {
         Console.WriteLine("Iniciando novo jogo...");
 
-        var player = _playerFactory.CreatePlayer("Jorge", "human", "doctor");
-
-        var nextState = _stateFactory.CreateCombatState(_gameManager, player);
-
-        _gameManager.TransitionToState(nextState);
+        var creationState = _gameManager.StateFactory.CreatePlayerCreationState(_gameManager);
+        _gameManager.TransitionToState(creationState);
     }
+    
 
     public void OnEnter() { }
     public void OnExit() {  }

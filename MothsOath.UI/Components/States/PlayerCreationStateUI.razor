@@ -1,0 +1,79 @@
+﻿@using MothsOath.Core.Models.Enums
+@using MothsOath.Core.States
+
+<div class="character-creation-container">
+    <h2>Criação de Personagem</h2>
+
+    @if (_currentStep == CreationStep.RaceSelection)
+    {
+        <h3>1. Escolha sua Raça</h3>
+        <div class="selection-carousel">
+            <button @onclick="PreviousRace">&lt;</button>
+            <div class="card">
+                <h3>@CreationState.SelectedRace.Name</h3>
+                <p>@CreationState.SelectedRace.Description</p>
+            </div>
+            <button @onclick="NextRace">&gt;</button>
+        </div>
+        <button @onclick="() => _currentStep = CreationStep.ArchetypeSelection">Próximo</button>
+        <button @onclick="GoBackToMenu">Voltar ao Menu</button>
+    }
+
+    @if (_currentStep == CreationStep.ArchetypeSelection)
+    {
+        <h3>2. Escolha seu Arquétipo</h3>
+        <div class="selection-carousel">
+            <button @onclick="PreviousClass">&lt;</button>
+            <div class="card">
+                <h3>@CreationState.SelectedArchetype.Name</h3>
+                <p>@CreationState.SelectedArchetype.Description</p>
+            </div>
+            <button @onclick="NextClass">&gt;</button>
+        </div>
+        <button @onclick="() => _currentStep = CreationStep.Naming">Próximo</button>
+        <button @onclick="() => _currentStep = CreationStep.RaceSelection">Voltar</button>
+    }
+
+    @if (_currentStep == CreationStep.Naming)
+    {
+        <h3>3. Dê um Nome ao seu Personagem</h3>
+        <input @bind="CreationState.PlayerName" placeholder="Nome do Personagem" />
+
+        @if (CreationState.SelectedArchetype.Name == "Doutor")
+        {
+            <button @onclick="() => _currentStep = CreationStep.DoctorCustomization">Próximo</button>
+        }
+        else
+        {
+            <button @onclick="FinalizeCreation">Começar Jogo</button>
+        }
+        <button @onclick="() => _currentStep = CreationStep.ArchetypeSelection">Voltar</button>
+    }
+
+    @if (_currentStep == CreationStep.DoctorCustomization && CreationState.SelectedArchetype.Name == "Doutor")
+    {
+        <h3>4. Personalização do Doutor</h3>
+        <div class="class-customization">
+            <h4>Nomeie sua Peste:</h4>
+            <input @bind="CreationState.DiseaseName" placeholder="Nome da Doença" />
+        </div>
+        <button @onclick="FinalizeCreation">Começar Jogo</button>
+        <button @onclick="() => _currentStep = CreationStep.Naming">Voltar</button>
+    }
+</div>
+
+@code {
+
+    private CreationStep _currentStep = CreationStep.RaceSelection;
+
+    [Parameter]
+    public PlayerCreationState CreationState { get; set; } = null!;
+
+    private void PreviousRace() => CreationState.PreviousRace();
+    private void NextRace() => CreationState.NextRace();
+    private void PreviousClass() => CreationState.PreviousClass();
+    private void NextClass() => CreationState.NextClass();
+
+    private void FinalizeCreation() => CreationState.FinalizeCreation();
+    private void GoBackToMenu() => CreationState.GoBackToMenu();
+}

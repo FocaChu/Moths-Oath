@@ -8,20 +8,20 @@ namespace MothsOath.Core.Factories;
 public class PlayerFactory
 {
     private readonly Dictionary<string, RaceBlueprint> _raceBlueprints;
-    private readonly Dictionary<string, ArchetypeBlueprint> _classBlueprints;
+    private readonly Dictionary<string, ArchetypeBlueprint> _archetypeBlueprints;
     private readonly CardFactory _cardFactory;
 
     public PlayerFactory(CardFactory cardFactory, BlueprintLoader blueprintLoader)
     {
         _cardFactory = cardFactory;
         _raceBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<RaceBlueprint>("Races");
-        _classBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<ArchetypeBlueprint>("Archetypes");
+        _archetypeBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<ArchetypeBlueprint>("Archetypes");
     }
 
-    public Player CreatePlayer(string playerName, string raceId, string classId)
+    public Player CreatePlayer(string playerName, string raceId, string archetypeId)
     {
         var raceBlueprint = _raceBlueprints[raceId];
-        var archetypeBlueprint = _classBlueprints[classId];
+        var archetypeBlueprint = _archetypeBlueprints[archetypeId];
 
         var stats = new Stats
         {
@@ -56,5 +56,15 @@ public class PlayerFactory
         }
 
         return player;
+    }
+
+    public List<RaceBlueprint> GetAllRaceBlueprints()
+    {
+        return _raceBlueprints.Values.ToList();
+    }
+
+    public List<ArchetypeBlueprint> GetAllArchetypeBlueprints()
+    {
+        return _archetypeBlueprints.Values.ToList();
     }
 }

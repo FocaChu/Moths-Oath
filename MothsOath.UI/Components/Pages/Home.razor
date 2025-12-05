@@ -9,6 +9,10 @@
 {
     <MainMenuUI MenuState="menuState" />
 }
+else if (GameManager.CurrentState is PlayerCreationState creationState)
+{
+    <PlayerCreationStateUI CreationState="creationState" />
+}
 else if (GameManager.CurrentState is CombatState combatState)
 {
     <CombatUI CombatState="combatState" />
