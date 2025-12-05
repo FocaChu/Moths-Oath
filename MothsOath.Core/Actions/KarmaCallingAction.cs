@@ -17,7 +17,7 @@ public class KarmaCallingAction : BaseAction
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
 
-        int level = (int)(context.Source.TotalKnowledge / 3);
+        int level = (int)(context.Source.Stats.TotalKnowledge / 3);
         int duration = 3; 
 
         target.ApplyStatusEffect(new KarmaEffect(level, duration));

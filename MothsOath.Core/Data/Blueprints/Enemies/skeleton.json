@@ -5,6 +5,7 @@
   "BaseStrength": 10,
   "BaseKnowledge": 5,
   "BaseResistance": 1,
+  "BaseRegeneration": 0,
   "PassiveEffectIds": [ "spikes_passive" ],
   "NormalBehaviorId": "target_only_player_behavior",
   "SpecialBehaviorId": "target_only_player_behavior",

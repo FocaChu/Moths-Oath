@@ -9,7 +9,7 @@
                  @onmouseover="() => OnEnemyHover(enemy)"
                  @onmouseout="() => OnEnemyOut(enemy)">
                 <p>@enemy.Name</p>
-                <p>HP: @enemy.CurrentHealth / @enemy.MaxHealth</p>
+                <p>HP: @enemy.Stats.CurrentHealth / @enemy.Stats.MaxHealth</p>
             </div>
         }
     </div>
@@ -21,7 +21,7 @@
                  @onmouseover="OnPlayerHover"
                  @onmouseout="OnPlayerOut">
                 <p class="player-name">@CombatState.Player.Name</p>
-                <p class="player-hp">HP: @CombatState.Player.CurrentHealth / @CombatState.Player.MaxHealth</p>
+                <p class="player-hp">HP: @CombatState.Player.Stats.CurrentHealth / @CombatState.Player.Stats.MaxHealth</p>
             </div>
         </div>
         <div class="player-hand-container">

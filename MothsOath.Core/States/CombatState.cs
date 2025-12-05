@@ -38,7 +38,7 @@ public class CombatState : IGameState
         Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
 
         Console.WriteLine("New Combat Started!");
-        Console.WriteLine($"Player: S:{Player.BaseStrength} R:{Player.BaseResistance}");
+        Console.WriteLine($"Player: S:{Player.Stats.BaseStrength} R:{Player.Stats.BaseResistance}");
 
         StartPlayerTurn();
     }
@@ -69,7 +69,7 @@ public class CombatState : IGameState
 
     private void CheckForDeadEnemies()
     {
-        var defeatedEnemies = Enemies.Where(e => !e.IsAlive).ToList();
+        var defeatedEnemies = Enemies.Where(e => !e.Stats.IsAlive).ToList();
 
         if (defeatedEnemies.Any())
         {
@@ -92,7 +92,7 @@ public class CombatState : IGameState
             var nextState = _stateFactory.CreateMainMenuState(_gameManager);
             _gameManager.TransitionToState(nextState);
         }
-        else if (!Player.IsAlive)
+        else if (!Player.Stats.IsAlive)
         {
             Console.WriteLine("DERROTA!");
             var nextState = _stateFactory.CreateMainMenuState(_gameManager);
@@ -106,7 +106,7 @@ public class CombatState : IGameState
         ApplyStatusEffectsAtTurnStart();
 
         CurrentPhase = CombatPhase.PlayerTurn_Start;
-        Console.WriteLine($"--- Turno do Jogador Começou HP:{Player.CurrentHealth} ---");
+        Console.WriteLine($"--- Turno do Jogador Começou HP:{Player.Stats.CurrentHealth} ---");
 
         OnPlayerTurnStart?.Invoke();
 

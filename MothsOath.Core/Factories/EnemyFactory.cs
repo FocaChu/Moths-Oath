@@ -1,4 +1,5 @@
-﻿using MothsOath.Core.Entities;
+﻿using MothsOath.Core.Common;
+using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Blueprints;
 using MothsOath.Core.Services;
 
@@ -26,14 +27,20 @@ public class EnemyFactory
             throw new Exception($"Blueprint de inimigo '{blueprintId}' não encontrado!");
         }
 
-        var enemy = new Enemy
+        var stats = new Stats
         {
-            Name = blueprint.Name,
             MaxHealth = blueprint.MaxHealth,
             CurrentHealth = blueprint.MaxHealth,
             BaseStrength = blueprint.BaseStrength,
             BaseKnowledge = blueprint.BaseKnowledge,
             BaseResistance = blueprint.BaseResistance,
+            Regeneration = blueprint.BaseRegeneration,
+        };
+
+        var enemy = new Enemy
+        {
+            Name = blueprint.Name,
+            Stats = stats,
             PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
             NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
             SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),

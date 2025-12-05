@@ -14,7 +14,7 @@ public class CryAction : BaseAction
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
 
-        target.BonusResistance -= (int)(context.Source.BaseKnowledge /2) + 1;
+        target.Stats.BonusResistance -= (int)(context.Source.Stats.BaseKnowledge /2) + 1;
 
         Console.WriteLine($"{context.Source.Name} lets out a heartfelt cry on {target.Name}!");
     }

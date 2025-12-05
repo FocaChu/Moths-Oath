@@ -1,4 +1,5 @@
-﻿using MothsOath.Core.Entities;
+﻿using MothsOath.Core.Common;
+using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Blueprints;
 using MothsOath.Core.Services;
 
@@ -22,20 +23,25 @@ public class PlayerFactory
         var raceBlueprint = _raceBlueprints[raceId];
         var archetypeBlueprint = _classBlueprints[classId];
 
+        var stats = new Stats
+        {
+            MaxHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth,
+            CurrentHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth,
+            BaseStrength = raceBlueprint.BaseStrength + archetypeBlueprint.BonusStrength,
+            BaseKnowledge = raceBlueprint.BaseKnowledge + archetypeBlueprint.BonusKnowledge,
+            BaseResistance = raceBlueprint.BaseResistance + archetypeBlueprint.BonusResistance,
+            Regeneration = raceBlueprint.BaseRegeneration + archetypeBlueprint.BonusRegeneration,
+        };
+
         var player = new Player
         {
             Name = playerName,
-            MaxHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth,
-            CurrentHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth,
+            Stats = stats,
             MaxMana = raceBlueprint.BaseMana + archetypeBlueprint.BonusMana,
             CurrentMana = raceBlueprint.BaseMana + archetypeBlueprint.BonusMana,
             MaxStamina = raceBlueprint.BaseStamina + archetypeBlueprint.BonusStamina,
             CurrentStamina = raceBlueprint.BaseStamina + archetypeBlueprint.BonusStamina,
-            BaseStrength = raceBlueprint.BaseStrength + archetypeBlueprint.BonusStrength,
-            BaseKnowledge = raceBlueprint.BaseKnowledge + archetypeBlueprint.BonusKnowledge,
-            BaseResistance = raceBlueprint.BaseResistance + archetypeBlueprint.BonusResistance,
             Gold = 100 + archetypeBlueprint.InitialGold,
-            Regeneration = raceBlueprint.BaseRegeneration + archetypeBlueprint.BonusRegeneration,
             XpMultiplier = 1 + raceBlueprint.BonusXpMultiplier,
         };
 

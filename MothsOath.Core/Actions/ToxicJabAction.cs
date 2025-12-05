@@ -9,7 +9,7 @@ public class ToxicJabAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        int damage = context.Source.TotalStrength;
+        int damage = context.Source.Stats.TotalStrength;
 
         var plan = CreateDamagePlan(context, damage);
 
@@ -22,7 +22,7 @@ public class ToxicJabAction : BaseAction
         target.RecieveDamage(context, plan);
         Console.WriteLine($"{context.Source.Name} uses Toxic Jab on {target.Name} for {damage} damage.");
 
-        var poisonEffect = new PoisonEffect(level: (int)(context.Source.BaseKnowledge /2), duration: 3);
+        var poisonEffect = new PoisonEffect(level: (int)(context.Source.Stats.BaseKnowledge /2), duration: 3);
 
         target.ApplyStatusEffect(poisonEffect);
         Console.WriteLine($"{target.Name} is poisoned!");

@@ -8,7 +8,7 @@ public class BasicAttackAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        int damage = context.Source.TotalStrength;
+        int damage = context.Source.Stats.TotalStrength;
 
         var plan = CreateDamagePlan(context, damage);
 

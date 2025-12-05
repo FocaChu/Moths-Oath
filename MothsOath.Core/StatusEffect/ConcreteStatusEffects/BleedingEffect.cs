@@ -27,7 +27,7 @@ public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEn
             return;
 
         target.RecievePureDamage(Level);
-        Console.WriteLine($"{target.Name} sofre {Level} de dano por sangramento. HP:{target.CurrentHealth}");
+        Console.WriteLine($"{target.Name} sofre {Level} de dano por sangramento. HP:{target.Stats.CurrentHealth}");
     }
 
     public void OnHealingReceived(HealPlan plan, Character target)

@@ -9,7 +9,7 @@ public class SharpCutAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        int damage = context.Source.TotalStrength;
+        int damage = context.Source.Stats.TotalStrength;
 
         var plan = CreateDamagePlan(context, damage);
 
@@ -21,7 +21,7 @@ public class SharpCutAction : BaseAction
 
         target.RecieveDamage(context, plan);
 
-        var bleeding = new BleedingEffect(level: (int)(context.Source.BaseStrength / 2) + 1, duration: 2);
+        var bleeding = new BleedingEffect(level: (int)(context.Source.Stats.BaseStrength / 2) + 1, duration: 2);
         target.ApplyStatusEffect(bleeding);
 
         Console.WriteLine($"{context.Source.Name} cut {target.Name} leaving they bleeding!");

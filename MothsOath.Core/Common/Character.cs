@@ -8,31 +8,10 @@ namespace MothsOath.Core.Common;
 public abstract class Character
 {
     public Guid Id { get; protected set; } = Guid.NewGuid();
+
     public string Name { get; set; } = string.Empty;
 
-
-    public int MaxHealth { get; set; }
-    public int CurrentHealth { get; set; }
-    public bool IsAlive => CurrentHealth > 0;
-
-
-    public int BaseStrength { get; set; }
-    public int BonusStrength { get; set; } = 0;
-    public int TotalStrength => BaseStrength + BonusStrength;
-
-
-    public int BaseKnowledge { get; set; }
-    public int BonusKnowledge { get; set; } = 0;
-    public int TotalKnowledge => BaseKnowledge + BonusKnowledge;
-
-
-    public int BaseResistance { get; set; }
-    public int BonusResistance { get; set; } = 0;
-    public int TotalResistance => BaseResistance + BonusResistance;
-
-
-    public int Shield { get; set; } = 0;
-    public int Regeneration { get; set; } = 0;
+    public Stats Stats { get; set; } = new Stats();
 
     public List<BasePassiveEffect> PassiveEffects { get; set; } = new List<BasePassiveEffect>();
     public List<BaseStatusEffect> StatusEffects { get; set; } = new List<BaseStatusEffect>();
@@ -43,7 +22,7 @@ public abstract class Character
     {
         if (amount <= 0)
             return;
-        CurrentHealth -= amount;
+        Stats.CurrentHealth -= amount;
         OnDamageTaken?.Invoke(this, amount);
     }
 
@@ -54,7 +33,7 @@ public abstract class Character
         if (plan.BaseDamageAmount <= 0 || !plan.CanProceed || plan.FinalDamageAmount == 0)
             return;
 
-        CurrentHealth -= plan.FinalDamageAmount;
+        Stats.CurrentHealth -= plan.FinalDamageAmount;
 
         if (!context.CanReactTarget)
             return;
@@ -81,7 +60,7 @@ public abstract class Character
     {
         if (amount <= 0)
             return;
-        CurrentHealth = Math.Min(CurrentHealth + amount, MaxHealth);
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + amount, Stats.MaxHealth);
     }
 
     public void RecieveHeal(ActionContext context, HealPlan plan)
@@ -89,11 +68,11 @@ public abstract class Character
         if(plan.BaseHealAmount <= 0 || !plan.CanProceed || plan.FinalHealAmount == 0)
             return;
 
-        int healthBefore = CurrentHealth;
+        int healthBefore = Stats.CurrentHealth;
 
-        CurrentHealth = Math.Min(CurrentHealth + plan.FinalHealAmount, MaxHealth);
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + plan.FinalHealAmount, Stats.MaxHealth);
 
-        int actualHealedAmount = CurrentHealth - healthBefore;
+        int actualHealedAmount = Stats.CurrentHealth - healthBefore;
         plan.FinalHealAmount = actualHealedAmount;
 
         if (!context.CanReactTarget)
@@ -138,13 +117,13 @@ public abstract class Character
                 return baseAmount;
             }
 
-            baseAmount -= TotalResistance;
+            baseAmount -= Stats.TotalResistance;
 
-            if (this.Shield > 0)
+            if (Stats.Shield > 0)
             {
-                int absorvedDamage = Math.Min(baseAmount, this.Shield);
+                int absorvedDamage = Math.Min(baseAmount, Stats.Shield);
                 baseAmount -= absorvedDamage;
-                this.Shield -= absorvedDamage;
+                Stats.Shield -= absorvedDamage;
             }
 
             int finalDamage = Math.Max(baseAmount, 0);

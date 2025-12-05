@@ -10,37 +10,37 @@
                     <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Saúde:</strong> @CharacterProfile.CurrentHealth/@CharacterProfile.MaxHealth</p>
+                    <p><strong>Saúde:</strong> @CharacterProfile.Stats.CurrentHealth/@CharacterProfile.Stats.MaxHealth</p>
 
                     <p>
-                        <strong>Força:</strong> @CharacterProfile.BaseStrength
-                        @if (CharacterProfile.BonusStrength != 0)
+                        <strong>Força:</strong> @CharacterProfile.Stats.BaseStrength
+                        @if (CharacterProfile.Stats.BonusStrength != 0)
                         {
-                            <span> + @CharacterProfile.BonusStrength = @CharacterProfile.TotalStrength</span>
+                            <span> + @CharacterProfile.Stats.BonusStrength = @CharacterProfile.Stats.TotalStrength</span>
                         }
                     </p>
 
                     <p>
-                        <strong>Inteligência:</strong> @CharacterProfile.BaseKnowledge
-                        @if (CharacterProfile.BonusKnowledge != 0)
+                        <strong>Inteligência:</strong> @CharacterProfile.Stats.BaseKnowledge
+                        @if (CharacterProfile.Stats.BonusKnowledge != 0)
                         {
-                            <span> + @CharacterProfile.BonusKnowledge = @CharacterProfile.TotalKnowledge</span>
+                            <span> + @CharacterProfile.Stats.BonusKnowledge = @CharacterProfile.Stats.TotalKnowledge</span>
                         }
                     </p>
 
                     <p>
-                        <strong>Resistência:</strong> @CharacterProfile.BaseResistance
-                        @if (CharacterProfile.BonusResistance != 0)
+                        <strong>Resistência:</strong> @CharacterProfile.Stats.BaseResistance
+                        @if (CharacterProfile.Stats.BonusResistance != 0)
                         {
-                            <span> + @CharacterProfile.BonusResistance = @CharacterProfile.TotalResistance</span>
+                            <span> + @CharacterProfile.Stats.BonusResistance = @CharacterProfile.Stats.TotalResistance</span>
                         }
                     </p>
 
                     <p>
-                        @if (CharacterProfile.Shield != 0)
+                        @if (CharacterProfile.Stats.Shield != 0)
                         {
                             <strong>Escudo: </strong>
-                            @CharacterProfile.Shield
+                            @CharacterProfile.Stats.Shield
                         }
                     </p>
 

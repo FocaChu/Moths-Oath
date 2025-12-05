@@ -8,7 +8,7 @@ public class BasicHealAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        int heal = (int)(context.Source.TotalKnowledge / 2);
+        int heal = (int)(context.Source.Stats.TotalKnowledge / 2);
 
         var plan = CreateHealPlan(context, heal);
 

@@ -8,7 +8,7 @@ public class PowerStrikeAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        int damage = (int)(context.Source.TotalStrength * 2);
+        int damage = (int)(context.Source.Stats.TotalStrength * 2);
 
         var plan = CreateDamagePlan(context, damage);
 

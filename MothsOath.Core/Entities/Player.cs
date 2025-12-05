@@ -73,15 +73,15 @@ public class Player : Character
 
     public bool CanAfford(BaseCard card)
     {
-        return this.CurrentHealth >= card.HealthCost &&
+        return Stats.CurrentHealth >= card.HealthCost &&
                this.CurrentStamina >= card.StaminaCost &&
                this.CurrentMana >= card.ManaCost &&
-               this.Gold >= card.GoldCost;
+               Gold >= card.GoldCost;
     }
 
     public void PayCosts(BaseCard card)
     {
-        this.CurrentHealth -= card.HealthCost;
+        Stats.CurrentHealth -= card.HealthCost;
         
         this.CurrentMana -= card.ManaCost;
         
@@ -92,7 +92,7 @@ public class Player : Character
 
     public void Restore()
     {
-        CurrentHealth = Math.Min(CurrentHealth + this.Regeneration, MaxHealth);
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + Stats.Regeneration, Stats.MaxHealth);
 
         this.CurrentMana = this.MaxMana;
         this.CurrentStamina = this.MaxStamina;

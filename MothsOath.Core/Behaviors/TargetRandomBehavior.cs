@@ -9,7 +9,7 @@ public class TargetRandomBehavior : IBehavior
     public List<Character> GetTargets(Character source, CombatState context)
     {
         List<Character> possibleTargets = context.GetAllCharacters()
-            .Where(c => c.IsAlive && c != source)
+            .Where(c => c.Stats.IsAlive && c != source)
             .ToList();
 
         if (possibleTargets.Count == 0)
