@@ -39,6 +39,9 @@
     <None Update="Data\Blueprints\Enemies\skeleton.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Blueprints\Races\ghoulRace.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Blueprints\Races\humanRace.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
