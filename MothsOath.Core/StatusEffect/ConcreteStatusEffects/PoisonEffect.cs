@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
@@ -13,6 +14,8 @@ public class PoisonEffect : BaseStatusEffect, ITurnEndReactor
     public override string Description { get; set; } = "Causa dano ao final de cada turno.";
 
     public override bool IsEndless { get; set; } = false;
+
+    public override StatusEffectType EffectType { get; set; } = StatusEffectType.Negative;
 
     public PoisonEffect(int level, int duration)
     {

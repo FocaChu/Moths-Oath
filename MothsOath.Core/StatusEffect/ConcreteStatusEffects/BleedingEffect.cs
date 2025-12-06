@@ -1,6 +1,7 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
@@ -14,6 +15,8 @@ public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEn
     public override string Description { get; set; } = "Causa dano ao final de cada turno e ao ser atacado. Pode ser enfraquecido com cura.";
 
     public override bool IsEndless { get; set; } = false;
+
+    public override StatusEffectType EffectType { get; set; } = StatusEffectType.Negative;
 
     public BleedingEffect(int level, int duration)
     {

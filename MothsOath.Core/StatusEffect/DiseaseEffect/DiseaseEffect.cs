@@ -1,6 +1,7 @@
 ﻿using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
 
@@ -15,6 +16,8 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor
     public override string Description { get; set; }
 
     public override bool IsEndless { get; set; } = false;
+
+    public override StatusEffectType EffectType { get; set; } = StatusEffectType.Disease;
 
     public IBehavior Behavior { get; set; } 
 
@@ -70,9 +73,14 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor
         }
     }
 
-    public DiseaseEffect Clone()
+    public override DiseaseEffect Clone()
     {
         return new DiseaseEffect(this.Id, this.Name, this.Description, this.Level, this.Duration, this.IsEndless, this.Behavior, this.Symptoms.ToList());
+    }
+
+    public override BaseStatusEffect EcoEffect()
+    {
+        return null;
     }
 
     public void OnTurnEnd(Character target, CombatState context)

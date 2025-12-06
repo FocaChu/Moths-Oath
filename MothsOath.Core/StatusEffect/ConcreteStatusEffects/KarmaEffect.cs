@@ -1,7 +1,7 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
 using MothsOath.Core.Common.Plans;
-using MothsOath.Core.Entities.Archetypes;
+using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.StatusEffect.ConcreteStatusEffects;
 
@@ -14,6 +14,8 @@ public class KarmaEffect : BaseStatusEffect, IHealingDoneReactor
     public override string Description { get; set; } = "Cura metade de toda cura concedida.";
 
     public override bool IsEndless { get; set; } = false;
+
+    public override StatusEffectType EffectType { get; set; } = StatusEffectType.Positive;
 
     public KarmaEffect(int level, int duration) 
     {

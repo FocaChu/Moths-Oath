@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
 
