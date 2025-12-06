@@ -101,7 +101,7 @@ public abstract class Character
         if (StatusEffects.Any(se => se.Id == statusEffect.Id))
         {
             var existingEffect = StatusEffects.First(se => se.Id == statusEffect.Id);
-            existingEffect.StackEffect(statusEffect);
+            existingEffect.StackEffect(this, statusEffect);
             return;
         }
 

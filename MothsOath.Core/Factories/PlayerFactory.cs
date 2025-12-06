@@ -35,6 +35,7 @@ public class PlayerFactory
 
         var player = new Player
         {
+            Archetype = archetypeBlueprint.Name,
             Name = playerName,
             Stats = stats,
             MaxMana = raceBlueprint.BaseMana + archetypeBlueprint.BonusMana,

@@ -6,11 +6,11 @@ namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
 public class PoisonEffect : BaseStatusEffect, ITurnEndReactor
 {
-    public override string Id => "poison_effect";
+    public override string Id { get; set; } = "poison_effect";
 
-    public override string Name => "Veneno";
+    public override string Name { get; set; } = "Veneno";
 
-    public override string Description => "Causa dano ao final de cada turno.";
+    public override string Description { get; set; } = "Causa dano ao final de cada turno.";
 
     public override bool IsEndless { get; set; } = false;
 

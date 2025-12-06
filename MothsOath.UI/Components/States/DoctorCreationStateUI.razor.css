@@ -1,10 +1,10 @@
-﻿.character-creation-container {
+.doctor-creation-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
     padding: 2rem;
-    max-width: 480px;
+    max-width: 800px;
     margin: 3rem auto;
     border-radius: 12px;
     background: rgba(0, 0, 0, 0.4);
@@ -13,14 +13,14 @@
     text-align: center;
 }
 
-    .character-creation-container h2 {
+    .doctor-creation-container h2 {
         font-size: var(--font-xlarge);
         color: #34EB8F;
         margin-bottom: 0.5rem;
         letter-spacing: 1px;
     }
 
-    .character-creation-container h3 {
+    .doctor-creation-container h3 {
         font-size: var(--font-large);
         margin: 0.5rem 0 1rem 0;
         color: #fff;
@@ -57,9 +57,6 @@
             font-size: var(--font-base);
             color: #ccc;
             line-height: 1.4;
-            max-height: 70px;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
     .selection-carousel button {
@@ -82,7 +79,68 @@
             border-color: #ffd700;
         }
 
-.character-creation-container input {
+.disease-info {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 100%;
+}
+
+    .disease-info h4 {
+        color: #34EB8F;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .disease-info p {
+        color: #ccc;
+        margin: 0;
+    }
+
+.symptom-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.symptom-card {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(255, 255, 255, 0.05);
+    text-align: left;
+}
+
+    .symptom-card:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        border-color: rgba(255, 215, 0, 0.5);
+    }
+
+    .symptom-card.selected {
+        border-color: #34EB8F;
+        background: rgba(52, 235, 143, 0.1);
+        box-shadow: 0 0 15px rgba(52, 235, 143, 0.3);
+    }
+
+    .symptom-card h4 {
+        color: #34EB8F;
+        margin: 0 0 0.5rem 0;
+        font-size: var(--font-large);
+    }
+
+    .symptom-card p {
+        color: #ccc;
+        margin: 0;
+        font-size: var(--font-base);
+    }
+
+.doctor-creation-container input {
     width: 80%;
     padding: 0.75rem;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -94,28 +152,13 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-    .character-creation-container input:focus {
+    .doctor-creation-container input:focus {
         outline: none;
         border-color: #ffd700;
         box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
     }
 
-.class-customization {
-    margin-top: 1rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-    .class-customization h4 {
-        color: #a8dadc;
-        margin: 0;
-        font-size: var(--font-base);
-    }
-
-.character-creation-container > button {
+.doctor-creation-container > button {
     width: 100%;
     max-width: 250px;
     padding: 0.75rem 1rem;
@@ -127,29 +170,37 @@
     transition: background 0.2s ease, transform 0.1s ease;
 }
 
-    .character-creation-container > button:first-of-type {
+    .doctor-creation-container > button:first-of-type {
         background: #008080;
         border: none;
         color: #fff;
         box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4);
     }
-    f
-        .character-creation-container > button:first-of-type:hover {
+
+        .doctor-creation-container > button:first-of-type:hover {
             background: #009999;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 128, 128, 0.6);
         }
 
-    .character-creation-container > button:nth-last-child(2),
-    .character-creation-container > button:last-child {
+        .doctor-creation-container > button:first-of-type:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    .doctor-creation-container > button:nth-last-child(2),
+    .doctor-creation-container > button:last-child {
         background: transparent;
         border: 1px solid #777;
         color: #ccc;
         font-size: var(--font-base);
     }
 
-        .character-creation-container > button:nth-last-child(2):hover,
-        .character-creation-container > button:last-child:hover {
+        .doctor-creation-container > button:nth-last-child(2):hover,
+        .doctor-creation-container > button:last-child:hover {
             background: rgba(255, 255, 255, 0.1);
             border-color: #fff;
         }
+

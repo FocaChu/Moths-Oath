@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Blueprints\Diseases\" />
     <Folder Include="Data\Blueprints\Enemies\" />
   </ItemGroup>
 
@@ -27,6 +28,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Blueprints\Cards\toxic_jab_card.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Blueprints\Diseases\virus_disease.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Blueprints\Enemies\neko.json">

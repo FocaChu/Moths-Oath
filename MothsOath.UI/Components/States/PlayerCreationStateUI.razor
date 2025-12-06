@@ -38,27 +38,8 @@
     {
         <h3>3. Dê um Nome ao seu Personagem</h3>
         <input @bind="CreationState.PlayerName" placeholder="Nome do Personagem" />
-
-        @if (CreationState.SelectedArchetype.Name == "Doutor")
-        {
-            <button @onclick="() => _currentStep = CreationStep.DoctorCustomization">Próximo</button>
-        }
-        else
-        {
-            <button @onclick="FinalizeCreation">Começar Jogo</button>
-        }
+        <button @onclick="FinalizeCreation">Próximo</button>
         <button @onclick="() => _currentStep = CreationStep.ArchetypeSelection">Voltar</button>
-    }
-
-    @if (_currentStep == CreationStep.DoctorCustomization && CreationState.SelectedArchetype.Name == "Doutor")
-    {
-        <h3>4. Personalização do Doutor</h3>
-        <div class="class-customization">
-            <h4>Nomeie sua Peste:</h4>
-            <input @bind="CreationState.DiseaseName" placeholder="Nome da Doença" />
-        </div>
-        <button @onclick="FinalizeCreation">Começar Jogo</button>
-        <button @onclick="() => _currentStep = CreationStep.Naming">Voltar</button>
     }
 </div>
 

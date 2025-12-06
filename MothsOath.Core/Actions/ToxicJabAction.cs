@@ -1,4 +1,5 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Entities.Archetypes;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
 
 namespace MothsOath.Core.Abilities;
@@ -22,7 +23,7 @@ public class ToxicJabAction : BaseAction
         target.RecieveDamage(context, plan);
         Console.WriteLine($"{context.Source.Name} uses Toxic Jab on {target.Name} for {damage} damage.");
 
-        var poisonEffect = new PoisonEffect(level: (int)(context.Source.Stats.BaseKnowledge /2), duration: 3);
+        var poisonEffect = new PoisonEffect(level: (int)(context.Source.Stats.BaseKnowledge / 2), duration: 3);
 
         target.ApplyStatusEffect(poisonEffect);
         Console.WriteLine($"{target.Name} is poisoned!");

@@ -1,0 +1,82 @@
+@using MothsOath.Core.States
+@using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms
+
+<div class="doctor-creation-container">
+    <h2>Criação do Doutor</h2>
+
+    @if (_currentStep == DoctorCreationStep.DiseaseSelection)
+    {
+        <h3>1. Escolha uma Doença Base</h3>
+        <div class="selection-carousel">
+            <button @onclick="PreviousDisease">&lt;</button>
+            <div class="card">
+                <h3>@DoctorState.SelectedDisease.Name</h3>
+                <p>@DoctorState.SelectedDisease.Description</p>
+            </div>
+            <button @onclick="NextDisease">&gt;</button>
+        </div>
+        <button @onclick="() => _currentStep = DoctorCreationStep.SymptomSelection">Próximo</button>
+        <button @onclick="GoBack">Voltar</button>
+    }
+
+    @if (_currentStep == DoctorCreationStep.SymptomSelection)
+    {
+        <h3>2. Escolha o Sintoma Inicial</h3>
+        <div class="disease-info">
+            <h4>Doença: @DoctorState.SelectedDisease.Name</h4>
+            <p>@DoctorState.SelectedDisease.Description</p>
+        </div>
+        <div class="symptom-selection">
+            @foreach (var symptom in DoctorState.GetAvailableInitialSymptoms())
+            {
+                <div class="symptom-card @(DoctorState.SelectedInitialSymptom?.Id == symptom.Id ? "selected" : "")"
+                     @onclick="() => SelectSymptom(symptom)">
+                    <h4>@symptom.Name</h4>
+                    <p>@symptom.Description</p>
+                </div>
+            }
+        </div>
+        @if (DoctorState.SelectedInitialSymptom != null)
+        {
+            <button @onclick="() => _currentStep = DoctorCreationStep.Naming">Próximo</button>
+        }
+        <button @onclick="() => _currentStep = DoctorCreationStep.DiseaseSelection">Voltar</button>
+    }
+
+    @if (_currentStep == DoctorCreationStep.Naming)
+    {
+        <h3>3. Nomeie sua Doença</h3>
+        <div class="disease-info">
+            <h4>Doença Base: @DoctorState.SelectedDisease.Name</h4>
+            <p>Sintoma Inicial: @DoctorState.SelectedInitialSymptom?.Name</p>
+        </div>
+        <input @bind="DoctorState.DiseaseName" placeholder="Nome da Doença" />
+        <button @onclick="FinalizeCreation" disabled="@(string.IsNullOrWhiteSpace(DoctorState.DiseaseName))">Finalizar Criação</button>
+        <button @onclick="() => _currentStep = DoctorCreationStep.SymptomSelection">Voltar</button>
+    }
+</div>
+
+@code {
+    private enum DoctorCreationStep
+    {
+        DiseaseSelection,
+        SymptomSelection,
+        Naming
+    }
+
+    private DoctorCreationStep _currentStep = DoctorCreationStep.DiseaseSelection;
+
+    [Parameter]
+    public DoctorCreationState DoctorState { get; set; } = null!;
+
+    private void PreviousDisease() => DoctorState.PreviousDisease();
+    private void NextDisease() => DoctorState.NextDisease();
+    private void SelectSymptom(BaseSymptomEffect symptom)
+    {
+        DoctorState.SelectInitialSymptom(symptom);
+        StateHasChanged();
+    }
+    private void FinalizeCreation() => DoctorState.FinalizeDoctorCreation();
+    private void GoBack() => DoctorState.GoBack();
+}
+

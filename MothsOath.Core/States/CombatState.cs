@@ -63,7 +63,7 @@ public class CombatState : IGameState
         Player.PlayCard(context);
 
         CheckForDeadEnemies();
-        
+
         OnCombatStateChanged?.Invoke();
     }
 
@@ -102,7 +102,6 @@ public class CombatState : IGameState
 
     private void StartPlayerTurn()
     {
-        Player.Restore();
         ApplyStatusEffectsAtTurnStart();
 
         CurrentPhase = CombatPhase.PlayerTurn_Start;
@@ -110,15 +109,7 @@ public class CombatState : IGameState
 
         OnPlayerTurnStart?.Invoke();
 
-        if (Player.CardsByTurn > Player.Deck.Count)
-        {
-            Player.DrawCards(Player.Deck.Count > 0 ? Player.Deck.Count : 1);
-        }
-        else
-        {
-            Player.DrawCards(Player.CardsByTurn);
-        }
-        Player.DrawCards(Player.CardsByTurn);
+        Player.OnTurnStart(this);
 
         CurrentPhase = CombatPhase.PlayerTurn_Action;
     }
@@ -160,17 +151,13 @@ public class CombatState : IGameState
     {
         foreach (var enemy in Enemies)
         {
-            if (enemy.StatusEffects.Any())
+            var effects = enemy.StatusEffects.OfType<ITurnEndReactor>().ToList();
+            foreach (var effect in effects)
             {
-                var effects = enemy.StatusEffects.OfType<ITurnEndReactor>().ToList();
-                foreach (var effect in effects)
-                {
-                    effect.OnTurnEnd(enemy, this);
-                }
+                effect.OnTurnEnd(enemy, this);
             }
-        }
 
-        if(!Player.StatusEffects.Any()) return;
+        }
 
         foreach (var effect in Player.StatusEffects.OfType<ITurnEndReactor>())
         {
@@ -184,17 +171,13 @@ public class CombatState : IGameState
     {
         foreach (var enemy in Enemies)
         {
-            if (enemy.StatusEffects.Any())
+            var effects = enemy.StatusEffects.OfType<ITurnStartReactor>().ToList();
+            foreach (var effect in effects)
             {
-                var effects = enemy.StatusEffects.OfType<ITurnStartReactor>().ToList();
-                foreach (var effect in effects)
-                {
-                    effect.OnTurnStart(enemy, this);
-                }
+                effect.OnTurnStart(enemy, this);
             }
-        }
 
-        if (!Player.StatusEffects.Any()) return;
+        }
 
         foreach (var effect in Player.StatusEffects.OfType<ITurnStartReactor>())
         {

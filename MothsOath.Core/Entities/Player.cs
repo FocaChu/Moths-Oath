@@ -5,6 +5,8 @@ namespace MothsOath.Core.Entities;
 
 public class Player : Character
 {
+    public string Archetype { get; set; } = null!;
+
     public int MaxMana { get; set; }
 
     public int CurrentMana { get; set; }
@@ -24,6 +26,19 @@ public class Player : Character
     public List<BaseCard> Hand { get; private set; } = new List<BaseCard>();
 
     public List<BaseCard> DiscartPile { get; private set; } = new List<BaseCard>();
+
+    public virtual void OnTurnStart(CombatState state)
+    {
+        Restore();
+
+        if (CardsByTurn > Deck.Count)
+        {
+            DrawCards(Deck.Count > 0 ? Deck.Count : 1);
+            return;
+        }
+        
+        DrawCards(CardsByTurn);
+    }
 
     public void ShuffleDeck()
     {

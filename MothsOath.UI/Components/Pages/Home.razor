@@ -13,6 +13,10 @@ else if (GameManager.CurrentState is PlayerCreationState creationState)
 {
     <PlayerCreationStateUI CreationState="creationState" />
 }
+else if (GameManager.CurrentState is DoctorCreationState doctorState)
+{
+    <DoctorCreationStateUI DoctorState="doctorState" />
+}
 else if (GameManager.CurrentState is CombatState combatState)
 {
     <CombatUI CombatState="combatState" />

@@ -1,6 +1,10 @@
-﻿using MothsOath.Core.Entities.Archetypes;
+﻿using MothsOath.Core.Entities;
+using MothsOath.Core.Entities.Archetypes;
 using MothsOath.Core.Factories;
 using MothsOath.Core.Models.Blueprints;
+using MothsOath.Core.Services;
+using MothsOath.Core.StatusEffect.DiseaseEffect;
+using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
 
 namespace MothsOath.Core.States;
 
@@ -8,6 +12,7 @@ public class PlayerCreationState : IGameState
 {
     private readonly GameStateManager _gameManager;
     private readonly PlayerFactory _playerFactory;
+    private readonly BlueprintLoader _blueprintLoader;
     private readonly List<RaceBlueprint> _availableRaces;
     private readonly List<ArchetypeBlueprint> _availableArchetypes ;
 
@@ -19,12 +24,11 @@ public class PlayerCreationState : IGameState
 
     public string PlayerName { get; set; } = "Aventureiro";
 
-    public string DiseaseName { get; set; } = "Peste";
-
-    public PlayerCreationState(GameStateManager gameManager, PlayerFactory playerFactory)
+    public PlayerCreationState(GameStateManager gameManager, PlayerFactory playerFactory, BlueprintLoader blueprintLoader)
     {
         _gameManager = gameManager;
         _playerFactory = playerFactory;
+        _blueprintLoader = blueprintLoader;
 
         _availableRaces = _playerFactory.GetAllRaceBlueprints();
         _availableArchetypes = _playerFactory.GetAllArchetypeBlueprints();
@@ -54,9 +58,11 @@ public class PlayerCreationState : IGameState
     {
         var player = _playerFactory.CreatePlayer(PlayerName, SelectedRace.Id, SelectedArchetype.Id);
 
-        if (player is Doctor doctor)
+        if (player.Archetype == "Doutor")
         {
-            doctor.Lab.DisieaseName = this.DiseaseName;
+            var doctorCreationState = _gameManager.StateFactory.CreateDoctorCreationState(_gameManager, player);
+            _gameManager.TransitionToState(doctorCreationState);
+            return;
         }
 
         var combatState = _gameManager.StateFactory.CreateCombatState(_gameManager, player);
