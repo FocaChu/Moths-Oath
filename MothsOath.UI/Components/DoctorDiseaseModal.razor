@@ -1,0 +1,47 @@
+@using MothsOath.Core.StatusEffect.DiseaseEffect
+@using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop fade show"></div>
+
+    <div class="modal" tabindex="-1" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Patógeno: @Disease.Name</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Descrição:</strong> @Disease.Description</p>
+                    <p><strong>Nível:</strong> @Disease.Level</p>
+                    <p><strong>Duração:</strong> @Disease.Duration</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public DiseaseEffect? Disease { get; set; }
+
+    public bool IsVisible { get; set; } = false;
+
+    public void OpenModal(DiseaseEffect disease)
+    {
+        Disease = disease;
+        IsVisible = true;
+
+        StateHasChanged();
+    }
+
+    private async Task CloseModal()
+    {
+        IsVisible = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}

@@ -1,4 +1,6 @@
 ﻿@implements IDisposable
+@using MothsOath.Core.Entities.Archetypes
+@using MothsOath.Core.StatusEffect.DiseaseEffect
 
 <div class="combat-container" @onclick="CancelSelection">
     <div class="enemy-area">
@@ -22,7 +24,14 @@
                  @onmouseout="OnPlayerOut">
                 <p class="player-name">@CombatState.Player.Name</p>
                 <p class="player-hp">HP: @CombatState.Player.Stats.CurrentHealth / @CombatState.Player.Stats.MaxHealth</p>
+        </div>
+        @if (CombatState.Player is Doctor)
+        {
+            <div class="doctor-hud">
+                <button class="doctor-hud-btn btn btn-secondary" @onclick="ShowDisease" @onclick:stopPropagation="true">Exibir Patogeno</button>
+                <button class="doctor-hud-btn btn btn-danger" disabled="@(CombatState.Player.CurrentMana < 50 || CombatState.Player.Gold < 10)" @onclick="ToggleInfect" @onclick:stopPropagation="true">Infectar</button>
             </div>
+        }
         </div>
         <div class="player-hand-container">
             @if (selectedCard == null  && !examining)
@@ -56,6 +65,8 @@
     private Enemy? hoveredEnemy;
     private bool isPlayerHovered;
     private bool examining = false;
+    private bool infecting = false;
+    private DoctorDiseaseModal? doctorDiseaseModal;
 
     protected override void OnInitialized()
     {
@@ -88,6 +99,25 @@
     {
         itemToExamine = null;
         examining = false;
+        StateHasChanged();
+    }
+
+    private void ShowDisease()
+    {
+        if (CombatState.Player is Doctor doctor && doctorDiseaseModal != null)
+        {
+            doctorDiseaseModal.OpenModal(doctor.Disease);
+        }
+    }
+
+    private void ToggleInfect()
+    {
+        if (CombatState.Player.CurrentMana < 50 || CombatState.Player.Gold < 10)
+        {
+            return;
+        }
+
+        infecting = !infecting;
         StateHasChanged();
     }
 
@@ -126,6 +156,27 @@
                 examinateModal.OpenModal(itemToExamine);
             }
         }
+        else if (infecting)
+        {
+            if (CombatState.Player is Doctor doctor)
+            {
+                if (CombatState.Player.CurrentMana < 50 || CombatState.Player.Gold < 10)
+                {
+                    infecting = false;
+                    StateHasChanged();
+                    return;
+                }
+
+                // pay costs
+                CombatState.Player.CurrentMana -= 50;
+                CombatState.Player.Gold -= 10;
+
+                doctor.Infect(enemy);
+            }
+
+            infecting = false;
+            StateHasChanged();
+        }
     }
 
     private void TargetPlayer()
@@ -146,11 +197,28 @@
                 examinateModal.OpenModal(itemToExamine);
             }
         }
+        else if (infecting)
+        {
+            if (CombatState.Player is Doctor doctor)
+            {
+                if (CombatState.Player.CurrentMana <= 50 || CombatState.Player.Gold <= 10)
+                {
+                    infecting = false;
+                    StateHasChanged();
+                    return;
+                }
+
+                doctor.Infect(CombatState.Player);
+            }
+
+            infecting = false;
+            StateHasChanged();
+        }
     }
 
     private void OnEnemyHover(Enemy enemy)
     {
-        if (selectedCard != null)
+        if (selectedCard != null || infecting)
         {
             hoveredEnemy = enemy;
             StateHasChanged();
@@ -168,7 +236,7 @@
 
     private void OnPlayerHover()
     {
-        if (selectedCard != null)
+        if (selectedCard != null || infecting)
         {
             isPlayerHovered = true;
             StateHasChanged();
@@ -187,11 +255,11 @@
     private string GetPlayerCardClass()
     {
         var classes = "player-card";
-        if (selectedCard != null)
+        if (selectedCard != null || infecting)
         {
             classes += " selectable";
         }
-        if (isPlayerHovered && selectedCard != null)
+        if (isPlayerHovered && (selectedCard != null || infecting))
         {
             classes += " hovered";
         }
@@ -201,14 +269,16 @@
     private string GetEnemyCardClass(Enemy enemy)
     {
         var classes = "enemy-card";
-        if (selectedCard != null)
+        if (selectedCard != null || infecting)
         {
             classes += " selectable";
         }
-        if (hoveredEnemy == enemy && selectedCard != null)
+        if (hoveredEnemy == enemy && (selectedCard != null || infecting))
         {
             classes += " hovered";
         }
         return classes;
     }
 }
+
+<DoctorDiseaseModal @ref="doctorDiseaseModal" />

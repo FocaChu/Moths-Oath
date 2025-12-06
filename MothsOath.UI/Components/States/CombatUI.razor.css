@@ -175,3 +175,33 @@
     border-radius: 8px;
     cursor: pointer;
 }
+
+.doctor-hud {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 1050;
+}
+
+.doctor-hud-btn {
+    min-width: 140px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+
+.doctor-hud-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+@media (max-width: 520px) {
+    .doctor-hud { left: 0.75rem; bottom: 0.75rem; }
+    .doctor-hud-btn { min-width: 120px; font-size: 13px; }
+}

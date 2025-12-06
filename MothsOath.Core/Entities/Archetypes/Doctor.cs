@@ -136,6 +136,9 @@ public class Doctor : Player
     {
         Console.WriteLine($"{Name} está infectando {target.Name} com a doença {Disease.Name}.");
 
+        this.CurrentMana -= 50;
+        this.Gold -= 10;
+
         target.ApplyStatusEffect(Disease.Clone());
     }
 }
