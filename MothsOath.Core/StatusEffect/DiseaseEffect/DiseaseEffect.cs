@@ -63,7 +63,7 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor
         {
             var rng = new Random();
 
-            var chance = 15 + Level * 5;
+            var chance = 10 + Level * 5;
 
             if (rng.Next(1, 101) >= chance)
                 Duration--;

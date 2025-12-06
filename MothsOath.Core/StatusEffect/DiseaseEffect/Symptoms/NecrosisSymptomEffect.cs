@@ -8,9 +8,9 @@ public class NecrosisSymptomEffect : BaseSymptomEffect, ITurnEndReactor
 {
     public override string Id { get; set; } = "necrosis_symptom";
 
-    public override string Name { get; set; } = "Necrosis";
+    public override string Name { get; set; } = "Necrose";
 
-    public override string Description { get; set; } = "Causes tissue death and decay.";
+    public override string Description { get; set; } = "Inflinge dano ao longo do tempo.";
 
     public NecrosisSymptomEffect(string id, string name, string description) : base(id, name, description)
     {

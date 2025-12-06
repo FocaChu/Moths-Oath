@@ -5,7 +5,7 @@ using MothsOath.Core.StatusEffect.ConcreteEffects;
 
 namespace MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
 
-public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnEndReactor
+public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnStartReactor
 {
     public override string Id { get; set; } = "hemorrhage_symptom";
 
@@ -17,7 +17,7 @@ public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnEndReactor
     {
     }
 
-    public void OnTurnEnd(Character target, CombatState context)
+    public void OnTurnStart(Character target, CombatState context)
     {
         var disease = GetTargetDisease(target);
         var level = disease != null ? disease.Level : 1;
@@ -27,7 +27,7 @@ public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnEndReactor
 
         if (rng.Next(1, 101) <= chance)
         {
-            target.ApplyStatusEffect(new BleedingEffect(level, 2));
+            target.ApplyStatusEffect(new BleedingEffect(level, 1));
         }
 
     }
