@@ -9,6 +9,8 @@ namespace MothsOath.Core.Entities;
 
 public class Enemy : Character
 {
+    public string BiomeId { get; set; } = "forest_biome";
+
     public IBehavior NormalBehavior { get; set; } = null!;
 
     public IBehavior SpecialBehavior { get; set; } = null!;

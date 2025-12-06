@@ -32,10 +32,7 @@ public class CombatState : IGameState
 
     public void OnEnter()
     {
-        Enemies.Clear();
-        DeadEnemies.Clear();
-        Enemies.Add(_enemyFactory.CreateEnemy("neko"));
-        Enemies.Add(_enemyFactory.CreateEnemy("skeleton_warrior"));
+        GenerateEnemies();
 
         Console.WriteLine("New Combat Started!");
         Console.WriteLine($"Player: S:{Player.Stats.BaseStrength} R:{Player.Stats.BaseResistance}");
@@ -49,6 +46,13 @@ public class CombatState : IGameState
     }
 
     public void Update() { }
+
+    private void GenerateEnemies()
+    {
+        Enemies.Clear();
+        DeadEnemies.Clear();
+        Enemies = _enemyFactory.SortEnemies(_gameManager.Biome);
+    }
 
     public void PlayCard(BaseCard card, Character target)
     {

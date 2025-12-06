@@ -40,6 +40,7 @@ public class EnemyFactory
         var enemy = new Enemy
         {
             Name = blueprint.Name,
+            BiomeId = blueprint.BiomeId,
             Stats = stats,
             PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
             NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
@@ -51,5 +52,40 @@ public class EnemyFactory
         };
 
         return enemy;
+    }
+
+    public List<Enemy> CreateEnemies(List<string> blueprintIds)
+    {
+        var enemies = new List<Enemy>();
+        foreach (var id in blueprintIds)
+        {
+            enemies.Add(CreateEnemy(id));
+        }
+        return enemies;
+    }
+
+    public List<Enemy> SortEnemies(string biomeId)
+    {
+        var blueprintIds = _enemyBlueprints.Values
+            .Where(b => b.BiomeId.Equals(biomeId, StringComparison.OrdinalIgnoreCase))
+            .Select(b => b.Id)
+            .ToList();
+
+        if (blueprintIds.Count == 0)
+        {
+            return new List<Enemy>();
+        }
+
+        var count = Random.Shared.Next(3, 6); 
+        var result = new List<Enemy>(count);
+
+        for (var i = 0; i < count; i++)
+        {
+            var index = Random.Shared.Next(blueprintIds.Count);
+            var id = blueprintIds[index];
+            result.Add(CreateEnemy(id));
+        }
+
+        return result;
     }
 }

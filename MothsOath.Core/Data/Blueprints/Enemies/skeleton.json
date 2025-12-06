@@ -1,6 +1,7 @@
 {
   "Id": "skeleton_warrior",
   "Name": "Esqueleto Guerreiro",
+  "BiomeId": "forest_biome",
   "Maxhealth": 30,
   "BaseStrength": 10,
   "BaseKnowledge": 5,

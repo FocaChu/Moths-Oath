@@ -6,6 +6,8 @@ public class EnemyBlueprint : IBlueprint
 {
     public string Id { get; set; } = "dummy";
 
+    public string BiomeId { get; set; } = "forest_biome";
+
     public string Name { get; set; } = "dummy";
 
     public int MaxHealth { get; set; }

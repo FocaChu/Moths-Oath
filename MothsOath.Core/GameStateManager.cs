@@ -7,6 +7,8 @@ public class GameStateManager
 {
     public StateFactory StateFactory;
 
+    public string Biome { get; set; } = "forest_biome";
+
     public IGameState CurrentState { get; private set; } 
 
 
