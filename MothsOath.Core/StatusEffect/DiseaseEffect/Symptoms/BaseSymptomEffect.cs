@@ -12,11 +12,8 @@ public abstract class BaseSymptomEffect
 
     public abstract string Description { get; set; }
 
-    public BaseSymptomEffect(string id, string name, string description)
+    public BaseSymptomEffect()
     {
-        Id = id;
-        Name = name;
-        Description = description;
     }
 
     public DiseaseEffect? GetDoctorDisease(CombatState combatState)

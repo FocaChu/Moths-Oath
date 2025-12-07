@@ -1,6 +1,5 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
-using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
 
@@ -14,7 +13,7 @@ public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnStartReactor
 
     public override string Description { get; set; } = "Causa sangramento.";
 
-    public HemorrhageSymptomEffect(string id, string name, string description) : base(id, name, description)
+    public HemorrhageSymptomEffect()
     {
     }
 

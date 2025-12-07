@@ -4,5 +4,5 @@ namespace MothsOath.Core.Common.EffectInterfaces;
 
 public interface IHealingReceivedReactor
 {
-    void OnHealingReceived(HealPlan plan, Character target);
+    void OnHealingReceived(ActionContext context, HealPlan plan, Character target);
 }

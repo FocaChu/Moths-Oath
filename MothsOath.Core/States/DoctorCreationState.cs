@@ -134,43 +134,18 @@ public class DoctorCreationState : IGameState
         {
             try
             {
-                var defaultCtor = type.GetConstructor(Type.EmptyTypes);
-                BaseSymptomEffect? instance = null;
+                object? created = assembly.CreateInstance(type.FullName ?? string.Empty);
 
-                if (defaultCtor != null)
+                if (created == null)
                 {
-                    instance = defaultCtor.Invoke(null) as BaseSymptomEffect;
-                }
-                else
-                {
-                    var ctor = type.GetConstructor(new[] { typeof(string), typeof(string), typeof(string) });
-                    if (ctor != null)
+                    var defaultCtor = type.GetConstructor(Type.EmptyTypes);
+                    if (defaultCtor != null)
                     {
-                        var className = type.Name;
-                        string id, name, description;
-                        if (className == "NecrosisSymptomEffect")
-                        {
-                            id = "necrosis_symptom";
-                            name = "Necrosis";
-                            description = "Causes tissue death and decay.";
-                        }
-                        else if (className == "HemorrhageSymptomEffect")
-                        {
-                            id = "hemorrhage_symptom";
-                            name = "Hemorragia";
-                            description = "Causa sangramento.";
-                        }
-                        else
-                        {
-                            id = className.Replace("SymptomEffect", "").ToLower() + "_symptom";
-                            name = className.Replace("SymptomEffect", "");
-                            description = $"Sintoma {name}";
-                        }
-                        instance = ctor.Invoke(new object[] { id, name, description }) as BaseSymptomEffect;
+                        created = defaultCtor.Invoke(null);
                     }
                 }
 
-                if (instance != null && !string.IsNullOrWhiteSpace(instance.Id))
+                if (created is BaseSymptomEffect instance && !string.IsNullOrWhiteSpace(instance.Id))
                 {
                     symptoms.Add(instance);
                 }

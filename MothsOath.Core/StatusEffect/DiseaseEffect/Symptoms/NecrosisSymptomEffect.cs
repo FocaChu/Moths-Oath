@@ -12,7 +12,7 @@ public class NecrosisSymptomEffect : BaseSymptomEffect, ITurnEndReactor
 
     public override string Description { get; set; } = "Inflinge dano ao longo do tempo.";
 
-    public NecrosisSymptomEffect(string id, string name, string description) : base(id, name, description)
+    public NecrosisSymptomEffect()
     {
     }
 

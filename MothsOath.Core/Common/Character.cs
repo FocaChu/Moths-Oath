@@ -82,7 +82,7 @@ public abstract class Character
 
         foreach (var effect in healthReactors)
         {
-            effect.OnHealingReceived(plan, this);
+            effect.OnHealingReceived(context, plan, this);
         }
 
         if(!context.CanReactSource)

@@ -33,7 +33,7 @@ public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEn
         Console.WriteLine($"{target.Name} sofre {Level} de dano por sangramento. HP:{target.Stats.CurrentHealth}");
     }
 
-    public void OnHealingReceived(HealPlan plan, Character target)
+    public void OnHealingReceived(ActionContext context, HealPlan plan, Character target)
     {
         if (!IsActive() || plan.FinalHealAmount <= 0) 
             return;
