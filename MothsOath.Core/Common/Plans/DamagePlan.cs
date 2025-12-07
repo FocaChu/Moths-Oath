@@ -10,11 +10,10 @@ public class DamagePlan
 
     public bool BypassResistance { get; set; } = false;
 
-    public DamagePlan(int baseDamageAmount, bool bypassResistance, bool canProceed)
+    public DamagePlan(int baseDamageAmount, bool bypassResistance)
     {
         BaseDamageAmount = baseDamageAmount;
         FinalDamageAmount = baseDamageAmount;
         BypassResistance = bypassResistance;
-        CanProceed = canProceed;
     }
 }

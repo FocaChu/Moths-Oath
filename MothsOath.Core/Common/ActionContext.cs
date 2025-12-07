@@ -15,21 +15,24 @@ public class ActionContext
 
     public BaseCard? Card { get; set; }
 
-    public ActionPlan? Plan { get; set; }
+    public bool CanUseSpecial { get; set; }
 
-    public bool CanReactTarget { get; set; }
+    public bool CanProceed { get; set; } = true;
 
-    public bool CanReactSource { get; set; }
+    public bool CanOutgoingModifiers { get; set; } = true;
 
-    public ActionContext(Character source, List<Character> baseTargets, CombatState gameState, BaseCard? card, ActionPlan? plan, bool canReactTarget, bool canReactSource)
+    public bool CanIncomingModifiers { get; set; } = true;
+
+    public bool CanRecievedReactors { get; set; } = true;
+
+    public bool CanDealtReactors { get; set; } = true;
+
+    public ActionContext(Character source, List<Character> baseTargets, CombatState gameState, BaseCard? card)
     {
         Source = source;
         BaseTargets = baseTargets;
         FinalTargets = baseTargets;
         GameState = gameState;
         Card = card;
-        Plan = plan;
-        CanReactTarget = canReactTarget;
-        CanReactSource = canReactSource;
     }
 }

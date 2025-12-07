@@ -1,5 +1,7 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.Plans;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
+using System.Numerics;
 
 namespace MothsOath.Core.Abilities;
 
@@ -11,9 +13,12 @@ public class SharpCutAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var damagePlan = CreateDamagePlan(context, damage);
+        var damagePlan = new DamagePlan(damage, false);
 
-        if (CheckTargets(context) || damagePlan.CanProceed == false || damagePlan.FinalDamageAmount <= 0)
+        if (context.CanOutgoingModifiers)
+            ApplyDamageModifiers(context, damagePlan);
+
+        if (!ValidadeTargets(context) || !ValidateDamagePlan(context, damagePlan))
             return;
 
         var rng = new Random();
@@ -25,9 +30,15 @@ public class SharpCutAction : BaseAction
         target.RecieveDamage(context, damagePlan);
 
         var bleedingEffect = new BleedingEffect(level: (int)(context.Source.Stats.BaseStrength / 2) + 1, duration: 2);
-        var statusEffectPlan = CreateStatusEffectPlan(context, bleedingEffect);
+        var effectPlan = new StatusEffectPlan(bleedingEffect);
 
-        target.ApplyStatusEffect(context, statusEffectPlan);
+        if (context.CanOutgoingModifiers)
+            ApplyStatusEffectModifiers(context, effectPlan);
+
+        if (!ValidadeTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
+            return;
+
+        target.ApplyStatusEffect(context, effectPlan);
 
         Console.WriteLine($"{context.Source.Name} cut {target.Name} leaving they bleeding!");
     }

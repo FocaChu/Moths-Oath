@@ -25,8 +25,8 @@ public class PlayerFactory
 
         var stats = new Stats
         {
-            MaxHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 10,
-            CurrentHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 10,
+            MaxHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 100,
+            CurrentHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 100,
             BaseStrength = raceBlueprint.BaseStrength + archetypeBlueprint.BonusStrength + 1,
             BaseKnowledge = raceBlueprint.BaseKnowledge + archetypeBlueprint.BonusKnowledge + 1,
             BaseResistance = raceBlueprint.BaseResistance + archetypeBlueprint.BonusResistance + 1,

@@ -22,6 +22,10 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor, ITurnStartReacto
 
     public override bool IsEndless { get; set; } = false;
 
+    public override bool IsEchoable { get; set; } = false;
+
+    public override bool IsVisible { get; set; } = true;
+
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Disease;
 
     public IBehavior Behavior { get; set; } 
@@ -83,7 +87,7 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor, ITurnStartReacto
         return new DiseaseEffect(this.Id, this.Name, this.Description, this.Level, this.Duration, this.IsEndless, this.Behavior, this.Symptoms.ToList());
     }
 
-    public override BaseStatusEffect EcoEffect()
+    public override BaseStatusEffect EchoEffect()
     {
         return null;
     }

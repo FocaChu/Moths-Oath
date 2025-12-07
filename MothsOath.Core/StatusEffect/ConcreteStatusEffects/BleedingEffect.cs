@@ -17,6 +17,10 @@ public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEn
 
     public override bool IsEndless { get; set; } = false;
 
+    public override bool IsEchoable { get; set; } = true;
+
+    public override bool IsVisible { get; set; } = true;
+
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Negative;
 
     public BleedingEffect(int level, int duration)

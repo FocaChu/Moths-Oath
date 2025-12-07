@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Entities.Archetypes;
+using MothsOath.Core.Common.Plans;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
 
 namespace MothsOath.Core.Abilities;
@@ -12,9 +12,12 @@ public class ToxicJabAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var damagePlan = CreateDamagePlan(context, damage);
+        var damagePlan = new DamagePlan(damage, false);
 
-        if (CheckTargets(context) || damagePlan.CanProceed == false || damagePlan.FinalDamageAmount <= 0)
+        if (context.CanOutgoingModifiers)
+            ApplyDamageModifiers(context, damagePlan);
+
+        if (!ValidadeTargets(context) || !ValidateDamagePlan(context, damagePlan))
             return;
 
         var rng = new Random();
@@ -24,12 +27,16 @@ public class ToxicJabAction : BaseAction
         context.FinalTargets.Add(target);
 
         target.RecieveDamage(context, damagePlan);
-        Console.WriteLine($"{context.Source.Name} uses Toxic Jab on {target.Name} for {damage} damage.");
 
         var poisonEffect = new PoisonEffect(level: (int)(context.Source.Stats.BaseKnowledge / 2), duration: 3);
-        var poisonPlan = CreateStatusEffectPlan(context, poisonEffect);
+        var effectPlan = new StatusEffectPlan(poisonEffect);
 
-        target.ApplyStatusEffect(context, poisonPlan);
-        Console.WriteLine($"{target.Name} is poisoned!");
+        if (context.CanOutgoingModifiers)
+            ApplyStatusEffectModifiers(context, effectPlan);
+
+        if (!ValidadeTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
+            return;
+
+        target.ApplyStatusEffect(context, effectPlan);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.Plans;
 
 namespace MothsOath.Core.Abilities;
 
@@ -10,13 +11,19 @@ public class BasicAttackAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var plan = CreateDamagePlan(context, damage);
+        var plan = new DamagePlan(damage, false);
 
-        if(CheckTargets(context) || plan.CanProceed == false || plan.FinalDamageAmount <= 0)
+        if(context.CanOutgoingModifiers)
+            ApplyDamageModifiers(context, plan);
+
+        if (!ValidadeTargets(context) || !ValidateDamagePlan(context, plan))
             return;
 
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
+
+        context.FinalTargets.Clear();
+        context.FinalTargets.Add(target);
 
         target.RecieveDamage(context, plan);
         Console.WriteLine($"{context.Source.Name} attacks {target.Name} for {damage} damage.");

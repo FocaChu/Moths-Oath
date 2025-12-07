@@ -62,7 +62,7 @@ public class CombatState : IGameState
 
         List<Character> targets = new List<Character> { target };
 
-        var context = new ActionContext(Player, targets, this, card, null, true, true);
+        var context = new ActionContext(Player, targets, this, card);
 
         Player.PlayCard(context);
 
@@ -107,6 +107,7 @@ public class CombatState : IGameState
     private void StartPlayerTurn()
     {
         ApplyStatusEffectsAtTurnStart();
+        CheckFadingStatusEffects();
 
         CurrentPhase = CombatPhase.PlayerTurn_Start;
         Console.WriteLine($"--- Turno do Jogador Começou HP:{Player.Stats.CurrentHealth} ---");
@@ -201,6 +202,14 @@ public class CombatState : IGameState
         Player.TickStatusEffects();
 
         CheckForDeadEnemies();
+    }
+
+    private void CheckFadingStatusEffects()
+    {
+        foreach (var character in GetAllCharacters())
+        {
+            character.ClearFadingStatusEffects();
+        }
     }
 
     public List<Character> GetAllCharacters()

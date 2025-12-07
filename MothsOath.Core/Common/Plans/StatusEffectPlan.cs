@@ -6,11 +6,9 @@ public class StatusEffectPlan
 {
     public BaseStatusEffect StatusEffect { get; set; }
 
-    public bool CanApply { get; set; } = true;
 
-    public StatusEffectPlan(BaseStatusEffect statusEffect, bool canApply)
+    public StatusEffectPlan(BaseStatusEffect statusEffect)
     {
         StatusEffect = statusEffect;
-        CanApply = canApply;
     }
 }

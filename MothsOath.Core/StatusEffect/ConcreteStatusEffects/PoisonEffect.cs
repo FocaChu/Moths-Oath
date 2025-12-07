@@ -15,6 +15,10 @@ public class PoisonEffect : BaseStatusEffect, ITurnEndReactor
 
     public override bool IsEndless { get; set; } = false;
 
+    public override bool IsEchoable { get; set; } = true;
+
+    public override bool IsVisible { get; set; } = true;
+
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Negative;
 
     public PoisonEffect(int level, int duration)

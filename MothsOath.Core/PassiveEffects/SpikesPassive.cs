@@ -18,10 +18,10 @@ public class SpikesPassive : BasePassiveEffect, IDamageReceivedReactor
         {
             int spikeDamage = (int)(target.Stats.TotalResistance / 2) + (int)(target.Stats.TotalStrength / 4);
 
-            var damagePlan = new DamagePlan(spikeDamage, true, true);
+            var damagePlan = new DamagePlan(spikeDamage, true);
 
-            context.CanReactSource = false;
-            context.CanReactTarget = false;
+            context.CanDealtReactors = false;
+            context.CanRecievedReactors = false;
 
             context.Source.RecieveDamage(context, damagePlan);
         }

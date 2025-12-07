@@ -11,5 +11,5 @@
   "BaseRegeneration": 2,
   "BonusXpMultiplier": 0,
   "PassiveDescription": "Maior regeneração e vampirismo.",
-  "StartingCardIds": [ "strike_card", "strike_card" ]
+  "StartingCardIds": [ "echo_of_misfortune_card", "strike_card" ]
 }

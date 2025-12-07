@@ -8,11 +8,14 @@ public class CryAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        if (CheckTargets(context))
+        if (!ValidadeTargets(context))
             return;
 
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
+
+        context.FinalTargets.Clear();
+        context.FinalTargets.Add(target);
 
         target.Stats.BonusResistance -= (int)(context.Source.Stats.BaseKnowledge /2) + 1;
 

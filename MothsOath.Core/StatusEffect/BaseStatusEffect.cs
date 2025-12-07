@@ -17,6 +17,10 @@ public abstract class BaseStatusEffect
 
     public abstract bool IsEndless { get; set; }
 
+    public abstract bool IsEchoable { get; set; }
+
+    public abstract bool IsVisible { get; set; }
+
     public abstract StatusEffectType EffectType { get; set; }
 
     public virtual bool IsActive()
@@ -42,8 +46,11 @@ public abstract class BaseStatusEffect
         return (BaseStatusEffect)this.MemberwiseClone();
     }
 
-    public virtual BaseStatusEffect EcoEffect()
+    public virtual BaseStatusEffect EchoEffect()
     {
+        if(!IsEchoable) 
+            return null;
+
         var eco = (BaseStatusEffect)this.MemberwiseClone();
 
         eco.Level = (int)(eco.Level * 0.5) > 0 ? (int)(eco.Level * 0.5) : 1;

@@ -8,10 +8,9 @@ public class HealPlan
 
     public bool CanProceed { get; set; } = true;
 
-    public HealPlan(int baseHealAmount, bool canProceed)
+    public HealPlan(int baseHealAmount)
     {
         BaseHealAmount = baseHealAmount;
         FinalHealAmount = baseHealAmount;
-        CanProceed = canProceed;
     }
 }

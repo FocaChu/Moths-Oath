@@ -2,7 +2,6 @@
 using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
-using MothsOath.Core.Common.Plans;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.Entities;
@@ -36,13 +35,8 @@ public class Enemy : Character
 
     public ActionContext CreateActionContext(CombatState gameState)
     {
-        var plan = new ActionPlan
-        {
-            CanUseSpecial = this.CanUseSpecial,
-            CanProceed = true
-        };
-
-        var context = new ActionContext(this, GetTargets(gameState), gameState, null, plan, true, true);
+        var context = new ActionContext(this, GetTargets(gameState), gameState, null);
+        context.CanUseSpecial = this.CanUseSpecial;
 
         var actionModifiers = this.StatusEffects.OfType<IActionPlanModifier>().ToList();
 
@@ -58,9 +52,9 @@ public class Enemy : Character
     {
         var context = CreateActionContext(gameState);
 
-        if (!context.Plan.CanProceed || context.FinalTargets.Count == 0) return;
+        if (!context.CanProceed || context.FinalTargets == null || context.FinalTargets.Count == 0) return;
 
-        if (context.Plan.CanUseSpecial)
+        if (context.CanUseSpecial)
         {
             SpecialAbility.Execute(context);
             Console.WriteLine($"{Name} usou {SpecialAbility.Id}!");

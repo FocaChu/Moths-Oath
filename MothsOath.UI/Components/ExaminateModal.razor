@@ -55,6 +55,7 @@
 
                     @foreach (var effect in @CharacterProfile.StatusEffects)
                     {
+                        @if (!effect.IsVisible) continue;
                         <div>
                             <strong>@effect.Name</strong> &nbsp; - &nbsp; Nível: @effect.Level &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Duração:
                             @if (effect.IsEndless)

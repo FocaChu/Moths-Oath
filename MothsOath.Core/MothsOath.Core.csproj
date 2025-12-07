@@ -15,6 +15,9 @@
     <None Update="Data\Blueprints\Archetypes\doctorArchetype.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Blueprints\Cards\echo_of_misfortune_card.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Blueprints\Cards\karma_calling_card.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
