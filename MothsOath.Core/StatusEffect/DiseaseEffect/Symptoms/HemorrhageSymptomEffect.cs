@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
 
@@ -27,7 +27,7 @@ public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnStartReactor
 
         if (rng.Next(1, 101) <= chance)
         {
-            target.ApplyStatusEffect(new BleedingEffect(level, 1));
+            target.ApplyPureStatusEffect(new BleedingEffect(level, 1));
         }
 
     }

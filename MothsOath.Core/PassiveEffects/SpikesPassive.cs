@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Damage;
 using MothsOath.Core.Common.Plans;
 
 namespace MothsOath.Core.PassiveEffects;

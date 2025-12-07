@@ -1,6 +1,6 @@
 ﻿using MothsOath.Core.States;
 
-namespace MothsOath.Core.Common.EffectInterfaces;
+namespace MothsOath.Core.Common.EffectInterfaces.Turn;
 
 public interface ITurnStartReactor
 {

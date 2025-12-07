@@ -11,18 +11,23 @@ public class SharpCutAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var plan = CreateDamagePlan(context, damage);
+        var damagePlan = CreateDamagePlan(context, damage);
 
-        if (CheckTargets(context) || plan.CanProceed == false || plan.FinalDamageAmount <= 0)
+        if (CheckTargets(context) || damagePlan.CanProceed == false || damagePlan.FinalDamageAmount <= 0)
             return;
 
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
 
-        target.RecieveDamage(context, plan);
+        context.FinalTargets.Clear();
+        context.FinalTargets.Add(target);
 
-        var bleeding = new BleedingEffect(level: (int)(context.Source.Stats.BaseStrength / 2) + 1, duration: 2);
-        target.ApplyStatusEffect(bleeding);
+        target.RecieveDamage(context, damagePlan);
+
+        var bleedingEffect = new BleedingEffect(level: (int)(context.Source.Stats.BaseStrength / 2) + 1, duration: 2);
+        var statusEffectPlan = CreateStatusEffectPlan(context, bleedingEffect);
+
+        target.ApplyStatusEffect(context, statusEffectPlan);
 
         Console.WriteLine($"{context.Source.Name} cut {target.Name} leaving they bleeding!");
     }

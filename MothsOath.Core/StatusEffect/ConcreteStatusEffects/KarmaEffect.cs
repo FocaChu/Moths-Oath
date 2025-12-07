@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 

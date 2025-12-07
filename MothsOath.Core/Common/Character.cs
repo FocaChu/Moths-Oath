@@ -1,4 +1,6 @@
-﻿using MothsOath.Core.Common.EffectInterfaces;
+﻿using MothsOath.Core.Common.EffectInterfaces.Damage;
+using MothsOath.Core.Common.EffectInterfaces.Healing;
+using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.PassiveEffects;
 using MothsOath.Core.StatusEffect;
@@ -28,6 +30,13 @@ public abstract class Character
 
     public void RecieveDamage(ActionContext context, DamagePlan plan)
     {
+        var incomingModifiers = this.StatusEffects.OfType<IIncomingDamageModifier>().ToList();
+
+        foreach (var modifier in incomingModifiers)
+        {
+            modifier.ModifyIncomingDamage(context, plan, this);
+        }
+
         plan.FinalDamageAmount = CalculateDamageAmount(plan.FinalDamageAmount, plan.BypassResistance);
 
         if (plan.BaseDamageAmount <= 0 || !plan.CanProceed || plan.FinalDamageAmount == 0)
@@ -35,17 +44,17 @@ public abstract class Character
 
         Stats.CurrentHealth -= plan.FinalDamageAmount;
 
-        if (!context.CanReactTarget)
-            return;
-
-        var damageReactors = this.StatusEffects.OfType<IDamageReceivedReactor>().ToList();
-
-        foreach (var effect in damageReactors)
+        if (context.CanReactTarget)
         {
-            effect.OnDamageReceived(context, plan, this);
+            var damageReactors = this.StatusEffects.OfType<IDamageReceivedReactor>().ToList();
+
+            foreach (var effect in damageReactors)
+            {
+                effect.OnDamageReceived(context, plan, this);
+            }
         }
 
-        if(!context.CanReactSource)
+        if (!context.CanReactSource)
             return;
 
         var sourceDamageReactors = context.Source.StatusEffects.OfType<IDamageDealtReactor>().ToList();
@@ -65,8 +74,15 @@ public abstract class Character
 
     public void RecieveHeal(ActionContext context, HealPlan plan)
     {
-        if(plan.BaseHealAmount <= 0 || !plan.CanProceed || plan.FinalHealAmount == 0)
+        if (plan.BaseHealAmount <= 0 || !plan.CanProceed || plan.FinalHealAmount == 0)
             return;
+
+        var incomingModifiers = this.StatusEffects.OfType<IIncomingHealingModifier>().ToList();
+
+        foreach (var modifier in incomingModifiers)
+        {
+            modifier.ModifyIncomingHealing(context, plan, this);
+        }
 
         int healthBefore = Stats.CurrentHealth;
 
@@ -75,17 +91,17 @@ public abstract class Character
         int actualHealedAmount = Stats.CurrentHealth - healthBefore;
         plan.FinalHealAmount = actualHealedAmount;
 
-        if (!context.CanReactTarget)
-            return;
-
-        var healthReactors = this.StatusEffects.OfType<IHealingReceivedReactor>().ToList();
-
-        foreach (var effect in healthReactors)
+        if (context.CanReactTarget)
         {
-            effect.OnHealingReceived(context, plan, this);
+            var healthReactors = this.StatusEffects.OfType<IHealingReceivedReactor>().ToList();
+
+            foreach (var effect in healthReactors)
+            {
+                effect.OnHealingReceived(context, plan, this);
+            }
         }
 
-        if(!context.CanReactSource)
+        if (!context.CanReactSource)
             return;
 
         var sourceHealthReactors = context.Source.StatusEffects.OfType<IHealingDoneReactor>().ToList();
@@ -96,7 +112,7 @@ public abstract class Character
         }
     }
 
-    public void ApplyStatusEffect(BaseStatusEffect statusEffect)
+    public void ApplyPureStatusEffect(BaseStatusEffect statusEffect)
     {
         if (StatusEffects.Any(se => se.Id == statusEffect.Id))
         {
@@ -106,6 +122,51 @@ public abstract class Character
         }
 
         StatusEffects.Add(statusEffect);
+    }
+
+    public void ApplyStatusEffect(ActionContext context, StatusEffectPlan plan)
+    {
+        var incomingModifiers = this.StatusEffects.OfType<IIncomingStatusEffectModifier>().ToList();
+
+        foreach (var modifier in incomingModifiers)
+        {
+            modifier.ModifyIncomingStatusEffect(context, plan, this);
+        }
+
+        if (!plan.CanApply)
+            return;
+
+        if (StatusEffects.Any(se => se.Id == plan.StatusEffect.Id))
+        {
+            var existingEffect = StatusEffects.First(se => se.Id == plan.StatusEffect.Id);
+            existingEffect.StackEffect(this, plan.StatusEffect);
+            return;
+        }
+
+        if (plan.StatusEffect.Level <= 0 || plan.StatusEffect.Duration <= 0)
+            return;
+
+        StatusEffects.Add(plan.StatusEffect);
+
+        if (context.CanReactTarget)
+        {
+            var statusEffectReactorsTarget = this.StatusEffects.OfType<IStatusEffectRecievedReactor>().ToList();
+
+            foreach (var reactor in statusEffectReactorsTarget)
+            {
+                reactor.OnStatusEffectReceived(context, plan, this);
+            }
+        }
+
+        if (!context.CanReactTarget)
+            return;
+
+        var statusEffectReactors = this.StatusEffects.OfType<IStatusEffectDoneReactor>().ToList();
+
+        foreach (var reactor in statusEffectReactors)
+        {
+            reactor.OnStatusEffectDone(context, plan, this);
+        }
     }
 
     private int CalculateDamageAmount(int baseAmount, bool bypassResistance)
@@ -135,7 +196,7 @@ public abstract class Character
 
     public void TickStatusEffects()
     {
-        if(!StatusEffects.Any())
+        if (!StatusEffects.Any())
             return;
 
         foreach (var statusEffect in StatusEffects)

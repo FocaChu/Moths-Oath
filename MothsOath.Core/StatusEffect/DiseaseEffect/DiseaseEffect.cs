@@ -1,13 +1,18 @@
 ﻿using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Damage;
+using MothsOath.Core.Common.EffectInterfaces.Healing;
+using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
+using MothsOath.Core.Common.EffectInterfaces.Turn;
+using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
 
 namespace MothsOath.Core.StatusEffect.DiseaseEffect;
 
-public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor
+public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor, ITurnStartReactor, IActionPlanModifier, IGlobalDamageInteractor, IGlobalHealingInteractor, IGlobalStatusEffectInteractor
 {
     public override string Id { get; set; }
 
@@ -89,6 +94,132 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor
         foreach (var effect in effects)
         {
             effect.OnTurnEnd(target, context);
+        }
+    }
+
+    public void OnTurnStart(Character target, CombatState context)
+    {
+        var effects = Symptoms.OfType<ITurnStartReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnTurnStart(target, context);
+        }
+    }
+
+    public void ModifyActionPlan(ActionContext context)
+    {
+        var effects = Symptoms.OfType<IActionPlanModifier>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.ModifyActionPlan(context);
+        }
+    }
+
+    public void OnDamageDealt(ActionContext context, DamagePlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IDamageDealtReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnDamageDealt(context, plan, target);
+        }
+    }
+
+    public void OnDamageReceived(ActionContext context, DamagePlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IDamageReceivedReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnDamageReceived(context, plan, target);
+        }
+    }
+
+    public void ModifyIncomingDamage(ActionContext context, DamagePlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IIncomingDamageModifier>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.ModifyIncomingDamage(context, plan, target);
+        }
+    }
+
+    public void ModifyOutgoingDamage(ActionContext context, DamagePlan plan)
+    {
+        var effects = Symptoms.OfType<IOutgoingDamageModifier>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.ModifyOutgoingDamage(context, plan);
+        }
+    }
+
+    public void OnHealingDone(ActionContext context, HealPlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IHealingDoneReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnHealingDone(context, plan, target);
+        }
+    }
+
+    public void OnHealingReceived(ActionContext context, HealPlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IHealingReceivedReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnHealingReceived(context, plan, target);
+        }
+    }
+
+    public void ModifyIncomingHealing(ActionContext context, HealPlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IIncomingHealingModifier>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.ModifyIncomingHealing(context, plan, target);
+        }
+    }
+
+    public void ModifyOutgoingHealing(ActionContext context, HealPlan plan)
+    {
+        var effects = Symptoms.OfType<IOutgoingHealingModifier>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.ModifyOutgoingHealing(context, plan);
+        }
+    }
+
+    public void OnStatusEffectDone(ActionContext context, StatusEffectPlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IStatusEffectDoneReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnStatusEffectDone(context, plan, target);
+        }
+    }
+
+    public void OnStatusEffectReceived(ActionContext context, StatusEffectPlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IStatusEffectRecievedReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnStatusEffectReceived(context, plan, target);
+        }
+    }
+
+    public void ModifyIncomingStatusEffect(ActionContext context, StatusEffectPlan plan, Character target)
+    {
+        var effects = Symptoms.OfType<IIncomingStatusEffectModifier>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.ModifyIncomingStatusEffect(context, plan, target);
+        }
+    }
+
+    public void ModifyOutgoingStatusEffect(ActionContext context, StatusEffectPlan plan)
+    {
+        var effects = Symptoms.OfType<IOutgoingStatusEffectModifier>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.ModifyOutgoingStatusEffect(context, plan);
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
+using MothsOath.Core.Common.Plans;
 using MothsOath.Core.States;
+using MothsOath.Core.StatusEffect;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
 using MothsOath.Core.StatusEffect.DiseaseEffect;
 using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
@@ -128,7 +130,7 @@ public class Doctor : Player
             var infection = disease.Clone();
             infection.Duration = Math.Max(disease.Duration, this.Disease.Duration);
 
-            targets[randomIndex].ApplyStatusEffect(infection);
+            targets[randomIndex].ApplyPureStatusEffect(infection);
         }
     }
 
@@ -139,6 +141,6 @@ public class Doctor : Player
         this.CurrentMana -= 50;
         this.Gold -= 10;
 
-        target.ApplyStatusEffect(Disease.Clone());
+        target.ApplyPureStatusEffect(Disease.Clone());
     }
 }

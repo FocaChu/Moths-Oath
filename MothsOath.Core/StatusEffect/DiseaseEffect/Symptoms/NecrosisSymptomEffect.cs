@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;

@@ -1,6 +1,9 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Damage;
+using MothsOath.Core.Common.EffectInterfaces.Healing;
+using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.StatusEffect;
 
 namespace MothsOath.Core.Abilities;
 
@@ -40,6 +43,18 @@ public abstract class BaseAction
         return plan;
     }
 
+    public virtual StatusEffectPlan CreateStatusEffectPlan(ActionContext context, BaseStatusEffect statusEffect)
+    {
+        var plan = new StatusEffectPlan(
+            statusEffect,
+            true
+        );
+
+        plan = ApplyStatusEffectModifiers(context, plan);
+
+        return plan;
+    }
+
     private DamagePlan ApplyDamageModifiers(ActionContext context, DamagePlan plan)
     {
         var damageModifiers = context.Source.StatusEffects.OfType<IOutgoingDamageModifier>().ToList();
@@ -56,6 +71,16 @@ public abstract class BaseAction
         foreach (var effect in healModifiers)
         {
             effect.ModifyOutgoingHealing(context, plan);
+        }
+        return plan;
+    }
+
+    private StatusEffectPlan ApplyStatusEffectModifiers(ActionContext context, StatusEffectPlan plan)
+    {
+        var statusEffectModifiers = context.Source.StatusEffects.OfType<IOutgoingStatusEffectModifier>().ToList();
+        foreach (var effect in statusEffectModifiers)
+        {
+            effect.ModifyOutgoingStatusEffect(context, plan);
         }
         return plan;
     }
