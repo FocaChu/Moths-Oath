@@ -19,6 +19,8 @@ public class EchoStatusEffect : BaseStatusEffect, ITurnStartReactor
 
     public override bool IsVisible { get; set; } = true;
 
+    public int Priority { get; set; } = 0;
+
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Neutral;
 
     public BaseStatusEffect _echoedEffect { get; set; }

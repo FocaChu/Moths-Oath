@@ -21,6 +21,8 @@ public class KarmaEffect : BaseStatusEffect, IHealingDoneReactor
 
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Positive;
 
+    public int Priority { get; set; } = 1;
+
     public KarmaEffect(int level, int duration) 
     {
         Level = level;

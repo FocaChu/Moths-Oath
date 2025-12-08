@@ -21,6 +21,8 @@ public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEn
 
     public override bool IsVisible { get; set; } = true;
 
+    public int Priority { get; set; } = 0;
+
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Negative;
 
     public BleedingEffect(int level, int duration)

@@ -13,6 +13,8 @@ public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnStartReactor
 
     public override string Description { get; set; } = "Causa sangramento.";
 
+    public int Priority { get; set; } = 0;
+
     public HemorrhageSymptomEffect()
     {
     }

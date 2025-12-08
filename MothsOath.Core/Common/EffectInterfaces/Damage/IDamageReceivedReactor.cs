@@ -4,5 +4,6 @@ namespace MothsOath.Core.Common.EffectInterfaces.Damage;
 
 public interface IDamageReceivedReactor
 {
+    int Priority { get; set; }
     void OnDamageReceived(ActionContext context, DamagePlan plan, Character target);
 }

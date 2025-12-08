@@ -19,6 +19,8 @@ public class HealingAuraEffect : BaseStatusEffect, ITurnStartReactor
 
     public override bool IsVisible { get; set; } = true;
 
+    public int Priority { get; set; } = 1;
+
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Positive;
 
     public HealingAuraEffect(int level, int duration)

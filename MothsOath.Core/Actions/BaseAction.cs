@@ -19,14 +19,11 @@ public abstract class BaseAction
 
     public virtual DamagePlan ApplyDamageModifiers(ActionContext context, DamagePlan plan)
     {
-        var damageModifiers = context.Source.StatusEffects.OfType<IOutgoingDamageModifier>().ToList();
-        foreach (var effect in damageModifiers)
-        {
-            effect.ModifyOutgoingDamage(context, plan);
-        }
+        var damageModifiers = context.Source.StatusEffects.OfType<IOutgoingDamageModifier>().ToList()
+            .Concat(context.Source.PassiveEffects.OfType<IOutgoingDamageModifier>().ToList())
+            .OrderByDescending(m => m.Priority);
 
-        var damagePassiveModifiers = context.Source.PassiveEffects.OfType<IOutgoingDamageModifier>().ToList();
-        foreach (var effect in damagePassiveModifiers)
+        foreach (var effect in damageModifiers)
         {
             effect.ModifyOutgoingDamage(context, plan);
         }
@@ -41,14 +38,11 @@ public abstract class BaseAction
 
     public virtual HealPlan ApplyHealModifiers(ActionContext context, HealPlan plan)
     {
-        var healModifiers = context.Source.StatusEffects.OfType<IOutgoingHealingModifier>().ToList();
-        foreach (var effect in healModifiers)
-        {
-            effect.ModifyOutgoingHealing(context, plan);
-        }
+        var healModifiers = context.Source.StatusEffects.OfType<IOutgoingHealingModifier>().ToList()
+            .Concat(context.Source.PassiveEffects.OfType<IOutgoingHealingModifier>().ToList())
+            .OrderByDescending(m => m.Priority);
 
-        var healPassiveModifiers = context.Source.PassiveEffects.OfType<IOutgoingHealingModifier>().ToList();
-        foreach (var effect in healPassiveModifiers)
+        foreach (var effect in healModifiers)
         {
             effect.ModifyOutgoingHealing(context, plan);
         }
@@ -63,14 +57,11 @@ public abstract class BaseAction
 
     public virtual StatusEffectPlan ApplyStatusEffectModifiers(ActionContext context, StatusEffectPlan plan)
     {
-        var statusEffectModifiers = context.Source.StatusEffects.OfType<IOutgoingStatusEffectModifier>().ToList();
-        foreach (var effect in statusEffectModifiers)
-        {
-            effect.ModifyOutgoingStatusEffect(context, plan);
-        }
+        var statusEffectModifiers = context.Source.StatusEffects.OfType<IOutgoingStatusEffectModifier>().ToList()
+            .Concat(context.Source.PassiveEffects.OfType<IOutgoingStatusEffectModifier>().ToList())
+            .OrderByDescending(m => m.Priority);
 
-        var statusEffectPassiveModifiers = context.Source.PassiveEffects.OfType<IOutgoingStatusEffectModifier>().ToList();
-        foreach (var effect in statusEffectPassiveModifiers)
+        foreach (var effect in statusEffectModifiers)
         {
             effect.ModifyOutgoingStatusEffect(context, plan);
         }

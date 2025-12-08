@@ -12,6 +12,8 @@ public class SpikesPassive : BasePassiveEffect, IDamageReceivedReactor
 
     public override string Description { get; set; } = "Causa dano a agressores.";
 
+    public int Priority { get; set; } = 0;
+
     public void OnDamageReceived(ActionContext context, DamagePlan plan, Character target)
     {
         if (plan.CanProceed && plan.FinalDamageAmount > 0)

@@ -17,6 +17,8 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
 
     public override string Description { get; set; } = "Concede uma glória ao começo de um combate.";
 
+    public int Priority { get; set; } = 0;
+
     public void OnCombatStart(Character target, CombatState context)
     {
         var level = target is Player player ? player.Level : 1;

@@ -2,5 +2,6 @@
 
 public interface IActionPlanModifier
 {
+    int Priority { get; set; }
     void ModifyActionPlan(ActionContext context);
 }
