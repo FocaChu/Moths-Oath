@@ -20,6 +20,15 @@ public abstract class Character
 
     public event Action<Character, int> OnDamageTaken;
 
+    public virtual void Restore()
+    {
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + Stats.Regeneration, Stats.MaxHealth);
+
+        this.Stats.BonusStrength = 0;
+        this.Stats.BonusKnowledge = 0;
+        this.Stats.BonusDefense = 0;
+    }
+
     public void RecievePureDamage(int amount)
     {
         if (amount <= 0)

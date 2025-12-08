@@ -1,0 +1,67 @@
+@using MothsOath.Core.States
+@using MothsOath.Core.Models.Enums
+@inject GameStateManager GameManager
+
+<div class="difficulty-container">
+    <h2>Escolha a Dificuldade</h2>
+    <div class="difficulty-cards">
+        <div class="difficulty-card easy @(selected == GameDifficulty.Easy ? "selected" : "")" @onclick="() => Select(GameDifficulty.Easy)">
+            <h3>Fácil</h3>
+            <p>Inimigos mais frágeis e menos agressivos. (força reduzida).</p>
+            <p>Encontros consistente de 3 inimigos.</p>
+        </div>
+
+        <div class="difficulty-card normal @(selected == GameDifficulty.Normal ? "selected" : "")" @onclick="() => Select(GameDifficulty.Normal)">
+            <h3>Normal</h3>
+            <p>Inimigos com força padrão.</p>
+            <p>Encontros de 3 a 4 inimigos.</p>
+        </div>
+
+        <div class="difficulty-card hard @(selected == GameDifficulty.Hard ? "selected" : "")" @onclick="() => Select(GameDifficulty.Hard)">
+            <h3>Difícil</h3>
+            <p>Inimigos se tornam mais resistentes e agressivos.</p>
+            <p>Encontros de 3 a 5 inimigos.</p>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="confirm-btn" @onclick="Confirm">Confirmar</button>
+        <button class="cancel-btn" @onclick="Cancel">Voltar</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public DifficultySelectionState? State { get; set; }
+
+    private GameDifficulty selected = GameDifficulty.Normal;
+
+    protected override void OnInitialized()
+    {
+        if (State != null)
+        {
+            selected = State.SelectedDifficulty;
+        }
+    }
+
+    private void Select(GameDifficulty diff)
+    {
+        selected = diff;
+        if (State != null) State.SetDifficulty(diff);
+    }
+
+    private void Confirm()
+    {
+        if (State != null)
+        {
+            State.SetDifficulty(selected);
+            State.Confirm();
+        }
+    }
+
+    private void Cancel()
+    {
+        var menuState = GameManager.StateFactory.CreateMainMenuState(GameManager);
+        GameManager.TransitionToState(menuState);
+    }
+}

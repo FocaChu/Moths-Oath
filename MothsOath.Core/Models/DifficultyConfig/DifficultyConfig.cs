@@ -6,7 +6,7 @@ public class DifficultyConfig
 
     public float EnemyHealthMultiplier { get; set; } = 1;
 
-    public float EnemyDamageMultiplier { get; set; } = 1;
+    public float EnemyStrengthMultiplier { get; set; } = 1;
 
     public float EnemyDefenseMultiplier { get; set; } = 1;
 

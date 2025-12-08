@@ -20,8 +20,8 @@ public class MainMenuState : IGameState
     {
         Console.WriteLine("Iniciando novo jogo...");
 
-        var creationState = _gameManager.StateFactory.CreatePlayerCreationState(_gameManager);
-        _gameManager.TransitionToState(creationState);
+        var diffState = _gameManager.StateFactory.CreateDifficultySelectionState(_gameManager);
+        _gameManager.TransitionToState(diffState);
     }
     
 

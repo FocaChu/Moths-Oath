@@ -105,9 +105,9 @@ public class Player : Character
         this.Gold -= card.GoldCost;
     }
 
-    public void Restore()
+    public override void Restore()
     {
-        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + Stats.Regeneration, Stats.MaxHealth);
+        base.Restore();
 
         this.CurrentMana = this.MaxMana;
         this.CurrentStamina = this.MaxStamina;

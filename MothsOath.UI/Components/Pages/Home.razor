@@ -9,6 +9,10 @@
 {
     <MainMenuUI MenuState="menuState" />
 }
+else if (GameManager.CurrentState is DifficultySelectionState diffState)
+{
+    <DifficultySelectionUI State="diffState" />
+}
 else if (GameManager.CurrentState is PlayerCreationState creationState)
 {
     <PlayerCreationStateUI CreationState="creationState" />

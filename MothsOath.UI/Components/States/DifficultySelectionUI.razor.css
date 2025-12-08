@@ -1,0 +1,60 @@
+:root { --diff-easy: #34EB8F; --diff-normal: #4EA8FF; --diff-hard: #FF5C5C; }
+
+.difficulty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 2rem;
+    max-width: 760px;
+    margin: 2.5rem auto;
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.difficulty-cards {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.difficulty-card {
+    min-width: 200px;
+    max-width: 240px;
+    padding: 1rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.difficulty-card h3 { margin: 0 0 0.5rem 0; color: #fff; }
+.difficulty-card p { color: #ccc; margin: 0 0 0.25rem 0; }
+
+.difficulty-card.selected { transform: translateY(-6px) scale(1.03); box-shadow: 0 10px 22px rgba(0,0,0,0.5); }
+
+.difficulty-card.easy.selected { border-color: var(--diff-easy); }
+.difficulty-card.normal.selected { border-color: var(--diff-normal); }
+.difficulty-card.hard.selected { border-color: var(--diff-hard); }
+
+.difficulty-card.easy { border-left: 6px solid rgba(52,235,143,0.2); }
+.difficulty-card.normal { border-left: 6px solid rgba(78,168,255,0.2); }
+.difficulty-card.hard { border-left: 6px solid rgba(255,92,92,0.2); }
+
+.actions { display: flex; gap: 0.75rem; }
+.confirm-btn { padding: 0.8rem 1.1rem; background: var(--diff-normal); border: none; color: #fff; border-radius: 8px; cursor: pointer; }
+.cancel-btn { padding: 0.8rem 1.1rem; background: transparent; border: 1px solid rgba(255,255,255,0.08); color: #fff; border-radius: 8px; cursor: pointer; }
+
+/* highlight colors for titles */
+.difficulty-card.easy h3 { color: var(--diff-easy); }
+.difficulty-card.normal h3 { color: var(--diff-normal); }
+.difficulty-card.hard h3 { color: var(--diff-hard); }
+
+@media (max-width: 720px) {
+    .difficulty-cards { flex-direction: column; align-items: center; }
+    .difficulty-card { width: 90%; }
+}

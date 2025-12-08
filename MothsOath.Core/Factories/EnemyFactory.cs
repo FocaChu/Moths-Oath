@@ -2,6 +2,7 @@
 using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Blueprints;
 using MothsOath.Core.Services;
+using MothsOath.Core.States;
 
 namespace MothsOath.Core.Factories;
 
@@ -64,19 +65,20 @@ public class EnemyFactory
         return enemies;
     }
 
-    public List<Enemy> SortEnemies(string biomeId)
+    public List<Enemy> SortEnemies(CombatState gameState)
     {
         var blueprintIds = _enemyBlueprints.Values
-            .Where(b => b.BiomeId.Equals(biomeId, StringComparison.OrdinalIgnoreCase))
+            .Where(b => b.BiomeId.Equals(gameState.BiomeId, StringComparison.OrdinalIgnoreCase))
             .Select(b => b.Id)
             .ToList();
-
         if (blueprintIds.Count == 0)
         {
             return new List<Enemy>();
         }
 
-        var count = Random.Shared.Next(3, 6); 
+        var difficultyConfig = gameState.GetDifficultyConfig();
+
+        var count = Random.Shared.Next(difficultyConfig.MinEnemyCount, difficultyConfig.MaxEnemyCount + 1);
         var result = new List<Enemy>(count);
 
         for (var i = 0; i < count; i++)
@@ -84,6 +86,16 @@ public class EnemyFactory
             var index = Random.Shared.Next(blueprintIds.Count);
             var id = blueprintIds[index];
             result.Add(CreateEnemy(id));
+        }
+
+        foreach (var enemy in result)
+        {
+            enemy.Stats.MaxHealth = (int)(enemy.Stats.MaxHealth * difficultyConfig.EnemyHealthMultiplier);
+            enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+
+            enemy.Stats.BaseStrength = (int)(enemy.Stats.BaseStrength * difficultyConfig.EnemyStrengthMultiplier);
+
+            enemy.Stats.BaseDefense = (int)(enemy.Stats.BaseDefense * difficultyConfig.EnemyDefenseMultiplier);
         }
 
         return result;

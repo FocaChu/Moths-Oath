@@ -2,6 +2,7 @@
 using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
+using MothsOath.Core.Models.DifficultyConfig;
 using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.States;
@@ -13,6 +14,7 @@ public class CombatState : IGameState
     private readonly StateFactory _stateFactory;
 
     public CombatPhase CurrentPhase { get; private set; }
+    public string BiomeId { get; set; }
     public Player Player { get; private set; }
     public List<Enemy> Enemies { get; private set; } = new List<Enemy>();
     public List<Enemy> DeadEnemies { get; private set; } = new List<Enemy>();
@@ -26,6 +28,7 @@ public class CombatState : IGameState
         _gameManager = gameManager;
         _enemyFactory = enemyFactory;
         _stateFactory = stateFactory;
+        BiomeId = gameManager.Biome;
         Player = player;
     }
 
@@ -51,7 +54,7 @@ public class CombatState : IGameState
     {
         Enemies.Clear();
         DeadEnemies.Clear();
-        Enemies = _enemyFactory.SortEnemies(_gameManager.Biome);
+        Enemies = _enemyFactory.SortEnemies(this);
     }
 
     public void PlayCard(BaseCard card, Character target)
@@ -115,6 +118,11 @@ public class CombatState : IGameState
         OnPlayerTurnStart?.Invoke();
 
         Player.OnTurnStart(this);
+
+        foreach(var enemy in Enemies)
+        {
+            enemy.Restore();
+        }
 
         CurrentPhase = CombatPhase.PlayerTurn_Action;
     }
@@ -217,5 +225,10 @@ public class CombatState : IGameState
         List<Character> allCharacters = new List<Character> { Player };
         allCharacters.AddRange(Enemies);
         return allCharacters;
+    }
+
+    public DifficultyConfig GetDifficultyConfig()
+    {
+        return _gameManager.DifficultyConfig;
     }
 }

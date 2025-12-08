@@ -31,6 +31,11 @@ public class StateFactory
         return new MainMenuState(gameManager, _playerFactory, this); 
     }
 
+    public DifficultySelectionState CreateDifficultySelectionState(GameStateManager gameManager)
+    {
+        return new DifficultySelectionState(gameManager, this);
+    }
+
     public CombatState CreateCombatState(GameStateManager gameManager, Player player)
     {
         return new CombatState(gameManager, _enemyFactory, this, player);

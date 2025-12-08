@@ -13,26 +13,26 @@ public static class DifficultyResolver
             {
                 Name = "Easy",
                 EnemyHealthMultiplier = 0.85f,
-                EnemyDamageMultiplier = 0.9f,
+                EnemyStrengthMultiplier = 0.9f,
                 EnemyDefenseMultiplier = 0.9f,
                 MinEnemyCount = 3,
-                MaxEnemyCount = 4
+                MaxEnemyCount = 3
             },
             GameDifficulty.Normal => new DifficultyConfig
             {
                 Name = "Normal",
                 EnemyHealthMultiplier = 1.0f,
-                EnemyDamageMultiplier = 1.0f,
+                EnemyStrengthMultiplier = 1.0f,
                 EnemyDefenseMultiplier = 1.0f,
                 MinEnemyCount = 3,
-                MaxEnemyCount = 5
+                MaxEnemyCount = 4
 
             },
             GameDifficulty.Hard => new DifficultyConfig
             {
                 Name = "Hard",
                 EnemyHealthMultiplier = 1.3f,
-                EnemyDamageMultiplier = 1.25f,
+                EnemyStrengthMultiplier = 1.25f,
                 EnemyDefenseMultiplier = 1.25f,
                 MinEnemyCount = 3,
                 MaxEnemyCount = 5
@@ -41,7 +41,7 @@ public static class DifficultyResolver
             {
                 Name = "Normal",
                 EnemyHealthMultiplier = 1.0f,
-                EnemyDamageMultiplier = 1.0f,
+                EnemyStrengthMultiplier = 1.0f,
                 EnemyDefenseMultiplier = 1.0f,
                 MinEnemyCount = 3,
                 MaxEnemyCount = 5
