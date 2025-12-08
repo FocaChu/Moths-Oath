@@ -1,13 +1,13 @@
 ﻿@implements IDisposable
 @using MothsOath.Core.Entities.Archetypes
-@using MothsOath.Core.StatusEffect.DiseaseEffect
+@using MothsOath.UI.Components.ArchetypesCombatUI
 
 <div class="combat-container" @onclick="CancelSelection">
     <div class="enemy-area">
         @foreach (var enemy in CombatState.Enemies)
         {
             <div class="@(GetEnemyCardClass(enemy))"
-                 @onclick="() => TargetEnemy(enemy)" @onclick:stopPropagation="true"
+                 @onclick="() => TargetCharacter(enemy)" @onclick:stopPropagation="true"
                  @onmouseover="() => OnEnemyHover(enemy)"
                  @onmouseout="() => OnEnemyOut(enemy)">
                 <p>@enemy.Name</p>
@@ -19,22 +19,16 @@
     <div class="player-area">
         <div class="player-display-area">
             <div class="@(GetPlayerCardClass())"
-                 @onclick="() => TargetPlayer()" @onclick:stopPropagation="true"
+                 @onclick="() => TargetCharacter(CombatState.Player)" @onclick:stopPropagation="true"
                  @onmouseover="OnPlayerHover"
                  @onmouseout="OnPlayerOut">
                 <p class="player-name">@CombatState.Player.Name</p>
                 <p class="player-hp">HP: @CombatState.Player.Stats.CurrentHealth / @CombatState.Player.Stats.MaxHealth</p>
-        </div>
-        @if (CombatState.Player is Doctor)
-        {
-            <div class="doctor-hud">
-                <button class="doctor-hud-btn btn btn-secondary" @onclick="ShowDisease" @onclick:stopPropagation="true">Exibir Patogeno</button>
-                <button class="doctor-hud-btn btn btn-danger" disabled="@(CombatState.Player.CurrentMana < 50 || CombatState.Player.Gold < 10)" @onclick="ToggleInfect" @onclick:stopPropagation="true">Infectar</button>
             </div>
-        }
+            
         </div>
         <div class="player-hand-container">
-            @if (selectedCard == null  && !examining)
+            @if (selectedCard == null && !examining)
             {
                 <div class="hand">
                     @foreach (var card in CombatState.Player.Hand)
@@ -47,12 +41,32 @@
             }
         </div>
         <div class="player-actions">
-            <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>           
-            <button @onclick="ExamineClicked" @onclick:stopPropagation="true">Examinar</button>
+            <div class="action-buttons">
+                <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>
+                <button @onclick="ExamineClicked" @onclick:stopPropagation="true">Examinar</button>
+            </div>
+
+            <div class="archetype-hud-container">
+                @if (CombatState.Player is Doctor)
+                {
+                    <DoctorCombatUI @ref="doctorCombatUI"
+                                    CombatState="CombatState"
+                                    OnTargetCharacter="OnArchetypeTargetCharacter"
+                                    OnCancelSelection="CancelSelection" />
+                }
+                else if (CombatState.Player is BellRinger)
+                {
+                    <BellRingerCombatUI @ref="bellRingerCombatUI"
+                                         CombatState="CombatState"
+                                         OnTargetCharacter="OnArchetypeTargetCharacter"
+                                         OnCancelSelection="CancelSelection" />
+                }
+            </div>
         </div>
     </div>
+</div>
 
-    </div> <ExaminateModal @ref="examinateModal" CharacterProfile="itemToExamine" OnClose="OnModalClosed" />
+<ExaminateModal @ref="examinateModal" CharacterProfile="itemToExamine" OnClose="OnModalClosed" />
 
 @code {
     private ExaminateModal? examinateModal;
@@ -62,11 +76,11 @@
     public CombatState CombatState { get; set; } = default!;
 
     private BaseCard? selectedCard;
-    private Enemy? hoveredEnemy;
+    private Character? hoveredCharacter;
     private bool isPlayerHovered;
     private bool examining = false;
-    private bool infecting = false;
-    private DoctorDiseaseModal? doctorDiseaseModal;
+    private DoctorCombatUI? doctorCombatUI;
+    private BellRingerCombatUI? bellRingerCombatUI;
 
     protected override void OnInitialized()
     {
@@ -89,7 +103,7 @@
     private void CancelSelection()
     {
         selectedCard = null;
-        hoveredEnemy = null;
+        hoveredCharacter = null;
         isPlayerHovered = false;
         examining = false;
         StateHasChanged();
@@ -99,25 +113,6 @@
     {
         itemToExamine = null;
         examining = false;
-        StateHasChanged();
-    }
-
-    private void ShowDisease()
-    {
-        if (CombatState.Player is Doctor doctor && doctorDiseaseModal != null)
-        {
-            doctorDiseaseModal.OpenModal(doctor.Disease);
-        }
-    }
-
-    private void ToggleInfect()
-    {
-        if (CombatState.Player.CurrentMana < 50 || CombatState.Player.Gold < 10)
-        {
-            return;
-        }
-
-        infecting = !infecting;
         StateHasChanged();
     }
 
@@ -138,105 +133,73 @@
         StateHasChanged();
     }
 
-    private void TargetEnemy(Enemy enemy)
+    private void TargetCharacter(Character character)
     {
+        if (HandleArchetypeTargetSelection(character))
+        {
+            return;
+        }
+
         if (selectedCard != null)
         {
-            CombatState.PlayCard(selectedCard, enemy);
+            CombatState.PlayCard(selectedCard, character);
             selectedCard = null;
-            hoveredEnemy = null;
+            hoveredCharacter = null;
             isPlayerHovered = false;
             StateHasChanged();
         }
-        else if(examining)
+        else if (examining)
         {
-            itemToExamine = enemy;
+            itemToExamine = character;
             if (examinateModal != null)
             {
                 examinateModal.OpenModal(itemToExamine);
             }
-        }
-        else if (infecting)
-        {
-            if (CombatState.Player is Doctor doctor)
-            {
-                if (CombatState.Player.CurrentMana < 50 || CombatState.Player.Gold < 10)
-                {
-                    infecting = false;
-                    StateHasChanged();
-                    return;
-                }
-
-                // pay costs
-                CombatState.Player.CurrentMana -= 50;
-                CombatState.Player.Gold -= 10;
-
-                doctor.Infect(enemy);
-            }
-
-            infecting = false;
-            StateHasChanged();
         }
     }
 
-    private void TargetPlayer()
+    private void OnArchetypeTargetCharacter(Character character)
     {
-        if (selectedCard != null)
-        {
-            CombatState.PlayCard(selectedCard, CombatState.Player);
-            selectedCard = null;
-            hoveredEnemy = null;
-            isPlayerHovered = false;
-            StateHasChanged();
-        }
-        else if(examining)
-        {
-            itemToExamine = CombatState.Player;
-            if (examinateModal != null)
-            {
-                examinateModal.OpenModal(itemToExamine);
-            }
-        }
-        else if (infecting)
-        {
-            if (CombatState.Player is Doctor doctor)
-            {
-                if (CombatState.Player.CurrentMana <= 50 || CombatState.Player.Gold <= 10)
-                {
-                    infecting = false;
-                    StateHasChanged();
-                    return;
-                }
+        HandleArchetypeTargetSelection(character);
+    }
 
-                doctor.Infect(CombatState.Player);
-            }
-
-            infecting = false;
-            StateHasChanged();
+    private bool HandleArchetypeTargetSelection(Character character)
+    {
+        if (CombatState.Player is Doctor && doctorCombatUI != null && doctorCombatUI.IsInInfectMode())
+        {
+            doctorCombatUI.HandleTargetSelection(character);
+            return true;
         }
+        
+        if(CombatState.Player is BellRinger && bellRingerCombatUI != null && bellRingerCombatUI.IsInBellRingMode())
+        {
+            bellRingerCombatUI.HandleTargetSelection(character);
+            return true;
+        }
+        return false;
     }
 
     private void OnEnemyHover(Enemy enemy)
     {
-        if (selectedCard != null || infecting)
+        if (selectedCard != null || IsArchetypeAbilityActive())
         {
-            hoveredEnemy = enemy;
+            hoveredCharacter = enemy;
             StateHasChanged();
         }
     }
 
     private void OnEnemyOut(Enemy enemy)
     {
-        if (hoveredEnemy == enemy)
+        if (hoveredCharacter == enemy)
         {
-            hoveredEnemy = null;
+            hoveredCharacter = null;
             StateHasChanged();
         }
     }
 
     private void OnPlayerHover()
     {
-        if (selectedCard != null || infecting)
+        if (selectedCard != null || IsArchetypeAbilityActive())
         {
             isPlayerHovered = true;
             StateHasChanged();
@@ -252,14 +215,23 @@
         }
     }
 
+    private bool IsArchetypeAbilityActive()
+    {
+        if (CombatState.Player is Doctor && doctorCombatUI != null)
+        {
+            return doctorCombatUI.IsInInfectMode();
+        }
+        return false;
+    }
+
     private string GetPlayerCardClass()
     {
         var classes = "player-card";
-        if (selectedCard != null || infecting)
+        if (selectedCard != null || IsArchetypeAbilityActive())
         {
             classes += " selectable";
         }
-        if (isPlayerHovered && (selectedCard != null || infecting))
+        if (isPlayerHovered && (selectedCard != null || IsArchetypeAbilityActive()))
         {
             classes += " hovered";
         }
@@ -269,16 +241,14 @@
     private string GetEnemyCardClass(Enemy enemy)
     {
         var classes = "enemy-card";
-        if (selectedCard != null || infecting)
+        if (selectedCard != null || IsArchetypeAbilityActive())
         {
             classes += " selectable";
         }
-        if (hoveredEnemy == enemy && (selectedCard != null || infecting))
+        if (hoveredCharacter == enemy && (selectedCard != null || IsArchetypeAbilityActive()))
         {
             classes += " hovered";
         }
         return classes;
     }
 }
-
-<DoctorDiseaseModal @ref="doctorDiseaseModal" />

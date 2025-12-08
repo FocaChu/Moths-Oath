@@ -5,7 +5,7 @@ using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect;
 
-public class EchoEffect : BaseStatusEffect, ITurnStartReactor
+public class EchoStatusEffect : BaseStatusEffect, ITurnStartReactor
 {
     public override string Id { get; set; } = "echo_effect";
 
@@ -23,9 +23,9 @@ public class EchoEffect : BaseStatusEffect, ITurnStartReactor
 
     public BaseStatusEffect _echoedEffect { get; set; }
 
-    public EchoEffect(BaseStatusEffect echoedEffect)
+    public EchoStatusEffect(BaseStatusEffect echoedEffect)
     {
-        _echoedEffect = echoedEffect;
+        _echoedEffect = echoedEffect.Clone();
         Id = $"echo_of_{echoedEffect.Id}";
         Name = $"Eco de {_echoedEffect.Name}";
         Description = $"Um eco de um {_echoedEffect.Name}.";

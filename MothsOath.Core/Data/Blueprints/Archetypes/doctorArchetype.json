@@ -7,7 +7,7 @@
   "BonusStamina": 0,
   "BonusStrength": 0,
   "BonusKnowledge": 3,
-  "BonusResistance": 1,
+  "BonusDefense": 1,
   "BonusRegeneration": 2,
   "InitialGold": 15,
   "StartingCardIds": [ "toxic_jab_card", "heal_card", "sharp_cut_card" ]

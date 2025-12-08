@@ -16,7 +16,7 @@ public class SpikesPassive : BasePassiveEffect, IDamageReceivedReactor
     {
         if (plan.CanProceed && plan.FinalDamageAmount > 0)
         {
-            int spikeDamage = (int)(target.Stats.TotalResistance / 2) + (int)(target.Stats.TotalStrength / 4);
+            int spikeDamage = (int)(target.Stats.TotalDefense / 2) + (int)(target.Stats.TotalStrength / 4);
 
             var damagePlan = new DamagePlan(spikeDamage, true);
 

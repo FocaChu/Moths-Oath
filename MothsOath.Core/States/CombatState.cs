@@ -35,7 +35,7 @@ public class CombatState : IGameState
         GenerateEnemies();
 
         Console.WriteLine("New Combat Started!");
-        Console.WriteLine($"Player: S:{Player.Stats.BaseStrength} R:{Player.Stats.BaseResistance}");
+        Console.WriteLine($"Player: S:{Player.Stats.BaseStrength} R:{Player.Stats.BaseDefense}");
 
         StartPlayerTurn();
     }

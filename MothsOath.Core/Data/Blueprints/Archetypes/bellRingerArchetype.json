@@ -1,0 +1,14 @@
+{
+  "Id": "bell_ringer",
+  "Name": "Sineiro",
+  "Description": "Mestre em controle de multidões e suporte, o Sineiro utiliza seu sino para desorientar inimigos e proteger aliados.",
+  "BonusHealth": 15,
+  "BonusMana": 5,
+  "BonusStamina": 5,
+  "BonusStrength": 0,
+  "BonusKnowledge": 1,
+  "BonusDefense": 2,
+  "BonusRegeneration": 2,
+  "InitialGold": 10,
+  "StartingCardIds": [ "heal_card", "heal_card", "echo_of_misfortune_card" ]
+}

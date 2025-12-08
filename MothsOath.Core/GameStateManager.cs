@@ -1,4 +1,6 @@
 ﻿using MothsOath.Core.Factories;
+using MothsOath.Core.Models.DifficultyConfig;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core;
@@ -8,6 +10,10 @@ public class GameStateManager
     public StateFactory StateFactory;
 
     public string Biome { get; set; } = "forest_biome";
+
+    public GameDifficulty Difficulty { get; set; } = GameDifficulty.Normal;
+
+    public DifficultyConfig DifficultyConfig { get; set; }
 
     public IGameState CurrentState { get; private set; } 
 

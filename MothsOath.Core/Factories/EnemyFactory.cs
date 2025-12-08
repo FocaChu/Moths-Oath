@@ -33,7 +33,7 @@ public class EnemyFactory
             CurrentHealth = blueprint.MaxHealth,
             BaseStrength = blueprint.BaseStrength,
             BaseKnowledge = blueprint.BaseKnowledge,
-            BaseResistance = blueprint.BaseResistance,
+            BaseDefense = blueprint.BaseDefense,
             Regeneration = blueprint.BaseRegeneration,
         };
 

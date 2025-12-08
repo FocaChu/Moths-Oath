@@ -20,7 +20,7 @@ public class RaceBlueprint : IBlueprint
 
     public int BaseKnowledge { get; set; } = 10;
 
-    public int BaseResistance { get; set; } = 1;
+    public int BaseDefense { get; set; } = 1;
 
     public int BaseRegeneration { get; set; } = 0;
 

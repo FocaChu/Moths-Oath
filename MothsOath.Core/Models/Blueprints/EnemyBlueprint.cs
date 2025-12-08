@@ -16,7 +16,7 @@ public class EnemyBlueprint : IBlueprint
 
     public int BaseKnowledge { get; set; }
 
-    public int BaseResistance { get; set; }
+    public int BaseDefense { get; set; }
 
     public int BaseRegeneration { get; set; }
 

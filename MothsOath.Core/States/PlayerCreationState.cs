@@ -5,6 +5,7 @@ using MothsOath.Core.Models.Blueprints;
 using MothsOath.Core.Services;
 using MothsOath.Core.StatusEffect.DiseaseEffect;
 using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
+using System.Numerics;
 
 namespace MothsOath.Core.States;
 
@@ -58,15 +59,34 @@ public class PlayerCreationState : IGameState
     {
         var player = _playerFactory.CreatePlayer(PlayerName, SelectedRace.Id, SelectedArchetype.Id);
 
-        if (player.Archetype == "Doutor")
-        {
-            var doctorCreationState = _gameManager.StateFactory.CreateDoctorCreationState(_gameManager, player);
-            _gameManager.TransitionToState(doctorCreationState);
-            return;
-        }
 
-        var combatState = _gameManager.StateFactory.CreateCombatState(_gameManager, player);
+        switch (player.Archetype)
+        {
+            case "Sineiro":
+                Console.WriteLine("Você criou um Sineiro!");
+                CreateBellRinger(player);
+                break;
+            case "Doutor":
+                CreateDoctor(player);
+                break;
+            default:
+                var combatState = _gameManager.StateFactory.CreateCombatState(_gameManager, player);
+                _gameManager.TransitionToState(combatState);
+                break;
+        }
+    }
+
+    private void CreateBellRinger(Player player)
+    {
+        var bellRinger = new BellRinger(player);
+        var combatState = _gameManager.StateFactory.CreateCombatState(_gameManager, bellRinger);
         _gameManager.TransitionToState(combatState);
+    }
+
+    private void CreateDoctor(Player player)
+    {
+        var doctorCreationState = _gameManager.StateFactory.CreateDoctorCreationState(_gameManager, player);
+        _gameManager.TransitionToState(doctorCreationState);
     }
 
     public void GoBackToMenu()

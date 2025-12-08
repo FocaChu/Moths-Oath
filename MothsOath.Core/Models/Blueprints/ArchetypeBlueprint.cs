@@ -20,7 +20,7 @@ public class ArchetypeBlueprint : IBlueprint
 
     public int BonusKnowledge { get; set; } = 0;
 
-    public int BonusResistance { get; set; } = 0;
+    public int BonusDefense { get; set; } = 0;
 
     public int BonusRegeneration { get; set; } = 0;
 

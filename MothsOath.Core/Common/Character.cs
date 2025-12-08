@@ -185,7 +185,7 @@ public abstract class Character
                 return baseAmount;
             }
 
-            baseAmount -= Stats.TotalResistance;
+            baseAmount -= Stats.TotalDefense;
 
             if (Stats.Shield > 0)
             {

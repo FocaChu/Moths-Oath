@@ -1,2 +1,16 @@
-﻿body {
+﻿.doctor-hud {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.doctor-hud-btn {
+    min-width: 120px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+}
+
+@media (max-width: 520px) {
+    .doctor-hud { flex-direction: column; }
+    .doctor-hud-btn { min-width: 100%; }
 }

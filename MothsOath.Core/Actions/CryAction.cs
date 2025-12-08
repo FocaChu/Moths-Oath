@@ -17,7 +17,7 @@ public class CryAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.Stats.BonusResistance -= (int)(context.Source.Stats.BaseKnowledge /2) + 1;
+        target.Stats.BonusDefense -= (int)(context.Source.Stats.BaseKnowledge /2) + 1;
 
         Console.WriteLine($"{context.Source.Name} lets out a heartfelt cry on {target.Name}!");
     }

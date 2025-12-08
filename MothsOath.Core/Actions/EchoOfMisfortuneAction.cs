@@ -30,7 +30,7 @@ public class EchoOfMisfortuneAction : BaseAction
         if (statusEffect == null)
             return;
 
-        var echoEffect = new EchoEffect(statusEffect.Clone());
+        var echoEffect = new EchoStatusEffect(statusEffect.Clone());
         var effectPlan = new StatusEffectPlan(echoEffect);
 
         if (context.CanOutgoingModifiers)
@@ -46,7 +46,7 @@ public class EchoOfMisfortuneAction : BaseAction
 
     public override bool ValidateStatusEffectPlan(ActionContext context, StatusEffectPlan plan)
     {
-        var echo = plan.StatusEffect as EchoEffect;
+        var echo = plan.StatusEffect as EchoStatusEffect;
 
         if (echo == null || echo._echoedEffect == null || !echo._echoedEffect.IsActive() || !context.CanProceed)
             return false;

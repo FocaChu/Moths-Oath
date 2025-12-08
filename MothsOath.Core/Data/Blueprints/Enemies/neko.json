@@ -5,7 +5,7 @@
   "Maxhealth": 67,
   "BaseStrength": 13,
   "BaseKnowledge": 5,
-  "BaseResistance": 2,
+  "BaseDefense": 2,
   "BaseRegeneration": 1,
   "PassiveEffectIds": [],
   "NormalBehaviorId": "target_only_player_behavior",

@@ -17,8 +17,6 @@ public class Doctor : Player
 
     public Doctor(Player player, DiseaseEffect? disease = null)
     {
-        if (player == null) throw new ArgumentNullException(nameof(player));
-
         this.Id = player.Id;
 
         this.Name = player.Name;
@@ -33,8 +31,8 @@ public class Doctor : Player
             BonusStrength = s.BonusStrength,
             BaseKnowledge = s.BaseKnowledge,
             BonusKnowledge = s.BonusKnowledge,
-            BaseResistance = s.BaseResistance,
-            BonusResistance = s.BonusResistance,
+            BaseDefense = s.BaseDefense,
+            BonusDefense = s.BonusDefense,
             Shield = s.Shield,
             Regeneration = s.Regeneration
         };

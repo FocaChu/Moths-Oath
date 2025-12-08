@@ -17,9 +17,9 @@ public class Stats
     public int TotalKnowledge => BaseKnowledge + BonusKnowledge;
 
 
-    public int BaseResistance { get; set; }
-    public int BonusResistance { get; set; } = 0;
-    public int TotalResistance => BaseResistance + BonusResistance;
+    public int BaseDefense { get; set; }
+    public int BonusDefense { get; set; } = 0;
+    public int TotalDefense => BaseDefense + BonusDefense;
 
 
     public int Shield { get; set; } = 0;

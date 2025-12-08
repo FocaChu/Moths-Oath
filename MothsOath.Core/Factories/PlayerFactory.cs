@@ -29,7 +29,7 @@ public class PlayerFactory
             CurrentHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 100,
             BaseStrength = raceBlueprint.BaseStrength + archetypeBlueprint.BonusStrength + 1,
             BaseKnowledge = raceBlueprint.BaseKnowledge + archetypeBlueprint.BonusKnowledge + 1,
-            BaseResistance = raceBlueprint.BaseResistance + archetypeBlueprint.BonusResistance + 1,
+            BaseDefense = raceBlueprint.BaseDefense + archetypeBlueprint.BonusDefense + 1,
             Regeneration = raceBlueprint.BaseRegeneration + archetypeBlueprint.BonusRegeneration,
         };
 

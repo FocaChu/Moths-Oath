@@ -1,5 +1,101 @@
-﻿<h3>DoctorCombatUI</h3>
+﻿@implements IDisposable
+@using MothsOath.Core.Entities.Archetypes
+@using MothsOath.Core.StatusEffect.DiseaseEffect
+@using MothsOath.Core.States
+@using MothsOath.Core.Common
+
+<div class="doctor-hud">
+    <button class="doctor-hud-btn btn btn-secondary" @onclick="ShowDisease" @onclick:stopPropagation="true">Exibir Patógeno</button>
+    <button class="doctor-hud-btn btn btn-danger" 
+            disabled="@(!CanUseInfectAbility)" 
+            @onclick="ToggleInfect" 
+            @onclick:stopPropagation="true">Infectar</button>
+</div>
+
+<DoctorDiseaseModal @ref="doctorDiseaseModal" />
 
 @code {
+    [Parameter]
+    public CombatState CombatState { get; set; } = default!;
 
+    [Parameter]
+    public Action<Character>? OnTargetCharacter { get; set; }
+
+    [Parameter]
+    public Action? OnCancelSelection { get; set; }
+
+    private DoctorDiseaseModal? doctorDiseaseModal;
+    private bool infecting = false;
+    private bool abilityUsedThisTurn = false;
+
+    protected override void OnInitialized()
+    {
+        if (CombatState != null)
+        {
+            CombatState.OnPlayerTurnStart += ResetAbilityUsage;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (CombatState != null)
+        {
+            CombatState.OnPlayerTurnStart -= ResetAbilityUsage;
+        }
+    }
+
+    private void ResetAbilityUsage()
+    {
+        abilityUsedThisTurn = false;
+        infecting = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private bool CanUseInfectAbility => 
+        CombatState.Player is Doctor doctor &&
+        doctor.CurrentMana >= 50 &&
+        doctor.Gold >= 10 &&
+        !abilityUsedThisTurn;
+
+    private void ShowDisease()
+    {
+        if (CombatState.Player is Doctor doctor && doctorDiseaseModal != null)
+        {
+            doctorDiseaseModal.OpenModal(doctor.Disease);
+        }
+    }
+
+    private void ToggleInfect()
+    {
+        if (!CanUseInfectAbility)
+        {
+            return;
+        }
+
+        infecting = !infecting;
+        StateHasChanged();
+    }
+
+    public void HandleTargetSelection(Character target)
+    {
+        if (!infecting || CombatState.Player is not Doctor doctor)
+        {
+            return;
+        }
+
+        if (doctor.CurrentMana < 50 || doctor.Gold < 10)
+        {
+            infecting = false;
+            StateHasChanged();
+            return;
+        }
+
+        doctor.Infect(target);
+        abilityUsedThisTurn = true;
+        infecting = false;
+        
+        StateHasChanged();
+    }
+
+    public bool IsInInfectMode() => infecting;
 }
