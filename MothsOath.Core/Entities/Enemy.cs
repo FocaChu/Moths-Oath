@@ -24,6 +24,10 @@ public class Enemy : Character
 
     public bool CanUseSpecial => CurrentCooldown <= 0;
 
+    public int BaseXp { get; set; }
+
+    public int BaseGold { get; set; }
+
 
     public List<Character> GetTargets(CombatState gameState)
     {

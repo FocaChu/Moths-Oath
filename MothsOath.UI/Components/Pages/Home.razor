@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @inject GameStateManager GameManager
 @using MothsOath.UI.Components.States
+@using MothsOath.Core.States
 
 <PageTitle>Moth's Oath</PageTitle>
 
@@ -24,6 +25,10 @@ else if (GameManager.CurrentState is DoctorCreationState doctorState)
 else if (GameManager.CurrentState is CombatState combatState)
 {
     <CombatUI CombatState="combatState" />
+}
+else if (GameManager.CurrentState is CombatResultState resultState)
+{
+    <CombatResultUI ResultState="resultState" />
 }
 else
 {

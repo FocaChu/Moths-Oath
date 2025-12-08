@@ -1,0 +1,50 @@
+
+.levelup-backdrop, .result-modal-backdrop {
+    position: fixed;
+    inset: 0; 
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.levelup-modal, .result-modal {
+    background: #111;
+    color: #fff;
+    padding: 1.25rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    max-width: 95%;
+}
+
+.result-modal { width: 440px; }
+.levelup-modal { width: 560px; }
+
+.levelup-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.levelup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.levelup-actions, .result-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.6rem;
+    justify-content: flex-end;
+}
+
+.controls { display:flex; gap:0.5rem; align-items:center; }
+.added { color:#aaffaa; }
+
+@media (max-width: 600px) {
+    .result-modal { width: 92%; }
+    .levelup-modal { width: 92%; }
+}

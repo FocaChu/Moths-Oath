@@ -1,0 +1,54 @@
+@using MothsOath.Core.States
+@using MothsOath.Core.Entities
+@implements IDisposable
+
+<div class="result-modal-backdrop">
+    <div class="result-modal">
+        <h2>Resultado do Combate</h2>
+        <p>XP recebido: @ResultState.TotalXp</p>
+        <p>Ouro recebido: @ResultState.TotalGold</p>
+        <p>Turnos: @ResultState.TurnCount</p>
+        <p>Inimigos derrotados: @ResultState.EnemiesDefeated</p>
+
+        <div class="result-actions">
+            <button @onclick="ContinueClicked">Continuar</button>
+        </div>
+    </div>
+</div>
+
+@if (showLevelUp)
+{
+    <LevelUpModal Player="ResultState.Player" OnConfirmed="OnLevelUpConfirmed" />
+}
+
+@code {
+    [Parameter]
+    public CombatResultState ResultState { get; set; } = default!;
+
+    private bool showLevelUp = false;
+
+    protected override void OnInitialized()
+    {
+    }
+
+    private void ContinueClicked()
+    {
+        if (ResultState.Player.LevelUpPoints > 0)
+        {
+            showLevelUp = true;
+            StateHasChanged();
+            return;
+        }
+
+        ResultState.ConfirmAndContinue();
+    }
+
+    private void OnLevelUpConfirmed()
+    {
+        ResultState.ConfirmAndContinue();
+    }
+
+    public void Dispose()
+    {
+    }
+}

@@ -41,6 +41,11 @@ public class StateFactory
         return new CombatState(gameManager, _enemyFactory, this, player);
     }
 
+    public CombatResultState CreateCombatResultState(GameStateManager gameManager, Player player, int totalXp, int totalGold, int turnCount, int enemiesDefeated)
+    {
+        return new CombatResultState(gameManager, this, player, totalXp, totalGold, turnCount, enemiesDefeated);
+    }
+
     public PlayerCreationState CreatePlayerCreationState(GameStateManager gameManager)
     {
         return new PlayerCreationState(gameManager, _playerFactory, _blueprintLoader);

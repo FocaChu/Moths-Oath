@@ -19,6 +19,12 @@ public class CombatState : IGameState
     public List<Enemy> Enemies { get; private set; } = new List<Enemy>();
     public List<Enemy> DeadEnemies { get; private set; } = new List<Enemy>();
 
+    public int TurnCount { get; private set; } = 0;
+    public int EnemiesDefeatedCount { get; private set; } = 0;
+
+    public int TotalXPReward { get; set; }
+    public int TotalGoldReward { get; set; }
+
     public event Action OnPlayerTurnStart;
     public event Action OnEnemyTurnStart;
     public event Action OnCombatStateChanged;
@@ -82,6 +88,10 @@ public class CombatState : IGameState
         {
             foreach (var defeated in defeatedEnemies)
             {
+                this.TotalGoldReward += defeated.BaseGold;
+                this.TotalXPReward += defeated.BaseXp;
+                this.EnemiesDefeatedCount++;
+
                 Enemies.Remove(defeated);
                 DeadEnemies.Add(defeated);
                 Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado!");
@@ -96,8 +106,14 @@ public class CombatState : IGameState
         if (Enemies.Count == 0)
         {
             Console.WriteLine("VITÓRIA!");
-            var nextState = _stateFactory.CreateMainMenuState(_gameManager);
-            _gameManager.TransitionToState(nextState);
+            Player.GainXp(TotalXPReward);
+            Player.Gold += TotalGoldReward;
+
+            var resultState = _stateFactory.CreateCombatResultState(_gameManager, Player, TotalXPReward, TotalGoldReward, TurnCount, EnemiesDefeatedCount);
+            _gameManager.TransitionToState(resultState);
+
+            this.TotalXPReward = 0;
+            this.TotalGoldReward = 0;
         }
         else if (!Player.Stats.IsAlive)
         {
@@ -109,6 +125,7 @@ public class CombatState : IGameState
 
     private void StartPlayerTurn()
     {
+        TurnCount++;
         ApplyStatusEffectsAtTurnStart();
         CheckFadingStatusEffects();
 

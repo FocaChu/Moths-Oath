@@ -43,6 +43,8 @@ public class EnemyFactory
             Name = blueprint.Name,
             BiomeId = blueprint.BiomeId,
             Stats = stats,
+            BaseXp = blueprint.BaseXp,
+            BaseGold = blueprint.BaseGold,  
             PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
             NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
             SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),

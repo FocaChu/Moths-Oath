@@ -10,6 +10,10 @@ public class EnemyBlueprint : IBlueprint
 
     public string Name { get; set; } = "dummy";
 
+    public int BaseXp { get; set; }
+
+    public int BaseGold { get; set; }
+
     public int MaxHealth { get; set; }
 
     public int BaseStrength { get; set; }

@@ -1,0 +1,24 @@
+.result-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.result-modal {
+    background: #111;
+    color: #fff;
+    padding: 1.25rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    width: 440px;
+}
+
+.result-actions { display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1rem; }
+
+@media (max-width: 600px) {
+    .result-modal { width: 92%; }
+}

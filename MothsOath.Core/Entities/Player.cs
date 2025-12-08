@@ -19,6 +19,14 @@ public class Player : Character
 
     public float XpMultiplier { get; set; } = 1;
 
+    public int Level { get; set; } = 1;
+
+    public int LevelUpPoints { get; set; } = 0;
+
+    public int Xp { get; set; } = 0;
+
+    public int XpToNextLevel { get; set; } = 100;
+
     public int CardsByTurn { get; set; } = 5;
 
     public List<BaseCard> Deck { get; private set; } = new List<BaseCard>();
@@ -111,5 +119,26 @@ public class Player : Character
 
         this.CurrentMana = this.MaxMana;
         this.CurrentStamina = this.MaxStamina;
+    }
+
+    public void GainXp(int amount)
+    {
+        Xp += (int)(amount * XpMultiplier);
+        while (Xp >= XpToNextLevel)
+        {
+            Xp -= XpToNextLevel;
+            LevelUp();
+        }
+    }
+
+    private void LevelUp()
+    {
+        Level++;
+        LevelUpPoints++;
+        this.Stats.MaxHealth += 5;
+        this.Stats.CurrentHealth = this.Stats.MaxHealth;
+
+        XpToNextLevel = (int)(XpToNextLevel * 1.5);
+        Console.WriteLine($"Player leveled up to level {Level}!");
     }
 }

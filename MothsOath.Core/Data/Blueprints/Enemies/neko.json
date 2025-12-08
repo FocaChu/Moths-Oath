@@ -1,6 +1,8 @@
 {
   "Id": "neko",
   "Name": "Neko",
+  "BaseXp": 40,
+  "BaseGold": 15,
   "BiomeId": "forest_biome",
   "Maxhealth": 67,
   "BaseStrength": 13,

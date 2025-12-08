@@ -1,0 +1,118 @@
+@using MothsOath.Core.Entities
+@implements IDisposable
+
+<div class="levelup-backdrop">
+    <div class="levelup-modal">
+        <h3>Distribuir Pontos de Level Up (@availablePoints restantes)</h3>
+
+        <div class="levelup-grid">
+            <div class="levelup-row">
+                <div>Vida - @lifeDisplay</div>
+                <div class="controls">
+                    <button @onclick='() => AddPointTo("life")'>+</button>
+                    <span class="added">@lifeAdded</span>
+                </div>
+            </div>
+            <div class="levelup-row">
+                <div>Força - @(Player.Stats.BaseStrength + strengthAdded)</div>
+                <div class="controls">
+                    <button @onclick='() => AddPointTo("strength")'>+</button>
+                    <span class="added">@strengthAdded</span>
+                </div>
+            </div>
+            <div class="levelup-row">
+                <div>Inteligência - @(Player.Stats.BaseKnowledge + knowledgeAdded)</div>
+                <div class="controls">
+                    <button @onclick='() => AddPointTo("knowledge")'>+</button>
+                    <span class="added">@knowledgeAdded</span>
+                </div>
+            </div>
+            <div class="levelup-row">
+                <div>Defesa - @(Player.Stats.BaseDefense + defenseAdded)</div>
+                <div class="controls">
+                    <button @onclick='() => AddPointTo("defense")'>+</button>
+                    <span class="added">@defenseAdded</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="levelup-actions">
+            <button @onclick="ClearSelections">Limpar</button>
+            <button @onclick="Confirm">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Player Player { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnConfirmed { get; set; }
+
+    private int availablePoints = 0;
+
+    private int lifeAdded = 0;
+    private int strengthAdded = 0;
+    private int knowledgeAdded = 0;
+    private int defenseAdded = 0;
+
+    private string lifeDisplay => (Player.Stats.MaxHealth + lifeAdded * 5).ToString();
+
+    protected override void OnInitialized()
+    {
+        availablePoints = Player.LevelUpPoints;
+    }
+
+    private void AddPointTo(string attr)
+    {
+        if (availablePoints <= 0) return;
+
+        switch (attr)
+        {
+            case "life":
+                lifeAdded++;
+                availablePoints--;
+                break;
+            case "strength":
+                strengthAdded++;
+                availablePoints--;
+                break;
+            case "knowledge":
+                knowledgeAdded++;
+                availablePoints--;
+                break;
+            case "defense":
+                defenseAdded++;
+                availablePoints--;
+                break;
+        }
+    }
+
+    private void ClearSelections()
+    {
+        availablePoints = Player.LevelUpPoints;
+        lifeAdded = strengthAdded = knowledgeAdded = defenseAdded = 0;
+    }
+
+    private async Task Confirm()
+    {
+        if (lifeAdded > 0)
+        {
+            Player.Stats.MaxHealth += 5 * lifeAdded;
+        }
+
+        Player.Stats.BaseStrength += strengthAdded;
+        Player.Stats.BaseKnowledge += knowledgeAdded;
+        Player.Stats.BaseDefense += defenseAdded;
+
+        Player.LevelUpPoints -= (lifeAdded + strengthAdded + knowledgeAdded + defenseAdded);
+
+        if (OnConfirmed.HasDelegate)
+        {
+            await OnConfirmed.InvokeAsync();
+        }
+    }
+
+    public void Dispose() { }
+}
