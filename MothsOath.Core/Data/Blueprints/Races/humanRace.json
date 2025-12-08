@@ -7,7 +7,7 @@
   "BaseStamina": 100,
   "BaseStrength": 5,
   "BaseKnowledge": 5,
-  "BaseResistance": 1,
+  "BaseResistance": 2,
   "BaseRegeneration": 0,
   "BonusXpMultiplier": 0.1,
   "PassiveDescription": "Ganho de Experiência aumentado em 10%.",

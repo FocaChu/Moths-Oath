@@ -200,12 +200,12 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor, ITurnStartReacto
         }
     }
 
-    public void OnStatusEffectReceived(ActionContext context, StatusEffectPlan plan, Character target)
+    public void OnStatusEffectApplied(ActionContext context, StatusEffectPlan plan, Character target)
     {
-        var effects = Symptoms.OfType<IStatusEffectRecievedReactor>().ToList();
+        var effects = Symptoms.OfType<IStatusEffectAppliedReactor>().ToList();
         foreach (var effect in effects)
         {
-            effect.OnStatusEffectReceived(context, plan, target);
+            effect.OnStatusEffectApplied(context, plan, target);
         }
     }
 

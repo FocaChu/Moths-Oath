@@ -1,4 +1,5 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.EffectInterfaces;
 using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
@@ -46,6 +47,8 @@ public class CombatState : IGameState
         Console.WriteLine("New Combat Started!");
         Console.WriteLine($"Player: S:{Player.Stats.BaseStrength} R:{Player.Stats.BaseDefense}");
 
+        ApplyOnCombatStartPassives();
+
         StartPlayerTurn();
     }
 
@@ -61,6 +64,24 @@ public class CombatState : IGameState
         Enemies.Clear();
         DeadEnemies.Clear();
         Enemies = _enemyFactory.SortEnemies(this);
+    }
+
+    private void ApplyOnCombatStartPassives()
+    {
+        var playerOnStartPassives = Player.PassiveEffects.OfType<ICombatStartReactor>().ToList();
+        foreach (var effect in playerOnStartPassives)
+        {
+            effect.OnCombatStart(Player, this);
+        }
+
+        foreach (var enemy in Enemies)
+        {
+            var enemyOnStartPassives = enemy.PassiveEffects.OfType<ICombatStartReactor>().ToList();
+            foreach (var effect in enemyOnStartPassives)
+            {
+                effect.OnCombatStart(enemy, this);
+            }
+        }
     }
 
     public void PlayCard(BaseCard card, Character target)

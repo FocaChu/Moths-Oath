@@ -24,6 +24,13 @@ public abstract class BaseAction
         {
             effect.ModifyOutgoingDamage(context, plan);
         }
+
+        var damagePassiveModifiers = context.Source.PassiveEffects.OfType<IOutgoingDamageModifier>().ToList();
+        foreach (var effect in damagePassiveModifiers)
+        {
+            effect.ModifyOutgoingDamage(context, plan);
+        }
+
         return plan;
     }
 
@@ -39,6 +46,13 @@ public abstract class BaseAction
         {
             effect.ModifyOutgoingHealing(context, plan);
         }
+
+        var healPassiveModifiers = context.Source.PassiveEffects.OfType<IOutgoingHealingModifier>().ToList();
+        foreach (var effect in healPassiveModifiers)
+        {
+            effect.ModifyOutgoingHealing(context, plan);
+        }
+
         return plan;
     }
 
@@ -54,6 +68,13 @@ public abstract class BaseAction
         {
             effect.ModifyOutgoingStatusEffect(context, plan);
         }
+
+        var statusEffectPassiveModifiers = context.Source.PassiveEffects.OfType<IOutgoingStatusEffectModifier>().ToList();
+        foreach (var effect in statusEffectPassiveModifiers)
+        {
+            effect.ModifyOutgoingStatusEffect(context, plan);
+        }
+
         return plan;
     }
 

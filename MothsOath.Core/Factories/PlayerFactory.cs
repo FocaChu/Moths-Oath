@@ -1,6 +1,7 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Blueprints;
+using MothsOath.Core.PassiveEffects;
 using MothsOath.Core.Services;
 
 namespace MothsOath.Core.Factories;
@@ -9,11 +10,13 @@ public class PlayerFactory
 {
     private readonly Dictionary<string, RaceBlueprint> _raceBlueprints;
     private readonly Dictionary<string, ArchetypeBlueprint> _archetypeBlueprints;
+    private readonly PassiveEffectFactory _passiveEffectFactory;
     private readonly CardFactory _cardFactory;
 
-    public PlayerFactory(CardFactory cardFactory, BlueprintLoader blueprintLoader)
+    public PlayerFactory(CardFactory cardFactory, PassiveEffectFactory passiveEffectFactory, BlueprintLoader blueprintLoader)
     {
         _cardFactory = cardFactory;
+        _passiveEffectFactory = passiveEffectFactory;
         _raceBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<RaceBlueprint>("Races");
         _archetypeBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<ArchetypeBlueprint>("Archetypes");
     }
@@ -25,8 +28,8 @@ public class PlayerFactory
 
         var stats = new Stats
         {
-            MaxHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 100,
-            CurrentHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 100,
+            MaxHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 25,
+            CurrentHealth = raceBlueprint.BaseHealth + archetypeBlueprint.BonusHealth + 25,
             BaseStrength = raceBlueprint.BaseStrength + archetypeBlueprint.BonusStrength + 1,
             BaseKnowledge = raceBlueprint.BaseKnowledge + archetypeBlueprint.BonusKnowledge + 1,
             BaseDefense = raceBlueprint.BaseDefense + archetypeBlueprint.BonusDefense + 1,
@@ -45,6 +48,14 @@ public class PlayerFactory
             Gold = 100 + archetypeBlueprint.InitialGold,
             XpMultiplier = 1 + raceBlueprint.BonusXpMultiplier,
         };
+
+        if (raceBlueprint.PassiveEffectId != null)
+        {
+            var racePassive = _passiveEffectFactory.GetPassiveEffect(raceBlueprint.PassiveEffectId);
+
+            if (racePassive != null && racePassive is not NullPassiveEffect)
+                player.PassiveEffects.Add(racePassive);
+        }
 
         List<string> allCardsId = new List<string>();
         allCardsId.AddRange(raceBlueprint.StartingCardIds);

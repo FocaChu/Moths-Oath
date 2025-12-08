@@ -47,6 +47,13 @@ public abstract class Character
             {
                 modifier.ModifyIncomingDamage(context, plan, this);
             }
+
+            var incomingPassiveModifiers = this.PassiveEffects.OfType<IIncomingDamageModifier>().ToList();
+
+            foreach (var modifier in incomingPassiveModifiers)
+            {
+                modifier.ModifyIncomingDamage(context, plan, this);
+            }
         }
 
         plan.FinalDamageAmount = CalculateDamageAmount(plan.FinalDamageAmount, plan.BypassResistance);
@@ -64,6 +71,13 @@ public abstract class Character
             {
                 effect.OnDamageReceived(context, plan, this);
             }
+
+            var damagePassiveReactors = this.PassiveEffects.OfType<IDamageReceivedReactor>().ToList();
+
+            foreach (var effect in damagePassiveReactors)
+            {
+                effect.OnDamageReceived(context, plan, this);
+            }
         }
 
         if (!context.CanDealtReactors)
@@ -72,6 +86,13 @@ public abstract class Character
         var sourceDamageReactors = context.Source.StatusEffects.OfType<IDamageDealtReactor>().ToList();
 
         foreach (var effect in sourceDamageReactors)
+        {
+            effect.OnDamageDealt(context, plan, this);
+        }
+
+        var sourceDamagePassiveReactors = context.Source.PassiveEffects.OfType<IDamageDealtReactor>().ToList();
+
+        foreach (var effect in sourceDamagePassiveReactors)
         {
             effect.OnDamageDealt(context, plan, this);
         }
@@ -91,6 +112,13 @@ public abstract class Character
             var incomingModifiers = this.StatusEffects.OfType<IIncomingHealingModifier>().ToList();
 
             foreach (var modifier in incomingModifiers)
+            {
+                modifier.ModifyIncomingHealing(context, plan, this);
+            }
+
+            var incomingPassiveModifiers = this.PassiveEffects.OfType<IIncomingHealingModifier>().ToList();
+
+            foreach (var modifier in incomingPassiveModifiers)
             {
                 modifier.ModifyIncomingHealing(context, plan, this);
             }
@@ -114,6 +142,13 @@ public abstract class Character
             {
                 effect.OnHealingReceived(context, plan, this);
             }
+
+            var healthPassiveReactors = this.PassiveEffects.OfType<IHealingReceivedReactor>().ToList();
+
+            foreach (var effect in healthPassiveReactors)
+            {
+                effect.OnHealingReceived(context, plan, this);
+            }
         }
 
         if (!context.CanDealtReactors)
@@ -122,6 +157,13 @@ public abstract class Character
         var sourceHealthReactors = context.Source.StatusEffects.OfType<IHealingDoneReactor>().ToList();
 
         foreach (var effect in sourceHealthReactors)
+        {
+            effect.OnHealingDone(context, plan, this);
+        }
+
+        var sourceHealthPassiveReactors = context.Source.PassiveEffects.OfType<IHealingDoneReactor>().ToList();
+
+        foreach (var effect in sourceHealthPassiveReactors)
         {
             effect.OnHealingDone(context, plan, this);
         }
@@ -149,6 +191,13 @@ public abstract class Character
             {
                 modifier.ModifyIncomingStatusEffect(context, plan, this);
             }
+
+            var incomingPassiveModifiers = this.PassiveEffects.OfType<IIncomingStatusEffectModifier>().ToList();
+
+            foreach (var modifier in incomingPassiveModifiers)
+            {
+                modifier.ModifyIncomingStatusEffect(context, plan, this);
+            }
         }
 
         if (!context.CanProceed || !plan.StatusEffect.IsActive())
@@ -166,20 +215,34 @@ public abstract class Character
 
         if (context.CanRecievedReactors)
         {
-            var statusEffectReactorsTarget = this.StatusEffects.OfType<IStatusEffectRecievedReactor>().ToList();
+            var statusEffectReactorsTarget = this.StatusEffects.OfType<IStatusEffectAppliedReactor>().ToList();
 
             foreach (var reactor in statusEffectReactorsTarget)
             {
-                reactor.OnStatusEffectReceived(context, plan, this);
+                reactor.OnStatusEffectApplied(context, plan, this);
+            }
+
+            var statusEffectReactorsSource = this.StatusEffects.OfType<IStatusEffectAppliedReactor>().ToList();
+
+            foreach (var reactor in statusEffectReactorsSource)
+            {
+                reactor.OnStatusEffectApplied(context, plan, this);
             }
         }
 
         if (!context.CanRecievedReactors)
             return;
 
-        var statusEffectReactors = this.StatusEffects.OfType<IStatusEffectDoneReactor>().ToList();
+        var statusEffectReactors = context.Source.StatusEffects.OfType<IStatusEffectDoneReactor>().ToList();
 
         foreach (var reactor in statusEffectReactors)
+        {
+            reactor.OnStatusEffectDone(context, plan, this);
+        }
+
+        var statusEffectPassiveReactors = context.Source.PassiveEffects.OfType<IStatusEffectDoneReactor>().ToList();
+
+        foreach (var reactor in statusEffectPassiveReactors)
         {
             reactor.OnStatusEffectDone(context, plan, this);
         }

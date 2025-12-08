@@ -54,6 +54,19 @@ public class PassiveEffectFactory
         return result;
     }
 
+    public BasePassiveEffect GetPassiveEffect(string passiveId)
+    {
+        if (_passives.TryGetValue(passiveId, out var passive))
+        {
+            return passive;
+        }
+        else
+        {
+            Console.WriteLine($"[AVISO] Efeito passivo '{passiveId}' não encontrado. Retornando efeito nulo.");
+            return new NullPassiveEffect(passiveId);
+        }
+    }
+
 
 }
 public class NullPassiveEffect : BasePassiveEffect

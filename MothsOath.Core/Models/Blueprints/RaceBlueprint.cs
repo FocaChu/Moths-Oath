@@ -10,6 +10,8 @@ public class RaceBlueprint : IBlueprint
 
     public string Description { get; set; } = "No description provided.";
 
+    public string PassiveEffectId { get; set; } = "none";
+
     public int BaseHealth { get; set; } = 100;
 
     public int BaseMana { get; set; } = 100;
