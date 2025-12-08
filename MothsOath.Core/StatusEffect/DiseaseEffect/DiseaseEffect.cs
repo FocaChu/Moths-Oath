@@ -9,10 +9,13 @@ using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
+using System.Numerics;
 
 namespace MothsOath.Core.StatusEffect.DiseaseEffect;
 
-public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor, ITurnStartReactor, IActionPlanModifier, IGlobalDamageInteractor, IGlobalHealingInteractor, IGlobalStatusEffectInteractor
+public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReactor, ITurnStartReactor, IFadingReactor,
+                                               IGlobalDamageInteractor, IGlobalHealingInteractor, IGlobalStatusEffectInteractor,
+                                               IActionPlanModifier
 {
     public override string Id { get; set; }
 
@@ -227,6 +230,24 @@ public class DiseaseEffect : BaseStatusEffect, ITurnEndReactor, ITurnStartReacto
         foreach (var effect in effects)
         {
             effect.ModifyOutgoingStatusEffect(context, plan);
+        }
+    }
+
+    public void OnCombatStart(Character target, CombatState context)
+    {
+        var effects = Symptoms.OfType<ICombatStartReactor>().ToList().OrderByDescending(e => e.Priority);
+        foreach (var effect in effects)
+        {
+            effect.OnCombatStart(target, context);
+        }
+    }
+
+    public void OnFading(Character target, CombatState context)
+    {
+        var effects = Symptoms.OfType<IFadingReactor>().ToList().OrderByDescending(e => e.Priority);
+        foreach (var effect in effects)
+        {
+            effect.OnFading(target, context);
         }
     }
 }

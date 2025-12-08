@@ -1,8 +1,13 @@
-﻿using MothsOath.Core.Common.EffectInterfaces.Damage;
+﻿using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Damage;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
+using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Entities;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.PassiveEffects;
+using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect;
 
 namespace MothsOath.Core.Common;
@@ -228,7 +233,31 @@ public abstract class Character
         return 0;
     }
 
-    public void TickStatusEffects()
+    public void ActivateTurnStartEffects(CombatState combatState)
+    {
+        var effects = this.StatusEffects.OfType<ITurnStartReactor>().ToList()
+            .Concat(this.PassiveEffects.OfType<ITurnStartReactor>().ToList())
+            .OrderByDescending(m => m.Priority);
+
+        foreach (var effect in effects)
+        {
+            effect.OnTurnStart(this, combatState);
+        }
+    }
+
+    public void ActivateTurnEndEffects(CombatState combatState)
+    {
+        var effects = this.StatusEffects.OfType<ITurnEndReactor>().ToList()
+            .Concat(this.PassiveEffects.OfType<ITurnEndReactor>().ToList())
+            .OrderByDescending(m => m.Priority);
+
+        foreach (var effect in effects)
+        {
+            effect.OnTurnEnd(this, combatState);
+        }
+    }
+
+    public void TickStatusEffects(CombatState context)
     {
         if (!StatusEffects.Any())
             return;
@@ -238,11 +267,18 @@ public abstract class Character
             statusEffect.TickTime(this);
         }
 
-        ClearFadingStatusEffects();
+        ClearFadingStatusEffects(context);
     }
 
-    public void ClearFadingStatusEffects()
+    public void ClearFadingStatusEffects(CombatState context)
     {
+
+        var effects = this.StatusEffects.OfType<IFadingReactor>().ToList();
+        foreach (var effect in effects)
+        {
+            effect.OnFading(this, context);
+        }
+
         StatusEffects.RemoveAll(se => se.Duration <= 0);
     }
 }

@@ -148,7 +148,6 @@ public class CombatState : IGameState
     {
         TurnCount++;
         ApplyStatusEffectsAtTurnStart();
-        CheckFadingStatusEffects();
 
         CurrentPhase = CombatPhase.PlayerTurn_Start;
         Console.WriteLine($"--- Turno do Jogador Começou HP:{Player.Stats.CurrentHealth} ---");
@@ -202,18 +201,10 @@ public class CombatState : IGameState
     {
         foreach (var enemy in Enemies)
         {
-            var effects = enemy.StatusEffects.OfType<ITurnEndReactor>().ToList();
-            foreach (var effect in effects)
-            {
-                effect.OnTurnEnd(enemy, this);
-            }
-
+            enemy.ActivateTurnEndEffects(this);
         }
 
-        foreach (var effect in Player.StatusEffects.OfType<ITurnEndReactor>())
-        {
-            effect.OnTurnEnd(Player, this);
-        }
+        Player.ActivateTurnEndEffects(this);
 
         CheckForDeadEnemies();
     }
@@ -222,18 +213,10 @@ public class CombatState : IGameState
     {
         foreach (var enemy in Enemies)
         {
-            var effects = enemy.StatusEffects.OfType<ITurnStartReactor>().ToList();
-            foreach (var effect in effects)
-            {
-                effect.OnTurnStart(enemy, this);
-            }
-
+            enemy.ActivateTurnStartEffects(this);
         }
 
-        foreach (var effect in Player.StatusEffects.OfType<ITurnStartReactor>())
-        {
-            effect.OnTurnStart(Player, this);
-        }
+        Player.ActivateTurnStartEffects(this);
 
         CheckForDeadEnemies();
     }
@@ -242,20 +225,12 @@ public class CombatState : IGameState
     {
         foreach (var enemy in Enemies)
         {
-            enemy.TickStatusEffects();
+            enemy.TickStatusEffects(this);
         }
 
-        Player.TickStatusEffects();
+        Player.TickStatusEffects(this);
 
         CheckForDeadEnemies();
-    }
-
-    private void CheckFadingStatusEffects()
-    {
-        foreach (var character in GetAllCharacters())
-        {
-            character.ClearFadingStatusEffects();
-        }
     }
 
     public List<Character> GetAllCharacters()
