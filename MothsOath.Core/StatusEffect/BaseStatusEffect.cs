@@ -61,6 +61,9 @@ public abstract class BaseStatusEffect
 
     public virtual void StackEffect(Character owner, BaseStatusEffect newEffect)
     {
+        if (!this.IsEchoable && newEffect.IsEchoable)
+            this.IsEchoable = true;
+
         Level += newEffect.Level;
         Duration = Math.Max(Duration, newEffect.Duration);
     }

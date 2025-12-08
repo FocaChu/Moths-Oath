@@ -40,9 +40,12 @@ public class EchoStatusEffect : BaseStatusEffect, ITurnStartReactor
 
     public override void StackEffect(Character owner, BaseStatusEffect newEffect)
     {
-        _echoedEffect.StackEffect(owner, newEffect);
-        this.Level = _echoedEffect.Level;
-        this.Duration = _echoedEffect.Duration;
+        if(newEffect is EchoStatusEffect echo)
+        {
+            _echoedEffect.StackEffect(owner, echo._echoedEffect);
+            this.Level = _echoedEffect.Level;
+            this.Duration = _echoedEffect.Duration;
+        }
     }
 
     public void OnTurnStart(Character target, CombatState context)

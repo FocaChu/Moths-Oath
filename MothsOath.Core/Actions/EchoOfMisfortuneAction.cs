@@ -31,6 +31,7 @@ public class EchoOfMisfortuneAction : BaseAction
             return;
 
         var echoEffect = new EchoStatusEffect(statusEffect.Clone());
+
         var effectPlan = new StatusEffectPlan(echoEffect);
 
         if (context.CanOutgoingModifiers)
