@@ -7,9 +7,9 @@ public class TargetBleedingOrHurtCharacter : IBehavior
 {
     public string Id => "target_bleeding_or_hurt_character_behavior";
 
-    public List<Character> GetTargets(Character source, CombatState context)
+    public List<BaseCharacter> GetTargets(BaseCharacter source, CombatState context)
     {
-        var targets = new List<Character>();
+        var targets = new List<BaseCharacter>();
 
         foreach (var character in context.GetAllCharacters())
         {

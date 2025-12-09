@@ -2,11 +2,12 @@
 using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.Entities;
 
-public class Enemy : Character
+public class CharacterNPC : BaseCharacter
 {
     public string BiomeId { get; set; } = "forest_biome";
 
@@ -24,12 +25,12 @@ public class Enemy : Character
 
     public bool CanUseSpecial => CurrentCooldown <= 0;
 
-    public int BaseXp { get; set; }
+    public int XpReward { get; set; }
 
-    public int BaseGold { get; set; }
+    public int GoldReward { get; set; }
 
 
-    public List<Character> GetTargets(CombatState gameState)
+    public List<BaseCharacter> GetTargets(CombatState gameState)
     {
         if (this.CanUseSpecial)
             return SpecialBehavior.GetTargets(this, gameState);

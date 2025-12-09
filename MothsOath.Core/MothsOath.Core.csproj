@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Blueprints\Diseases\" />
-    <Folder Include="Data\Blueprints\Enemies\" />
+    <Folder Include="Data\Blueprints\NPCs\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,10 +39,10 @@
     <None Update="Data\Blueprints\Diseases\virus_disease.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Blueprints\Enemies\neko.json">
+    <None Update="Data\Blueprints\NPCs\neko.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Blueprints\Enemies\skeleton.json">
+    <None Update="Data\Blueprints\NPCs\skeleton.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Blueprints\Races\yulkinRace.json">

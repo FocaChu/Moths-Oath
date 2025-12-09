@@ -2,7 +2,7 @@
 
 namespace MothsOath.Core.Models.Blueprints;
 
-public class EnemyBlueprint : IBlueprint
+public class NpcBlueprint : IBlueprint
 {
     public string Id { get; set; } = "dummy";
 
@@ -10,9 +10,11 @@ public class EnemyBlueprint : IBlueprint
 
     public string Name { get; set; } = "dummy";
 
-    public int BaseXp { get; set; }
+    public string Allegiance { get; set; } = "Enemy";
 
-    public int BaseGold { get; set; }
+    public int XpReward { get; set; }
+
+    public int GoldReward { get; set; }
 
     public int MaxHealth { get; set; }
 

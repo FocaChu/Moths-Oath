@@ -5,11 +5,11 @@ namespace MothsOath.Core.Common;
 
 public class ActionContext
 {
-    public Character Source { get; set; }
+    public BaseCharacter Source { get; set; }
 
-    public List<Character> BaseTargets { get; set; }
+    public List<BaseCharacter> BaseTargets { get; set; }
 
-    public List<Character> FinalTargets { get; set; } = new List<Character>();
+    public List<BaseCharacter> FinalTargets { get; set; } = new List<BaseCharacter>();
 
     public CombatState GameState { get; set; }
 
@@ -27,7 +27,7 @@ public class ActionContext
 
     public bool CanDealtReactors { get; set; } = true;
 
-    public ActionContext(Character source, List<Character> baseTargets, CombatState gameState, BaseCard? card)
+    public ActionContext(BaseCharacter source, List<BaseCharacter> baseTargets, CombatState gameState, BaseCard? card)
     {
         Source = source;
         BaseTargets = baseTargets;

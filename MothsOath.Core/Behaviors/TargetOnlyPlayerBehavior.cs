@@ -7,9 +7,9 @@ public class TargetOnlyPlayerBehavior : IBehavior
 {
     public string Id => "target_only_player_behavior";
 
-    public List<Character> GetTargets(Character source, CombatState context)
+    public List<BaseCharacter> GetTargets(BaseCharacter source, CombatState context)
     {
-        List<Character> targets = new List<Character>();
+        List<BaseCharacter> targets = new List<BaseCharacter>();
         targets.Add(context.Player);
         return targets;
     }

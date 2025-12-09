@@ -3,6 +3,10 @@ using MothsOath.Core.Common.EffectInterfaces.Damage;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Entities;
+using MothsOath.Core.Models.Enums;
+using System;
+using System.Numerics;
 
 namespace MothsOath.Core.Abilities;
 

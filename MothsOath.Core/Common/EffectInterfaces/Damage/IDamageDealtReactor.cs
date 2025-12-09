@@ -6,5 +6,5 @@ public interface IDamageDealtReactor
 {
     int Priority { get; set; }
 
-    void OnDamageDealt(ActionContext context, DamagePlan plan, Character target);
+    void OnDamageDealt(ActionContext context, DamagePlan plan, BaseCharacter target);
 }

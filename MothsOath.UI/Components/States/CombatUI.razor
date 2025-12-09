@@ -1,6 +1,7 @@
 ﻿@implements IDisposable
 @using MothsOath.Core.Entities.Archetypes
 @using MothsOath.UI.Components.ArchetypesCombatUI
+@using MothsOath.Core.Models.Enums
 
 <div class="combat-container" @onclick="CancelSelection">
     <div class="enemy-area">
@@ -18,14 +19,32 @@
 
     <div class="player-area">
         <div class="player-display-area">
-            <div class="@(GetPlayerCardClass())"
-                 @onclick="() => TargetCharacter(CombatState.Player)" @onclick:stopPropagation="true"
-                 @onmouseover="OnPlayerHover"
-                 @onmouseout="OnPlayerOut">
-                <p class="player-name">@CombatState.Player.Name</p>
-                <p class="player-hp">HP: @CombatState.Player.Stats.CurrentHealth / @CombatState.Player.Stats.MaxHealth</p>
+            <div class="player-team">
+                @foreach (var c in CombatState.BuildPlayerTeam())
+                {
+                    var isPlayer = c == CombatState.Player;
+                    if (isPlayer)
+                    {
+                        <div class="@GetPlayerCardClass()"
+                     @onclick="() => TargetCharacter(c)" @onclick:stopPropagation="true"
+                     @onmouseover="() => { OnPlayerHover(); }"
+                     @onmouseout="() => { OnPlayerOut(); }">
+                            <p class="player-name">@c.Name</p>
+                            <p class="player-hp">HP: @c.Stats.CurrentHealth / @c.Stats.MaxHealth</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="@GetAllyCardClass(c)"
+                             @onclick="() => TargetCharacter(c)" @onclick:stopPropagation="true"
+                             @onmouseover="() => OnAllyHover(c)"
+                             @onmouseout="() => OnAllyOut(c)">
+                            <p class="player-name">@c.Name</p>
+                            <p class="player-hp">HP: @c.Stats.CurrentHealth / @c.Stats.MaxHealth</p>
+                        </div>
+                    }
+                }
             </div>
-            
         </div>
         <div class="player-hand-container">
             @if (selectedCard == null && !examining)
@@ -70,17 +89,26 @@
 
 @code {
     private ExaminateModal? examinateModal;
-    private Character? itemToExamine;
+    private BaseCharacter? itemToExamine;
 
     [Parameter]
     public CombatState CombatState { get; set; } = default!;
 
     private BaseCard? selectedCard;
-    private Character? hoveredCharacter;
+    private BaseCharacter? hoveredCharacter;
     private bool isPlayerHovered;
     private bool examining = false;
     private DoctorCombatUI? doctorCombatUI;
     private BellRingerCombatUI? bellRingerCombatUI;
+
+    private void OpenExamine(BaseCharacter pessoa)
+    {
+        itemToExamine = pessoa;
+        if (examinateModal != null)
+        {
+            examinateModal.OpenModal(itemToExamine);
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -133,7 +161,7 @@
         StateHasChanged();
     }
 
-    private void TargetCharacter(Character character)
+    private void TargetCharacter(BaseCharacter character)
     {
         if (HandleArchetypeTargetSelection(character))
         {
@@ -158,12 +186,12 @@
         }
     }
 
-    private void OnArchetypeTargetCharacter(Character character)
+    private void OnArchetypeTargetCharacter(BaseCharacter character)
     {
         HandleArchetypeTargetSelection(character);
     }
 
-    private bool HandleArchetypeTargetSelection(Character character)
+    private bool HandleArchetypeTargetSelection(BaseCharacter character)
     {
         if (CombatState.Player is Doctor && doctorCombatUI != null && doctorCombatUI.IsInInfectMode())
         {
@@ -179,7 +207,7 @@
         return false;
     }
 
-    private void OnEnemyHover(Enemy enemy)
+    private void OnEnemyHover(BaseCharacter enemy)
     {
         if (selectedCard != null || IsArchetypeAbilityActive())
         {
@@ -188,7 +216,7 @@
         }
     }
 
-    private void OnEnemyOut(Enemy enemy)
+    private void OnEnemyOut(BaseCharacter enemy)
     {
         if (hoveredCharacter == enemy)
         {
@@ -211,6 +239,24 @@
         if (isPlayerHovered)
         {
             isPlayerHovered = false;
+            StateHasChanged();
+        }
+    }
+
+    private void OnAllyHover(BaseCharacter ally)
+    {
+        if (selectedCard != null || IsArchetypeAbilityActive())
+        {
+            hoveredCharacter = ally;
+            StateHasChanged();
+        }
+    }
+
+    private void OnAllyOut(BaseCharacter ally)
+    {
+        if (hoveredCharacter == ally)
+        {
+            hoveredCharacter = null;
             StateHasChanged();
         }
     }
@@ -238,7 +284,21 @@
         return classes;
     }
 
-    private string GetEnemyCardClass(Enemy enemy)
+    private string GetAllyCardClass(BaseCharacter ally)
+    {
+        var classes = "player-card ally-card";
+        if (selectedCard != null || IsArchetypeAbilityActive())
+        {
+            classes += " selectable";
+        }
+        if (hoveredCharacter == ally && (selectedCard != null || IsArchetypeAbilityActive()))
+        {
+            classes += " hovered";
+        }
+        return classes;
+    }
+
+    private string GetEnemyCardClass(BaseCharacter enemy)
     {
         var classes = "enemy-card";
         if (selectedCard != null || IsArchetypeAbilityActive())

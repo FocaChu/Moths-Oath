@@ -79,14 +79,14 @@
 
 @code {
     [Parameter]
-    public Character CharacterProfile { get; set; } = default!;
+    public BaseCharacter CharacterProfile { get; set; } = default!;
 
     [Parameter]
     public EventCallback OnClose { get; set; }
 
     public bool IsVisible { get; set; } = false;
 
-    public void OpenModal(Character pessoa)
+    public void OpenModal(BaseCharacter pessoa)
     {
         CharacterProfile = pessoa;
         IsVisible = true;

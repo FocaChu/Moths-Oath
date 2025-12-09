@@ -19,7 +19,7 @@ public class BasicAttackAction : BaseAction
         if (!ValidadeTargets(context) || !ValidateDamagePlan(context, plan))
             return;
 
-        var rng = new Random();
+        var rng = Random.Shared;
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
 
         context.FinalTargets.Clear();

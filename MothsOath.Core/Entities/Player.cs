@@ -3,7 +3,7 @@ using MothsOath.Core.States;
 
 namespace MothsOath.Core.Entities;
 
-public class Player : Character
+public class Player : BaseCharacter
 {
     public string Archetype { get; set; } = null!;
 
@@ -28,6 +28,8 @@ public class Player : Character
     public int XpToNextLevel { get; set; } = 100;
 
     public int CardsByTurn { get; set; } = 5;
+
+    public List<BaseCharacter> StorageAllies { get; private set; } = new List<BaseCharacter>();
 
     public List<BaseCard> Deck { get; private set; } = new List<BaseCard>();
 

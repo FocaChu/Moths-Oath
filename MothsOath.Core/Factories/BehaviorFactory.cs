@@ -82,9 +82,9 @@ public class NullBehavior : IBehavior
         Id = $"missing_ability_{missingId}";
     }
 
-    public List<Character> GetTargets(Character source, CombatState context)
+    public List<BaseCharacter> GetTargets(BaseCharacter source, CombatState context)
     {
         Console.WriteLine($"[AVISO] Tentativa de executar um comportamento não encontrado com ID '{Id}'. Nenhuma ação foi tomada.");
-        return new List<Character>();
+        return new List<BaseCharacter>();
     }
 }

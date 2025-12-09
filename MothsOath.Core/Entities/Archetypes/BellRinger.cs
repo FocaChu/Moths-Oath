@@ -13,6 +13,7 @@ public class BellRinger : Player
 
         this.Name = player.Name;
         this.Archetype = player.Archetype;
+        this.Allegiance = player.Allegiance;
 
         var s = player.Stats;
         this.Stats = new Stats
@@ -58,13 +59,13 @@ public class BellRinger : Player
         Console.WriteLine("Sou um sineiro.");
     }
 
-    public void BellRingAbility(CombatState state, Character target)
+    public void BellRingAbility(CombatState state, BaseCharacter target)
     {
         var effectLevel = (int)(this.Stats.TotalKnowledge / 2) >= 1 ? (int)(this.Stats.TotalKnowledge / 2) : 1;
 
-        if(target != null && target is Enemy)
+        if(target != null && target is CharacterNPC)
         {
-            var index = state.Enemies.IndexOf((Enemy)target);
+            var index = state.Enemies.IndexOf((CharacterNPC)target);
             MisfortuneBell(index, effectLevel, state);
         }
 

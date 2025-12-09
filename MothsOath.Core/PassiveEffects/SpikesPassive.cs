@@ -14,7 +14,7 @@ public class SpikesPassive : BasePassiveEffect, IDamageReceivedReactor
 
     public int Priority { get; set; } = 0;
 
-    public void OnDamageReceived(ActionContext context, DamagePlan plan, Character target)
+    public void OnDamageReceived(ActionContext context, DamagePlan plan, BaseCharacter target)
     {
         if (plan.CanProceed && plan.FinalDamageAmount > 0)
         {

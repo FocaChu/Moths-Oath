@@ -12,7 +12,7 @@ builder.Services.AddSingleton<BlueprintLoader>();
 builder.Services.AddSingleton<PassiveEffectFactory>();
 builder.Services.AddSingleton<BehaviorFactory>();
 builder.Services.AddSingleton<ActionFactory>();
-builder.Services.AddSingleton<EnemyFactory>();
+builder.Services.AddSingleton<NpcFactory>();
 builder.Services.AddSingleton<CardFactory>();
 builder.Services.AddSingleton<PlayerFactory>();
 builder.Services.AddSingleton<StateFactory>();

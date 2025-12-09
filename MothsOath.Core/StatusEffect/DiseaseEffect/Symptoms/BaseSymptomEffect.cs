@@ -26,7 +26,7 @@ public abstract class BaseSymptomEffect
         return null;
     }
 
-    public DiseaseEffect? GetTargetDisease(Character target)
+    public DiseaseEffect? GetTargetDisease(BaseCharacter target)
     {
         return target.StatusEffects.Find(se => se is DiseaseEffect) as DiseaseEffect;
     }

@@ -1,6 +1,5 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
-using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
 using MothsOath.Core.Models.DifficultyConfig;
@@ -11,15 +10,17 @@ namespace MothsOath.Core.States;
 public class CombatState : IGameState
 {
     private readonly GameStateManager _gameManager;
-    private readonly EnemyFactory _enemyFactory;
+    private readonly NpcFactory _npcFactory;
     private readonly StateFactory _stateFactory;
 
     public CombatPhase CurrentPhase { get; private set; }
     public string BiomeId { get; set; }
     public Player Player { get; private set; }
-    public List<Enemy> Enemies { get; private set; } = new List<Enemy>();
-    public List<Enemy> DeadEnemies { get; private set; } = new List<Enemy>();
+    public List<BaseCharacter> Enemies { get; private set; } = new List<BaseCharacter>();
+    public List<BaseCharacter> Allies { get; private set; } = new List<BaseCharacter>();
+    public List<BaseCharacter> DeadPool { get; private set; } = new List<BaseCharacter>();
 
+    public bool CombatEnded { get; private set; } = false;
     public int TurnCount { get; private set; } = 0;
     public int EnemiesDefeatedCount { get; private set; } = 0;
 
@@ -30,10 +31,10 @@ public class CombatState : IGameState
     public event Action OnEnemyTurnStart;
     public event Action OnCombatStateChanged;
 
-    public CombatState(GameStateManager gameManager, EnemyFactory enemyFactory, StateFactory stateFactory, Player player)
+    public CombatState(GameStateManager gameManager, NpcFactory npcFactory, StateFactory stateFactory, Player player)
     {
         _gameManager = gameManager;
-        _enemyFactory = enemyFactory;
+        _npcFactory = npcFactory;
         _stateFactory = stateFactory;
         BiomeId = gameManager.Biome;
         Player = player;
@@ -43,6 +44,18 @@ public class CombatState : IGameState
     public void OnEnter()
     {
         GenerateEnemies();
+
+        var storageAllies = new List<BaseCharacter>();
+
+        foreach (var storageAlly in Player.StorageAllies)
+        {
+            storageAllies.Add(storageAlly);
+        }
+        foreach (var storageAlly in storageAllies)
+        {
+            Allies.Add(storageAlly);
+            Player.StorageAllies.Remove(storageAlly);
+        }
 
         Console.WriteLine("New Combat Started!");
         Console.WriteLine($"Player: S:{Player.Stats.BaseStrength} R:{Player.Stats.BaseDefense}");
@@ -57,13 +70,25 @@ public class CombatState : IGameState
         Console.WriteLine("Saindo do estado de combate.");
     }
 
+    public void StartCombat()
+    {
+        if (CurrentPhase == CombatPhase.PlayerTurn_Action || CurrentPhase == CombatPhase.EnemyTurn_Resolution)
+            return;
+
+        ApplyOnCombatStartPassives();
+
+        StartPlayerTurn();
+
+        OnCombatStateChanged?.Invoke();
+    }
+
     public void Update() { }
 
     private void GenerateEnemies()
     {
         Enemies.Clear();
-        DeadEnemies.Clear();
-        Enemies = _enemyFactory.SortEnemies(this);
+        DeadPool.Clear();
+        Enemies = _npcFactory.SortEnemies(this);
     }
 
     private void ApplyOnCombatStartPassives()
@@ -72,6 +97,15 @@ public class CombatState : IGameState
         foreach (var effect in playerOnStartPassives)
         {
             effect.OnCombatStart(Player, this);
+        }
+
+        foreach(var ally in Allies)
+        {
+            var allyOnStartPassives = ally.PassiveEffects.OfType<ICombatStartReactor>().ToList();
+            foreach (var effect in allyOnStartPassives)
+            {
+                effect.OnCombatStart(ally, this);
+            }
         }
 
         foreach (var enemy in Enemies)
@@ -84,21 +118,38 @@ public class CombatState : IGameState
         }
     }
 
-    public void PlayCard(BaseCard card, Character target)
+    public void PlayCard(BaseCard card, BaseCharacter target)
     {
         if (CurrentPhase != CombatPhase.PlayerTurn_Action || Player == null) return;
 
         Console.WriteLine($"Jogador jogou a carta '{card.Name}' no alvo '{target.Name}'.");
 
-        List<Character> targets = new List<Character> { target };
+        List<BaseCharacter> targets = new List<BaseCharacter> { target };
 
         var context = new ActionContext(Player, targets, this, card);
 
         Player.PlayCard(context);
 
+        CheckForDeadAllies();
         CheckForDeadEnemies();
 
         OnCombatStateChanged?.Invoke();
+    }
+
+    private void CheckForDeadAllies()
+    {
+        var defeatedAllies = Allies.Where(a => !a.Stats.IsAlive).ToList();
+
+        if (defeatedAllies.Any())
+        {
+            foreach (var defeated in defeatedAllies)
+            {
+
+                Allies.Remove(defeated);
+                DeadPool.Add(defeated);
+                Console.WriteLine($"Aliado '{defeated.Name}' foi derrotado!");
+            }
+        }
     }
 
     private void CheckForDeadEnemies()
@@ -109,12 +160,17 @@ public class CombatState : IGameState
         {
             foreach (var defeated in defeatedEnemies)
             {
-                this.TotalGoldReward += defeated.BaseGold;
-                this.TotalXPReward += defeated.BaseXp;
+                if(defeated is CharacterNPC enemy)
+                {
+                    TotalGoldReward += enemy.GoldReward;
+                    TotalXPReward += enemy.XpReward;
+                    Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado! Ouro ganho: {enemy.GoldReward}, XP ganho: {enemy.XpReward}");
+                }
+
                 this.EnemiesDefeatedCount++;
 
                 Enemies.Remove(defeated);
-                DeadEnemies.Add(defeated);
+                DeadPool.Add(defeated);
                 Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado!");
             }
         }
@@ -124,20 +180,34 @@ public class CombatState : IGameState
 
     private void CheckForCombatEnd()
     {
+        if(CombatEnded)
+            return;
+
         if (Enemies.Count == 0)
         {
+            CombatEnded = true;
             Console.WriteLine("VITÓRIA!");
             Player.GainXp(TotalXPReward);
             Player.Gold += TotalGoldReward;
 
+            foreach(var ally in Allies)
+            {
+                if(ally.Stats.IsAlive)
+                {
+                    ally.StatusEffects.Clear();
+                    ally.RecievePureDamage(ally.Stats.Regeneration);
+                    Player.StorageAllies.Add(ally);
+                }
+            }
+
+            Allies.Clear();
+
             var resultState = _stateFactory.CreateCombatResultState(_gameManager, Player, TotalXPReward, TotalGoldReward, TurnCount, EnemiesDefeatedCount);
             _gameManager.TransitionToState(resultState);
-
-            this.TotalXPReward = 0;
-            this.TotalGoldReward = 0;
         }
         else if (!Player.Stats.IsAlive)
         {
+            CombatEnded = true;
             Console.WriteLine("DERROTA!");
             var nextState = _stateFactory.CreateMainMenuState(_gameManager);
             _gameManager.TransitionToState(nextState);
@@ -179,7 +249,8 @@ public class CombatState : IGameState
 
         foreach (var enemy in Enemies)
         {
-            enemy.TakeTurn(this);
+            if(enemy is CharacterNPC enemyNpc) 
+                enemyNpc.TakeTurn(this);
         }
 
         EndTurn();
@@ -199,6 +270,14 @@ public class CombatState : IGameState
 
     private void ApplyStatusEffectsAtTurnEnd()
     {
+        foreach (var ally in Allies)
+        {
+            ally.ActivateTurnEndEffects(this);
+        }
+
+        CheckForDeadAllies();
+        CheckForDeadEnemies();
+
         foreach (var enemy in Enemies)
         {
             enemy.ActivateTurnEndEffects(this);
@@ -206,11 +285,20 @@ public class CombatState : IGameState
 
         Player.ActivateTurnEndEffects(this);
 
+        CheckForDeadAllies();
         CheckForDeadEnemies();
     }
 
     private void ApplyStatusEffectsAtTurnStart()
     {
+        foreach(var ally in Allies)
+        {
+            ally.ActivateTurnStartEffects(this);
+        }
+
+        CheckForDeadAllies();
+        CheckForDeadEnemies();
+
         foreach (var enemy in Enemies)
         {
             enemy.ActivateTurnStartEffects(this);
@@ -218,11 +306,20 @@ public class CombatState : IGameState
 
         Player.ActivateTurnStartEffects(this);
 
+        CheckForDeadAllies();
         CheckForDeadEnemies();
     }
 
     private void TickStatusEffects()
     {
+        foreach(var allies in Allies)
+        {
+            allies.TickStatusEffects(this);
+        }
+
+        CheckForDeadAllies();
+        CheckForDeadEnemies();
+
         foreach (var enemy in Enemies)
         {
             enemy.TickStatusEffects(this);
@@ -230,13 +327,34 @@ public class CombatState : IGameState
 
         Player.TickStatusEffects(this);
 
+        CheckForDeadAllies();
         CheckForDeadEnemies();
     }
 
-    public List<Character> GetAllCharacters()
+    public List<BaseCharacter> BuildPlayerTeam()
     {
-        List<Character> allCharacters = new List<Character> { Player };
+        var playerTeam = new List<BaseCharacter> { Player };
+
+        for (int i = 0; i < Allies.Count; i++)
+        {
+            if (i % 2 == 0)
+            {
+                playerTeam.Insert(0, Allies[i]);
+            }
+            else
+            {
+                playerTeam.Add(Allies[i]);
+            }
+        }
+
+        return playerTeam;
+    }
+
+    public List<BaseCharacter> GetAllCharacters()
+    {
+        List<BaseCharacter> allCharacters = new List<BaseCharacter> { Player };
         allCharacters.AddRange(Enemies);
+        allCharacters.AddRange(Allies);
         return allCharacters;
     }
 

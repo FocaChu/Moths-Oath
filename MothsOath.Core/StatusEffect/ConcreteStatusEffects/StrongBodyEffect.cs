@@ -29,7 +29,7 @@ public class StrongBodyEffect : BaseStatusEffect, ITurnStartReactor
         Duration = duration;
     }
 
-    public void OnTurnStart(Character target, CombatState context)
+    public void OnTurnStart(BaseCharacter target, CombatState context)
     {
        var effectLevel = (int)(this.Level / 2) > 1 ? (int)(this.Level / 2) : 2;
        target.Stats.BonusStrength += effectLevel;

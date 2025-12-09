@@ -7,14 +7,14 @@ namespace MothsOath.Core.Factories;
 public class StateFactory
 {
     private readonly ActionFactory _abilityFactory;
-    private readonly EnemyFactory _enemyFactory;
+    private readonly NpcFactory _enemyFactory;
     private readonly PlayerFactory _playerFactory;
     private readonly BehaviorFactory _behaviorFactory;
     private readonly BlueprintLoader _blueprintLoader;
 
     public StateFactory(
         ActionFactory abilityFactory,
-        EnemyFactory enemyFactory,
+        NpcFactory enemyFactory,
         PlayerFactory playerFactory,
         BehaviorFactory behaviorFactory,
         BlueprintLoader blueprintLoader)

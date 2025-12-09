@@ -18,7 +18,7 @@ public class NecrosisSymptomEffect : BaseSymptomEffect, ITurnEndReactor
     {
     }
 
-    public void OnTurnEnd(Character target, CombatState context)
+    public void OnTurnEnd(BaseCharacter target, CombatState context)
     {
         var disease = GetTargetDisease(target);
 

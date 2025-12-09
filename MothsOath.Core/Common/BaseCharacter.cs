@@ -4,7 +4,6 @@ using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.Common.Plans;
-using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.PassiveEffects;
 using MothsOath.Core.States;
@@ -12,7 +11,7 @@ using MothsOath.Core.StatusEffect;
 
 namespace MothsOath.Core.Common;
 
-public abstract class Character
+public abstract class BaseCharacter
 {
     public Guid Id { get; protected set; } = Guid.NewGuid();
 
@@ -20,10 +19,12 @@ public abstract class Character
 
     public Stats Stats { get; set; } = new Stats();
 
+    public Allegiance Allegiance { get; set; }
+
     public List<BasePassiveEffect> PassiveEffects { get; set; } = new List<BasePassiveEffect>();
     public List<BaseStatusEffect> StatusEffects { get; set; } = new List<BaseStatusEffect>();
 
-    public event Action<Character, int> OnDamageTaken;
+    public event Action<BaseCharacter, int> OnDamageTaken;
 
     public virtual void Restore()
     {

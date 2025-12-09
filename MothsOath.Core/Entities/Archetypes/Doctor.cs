@@ -1,13 +1,8 @@
 ﻿using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
-using MothsOath.Core.Common.Plans;
 using MothsOath.Core.States;
-using MothsOath.Core.StatusEffect;
-using MothsOath.Core.StatusEffect.ConcreteEffects;
 using MothsOath.Core.StatusEffect.DiseaseEffect;
 using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
-using System.Reflection.Emit;
-using System.Threading.Channels;
 
 namespace MothsOath.Core.Entities.Archetypes;
 
@@ -21,6 +16,7 @@ public class Doctor : Player
 
         this.Name = player.Name;
         this.Archetype = player.Archetype;
+        this.Allegiance = player.Allegiance;
 
         var s = player.Stats;
         this.Stats = new Stats
@@ -86,7 +82,7 @@ public class Doctor : Player
                 continue;
             }
 
-            List<Character>? targets = null;
+            List<BaseCharacter>? targets = null;
             try
             {
                 targets = disease.Behavior.GetTargets(enemy, state);
@@ -132,7 +128,7 @@ public class Doctor : Player
         }
     }
 
-    public void Infect(Character target)
+    public void Infect(BaseCharacter target)
     {
         Console.WriteLine($"{Name} está infectando {target.Name} com a doença {Disease.Name}.");
 

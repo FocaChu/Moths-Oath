@@ -19,7 +19,7 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
 
     public int Priority { get; set; } = 0;
 
-    public void OnCombatStart(Character target, CombatState context)
+    public void OnCombatStart(BaseCharacter target, CombatState context)
     {
         var level = target is Player player ? player.Level : 1;
 
@@ -30,7 +30,7 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
         Console.WriteLine($"{target.Name} recebeu a glória {glory.Name} no começo do combate.");
     }
 
-    public void OnStatusEffectDone(ActionContext context, StatusEffectPlan plan, Character target)
+    public void OnStatusEffectDone(ActionContext context, StatusEffectPlan plan, BaseCharacter target)
     {
         if (plan.StatusEffect is EchoStatusEffect || !plan.StatusEffect.IsEchoable)
             return;

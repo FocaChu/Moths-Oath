@@ -29,7 +29,7 @@ public class KarmaEffect : BaseStatusEffect, IHealingDoneReactor
         Duration = duration;
     }
 
-    public void OnHealingDone(ActionContext context, HealPlan plan, Character originalTarget)
+    public void OnHealingDone(ActionContext context, HealPlan plan, BaseCharacter originalTarget)
     {
         if (!IsActive() || originalTarget == context.Source)
             return;

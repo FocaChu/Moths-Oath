@@ -33,7 +33,7 @@ public abstract class BaseStatusEffect
         return true;
     }
 
-    public virtual void TickTime(Character holder)
+    public virtual void TickTime(BaseCharacter holder)
     {
         if (Duration > 0 && !IsEndless)
         {
@@ -59,7 +59,7 @@ public abstract class BaseStatusEffect
         return eco;
     }
 
-    public virtual void StackEffect(Character owner, BaseStatusEffect newEffect)
+    public virtual void StackEffect(BaseCharacter owner, BaseStatusEffect newEffect)
     {
         if (!this.IsEchoable && newEffect.IsEchoable)
             this.IsEchoable = true;

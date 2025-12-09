@@ -2,6 +2,7 @@
 
 public enum CombatPhase
 {
+    Setup,
     PlayerTurn_Start,
     PlayerTurn_Action,
     EnemyTurn_Start,

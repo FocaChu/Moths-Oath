@@ -7,5 +7,5 @@ public interface IBehavior
 {
     string Id { get; }
 
-    List<Character> GetTargets(Character source, CombatState context);
+    List<BaseCharacter> GetTargets(BaseCharacter source, CombatState context);
 }

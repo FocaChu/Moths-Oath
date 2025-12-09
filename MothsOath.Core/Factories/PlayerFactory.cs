@@ -1,6 +1,7 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Blueprints;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.PassiveEffects;
 using MothsOath.Core.Services;
 
@@ -39,6 +40,7 @@ public class PlayerFactory
         var player = new Player
         {
             Archetype = archetypeBlueprint.Name,
+            Allegiance = Allegiance.Ally,
             Name = playerName,
             Stats = stats,
             MaxMana = raceBlueprint.BaseMana + archetypeBlueprint.BonusMana,

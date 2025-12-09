@@ -35,12 +35,12 @@ public class EchoStatusEffect : BaseStatusEffect, ITurnStartReactor
         Duration = echoedEffect.Duration;
     }
 
-    public override void TickTime(Character holder)
+    public override void TickTime(BaseCharacter holder)
     {
         return;
     }
 
-    public override void StackEffect(Character owner, BaseStatusEffect newEffect)
+    public override void StackEffect(BaseCharacter owner, BaseStatusEffect newEffect)
     {
         if(newEffect is EchoStatusEffect echo)
         {
@@ -50,7 +50,7 @@ public class EchoStatusEffect : BaseStatusEffect, ITurnStartReactor
         }
     }
 
-    public void OnTurnStart(Character target, CombatState context)
+    public void OnTurnStart(BaseCharacter target, CombatState context)
     {
         if (target.StatusEffects.Any(s => s.Id == _echoedEffect.Id))
             return;

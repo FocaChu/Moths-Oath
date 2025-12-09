@@ -19,7 +19,7 @@
     public CombatState CombatState { get; set; } = default!;
 
     [Parameter]
-    public Action<Character>? OnTargetCharacter { get; set; }
+    public Action<BaseCharacter>? OnTargetCharacter { get; set; }
 
     [Parameter]
     public Action? OnCancelSelection { get; set; }
@@ -76,7 +76,7 @@
         StateHasChanged();
     }
 
-    public void HandleTargetSelection(Character target)
+    public void HandleTargetSelection(BaseCharacter target)
     {
         if (!infecting || CombatState.Player is not Doctor doctor)
         {

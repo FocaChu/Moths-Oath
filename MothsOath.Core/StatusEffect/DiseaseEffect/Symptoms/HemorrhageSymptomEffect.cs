@@ -19,7 +19,7 @@ public class HemorrhageSymptomEffect : BaseSymptomEffect, ITurnStartReactor
     {
     }
 
-    public void OnTurnStart(Character target, CombatState context)
+    public void OnTurnStart(BaseCharacter target, CombatState context)
     {
         var disease = GetTargetDisease(target);
         var level = disease != null ? disease.Level : 1;

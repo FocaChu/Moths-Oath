@@ -30,7 +30,7 @@ public class PoisonEffect : BaseStatusEffect, ITurnEndReactor
     }
 
 
-    public void OnTurnEnd(Character target, CombatState context)
+    public void OnTurnEnd(BaseCharacter target, CombatState context)
     {
         if(!IsActive())
             return;
