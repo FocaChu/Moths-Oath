@@ -1,27 +1,27 @@
 ﻿@implements IDisposable
+@implements IArchetypeCombatView
 @using MothsOath.Core.Entities.Archetypes
 @using MothsOath.Core.States
 @using MothsOath.Core.Common
+@using MothsOath.UI.Interfaces
 
 <div class="bell-ringer-hud">
-    <button class="bell-ringer-hud-btn btn btn-primary" 
-            disabled="@(!CanUseBellRingAbility)" 
-            @onclick="ToggleBellRing" 
-            @onclick:stopPropagation="true">Tocar Sino</button>
+    <button class="bell-ringer-hud-btn btn btn-primary"
+            disabled="@(!CanUseBellRingAbility)"
+            @onclick="ToggleBellRing"
+            @onclick:stopPropagation="true">
+        Tocar Sino
+    </button>
 </div>
 
 @code {
-    [Parameter]
-    public CombatState CombatState { get; set; } = default!;
+    [Parameter] public CombatState CombatState { get; set; } = default!;
 
-    [Parameter]
-    public Action<BaseCharacter>? OnTargetCharacter { get; set; }
+    [Parameter] public Action? OnCancelSelection { get; set; }
 
-    [Parameter]
-    public Action? OnCancelSelection { get; set; }
+    [Parameter] public EventCallback<IArchetypeCombatView> OnRegister { get; set; }
 
     private bool bellTargeting = false;
-
     private bool abilityUsedThisTurn = false;
 
     protected override void OnInitialized()
@@ -30,6 +30,8 @@
         {
             CombatState.OnPlayerTurnStart += ResetAbilityUsage;
         }
+
+        OnRegister.InvokeAsync(this);
     }
 
     public void Dispose()
@@ -46,41 +48,36 @@
         InvokeAsync(StateHasChanged);
     }
 
-    private bool CanUseBellRingAbility => 
+    private bool CanUseBellRingAbility =>
         CombatState.Player is BellRinger &&
         CombatState.Player.CurrentMana >= 40 &&
         !abilityUsedThisTurn;
 
     private void ToggleBellRing()
     {
-        if (!CanUseBellRingAbility)
-        {
-            return;
-        }
-
+        if (!CanUseBellRingAbility) return;
         bellTargeting = !bellTargeting;
         StateHasChanged();
     }
 
-    public void HandleTargetSelection(BaseCharacter target)
-    {
-        if (!CanUseBellRingAbility || CombatState.Player is not BellRinger bellRinger || target is Player)
-        {
-            return;
-        }
 
-        if(bellRinger.CurrentMana < 40)
+    public bool IsInSpecialMode() => bellTargeting;
+
+    public bool HandleTargetSelection(BaseCharacter target)
+    {
+        if (!CanUseBellRingAbility ||
+            CombatState.Player is not BellRinger bellRinger ||
+            target is Player) 
         {
-            return;
+            return false;
         }
 
         bellRinger.BellRingAbility(CombatState, target);
+
         abilityUsedThisTurn = true;
         bellTargeting = false;
-
         StateHasChanged();
+
+        return true; 
     }
-
-
-    public bool IsInBellRingMode() => bellTargeting;
 }

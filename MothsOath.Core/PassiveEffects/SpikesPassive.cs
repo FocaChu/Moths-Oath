@@ -25,7 +25,7 @@ public class SpikesPassive : BasePassiveEffect, IDamageReceivedReactor
             context.CanDealtReactors = false;
             context.CanRecievedReactors = false;
 
-            context.Source.RecieveDamage(context, damagePlan);
+            context.Source.ReceiveDamage(context, damagePlan);
         }
     }
 

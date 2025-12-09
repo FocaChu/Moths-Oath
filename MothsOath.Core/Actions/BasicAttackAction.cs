@@ -25,7 +25,7 @@ public class BasicAttackAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.RecieveDamage(context, plan);
+        target.ReceiveDamage(context, plan);
         Console.WriteLine($"{context.Source.Name} attacks {target.Name} for {damage} damage.");
     }
 }

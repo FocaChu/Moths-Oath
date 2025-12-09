@@ -1,7 +1,6 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
-using System.Numerics;
 
 namespace MothsOath.Core.Abilities;
 
@@ -27,7 +26,7 @@ public class SharpCutAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.RecieveDamage(context, damagePlan);
+        target.ReceiveDamage(context, damagePlan);
 
         var bleedingEffect = new BleedingEffect(level: (int)(context.Source.Stats.BaseStrength / 2) + 1, duration: 2);
         var effectPlan = new StatusEffectPlan(bleedingEffect);

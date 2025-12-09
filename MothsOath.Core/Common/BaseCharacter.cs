@@ -43,7 +43,7 @@ public abstract class BaseCharacter
         OnDamageTaken?.Invoke(this, amount);
     }
 
-    public void RecieveDamage(ActionContext context, DamagePlan plan)
+    public void ReceiveDamage(ActionContext context, DamagePlan plan)
     {
         if (context.CanIncomingModifiers)
         {

@@ -2,6 +2,8 @@
 @using MothsOath.Core.Entities.Archetypes
 @using MothsOath.UI.Components.ArchetypesCombatUI
 @using MothsOath.Core.Models.Enums
+@using MothsOath.UI.Interfaces
+@using MothsOath.UI.Helpers
 
 <div class="combat-container" @onclick="CancelSelection">
     <div class="enemy-area">
@@ -26,9 +28,9 @@
                     if (isPlayer)
                     {
                         <div class="@GetPlayerCardClass()"
-                     @onclick="() => TargetCharacter(c)" @onclick:stopPropagation="true"
-                     @onmouseover="() => { OnPlayerHover(); }"
-                     @onmouseout="() => { OnPlayerOut(); }">
+                             @onclick="() => TargetCharacter(c)" @onclick:stopPropagation="true"
+                             @onmouseover="() => { OnPlayerHover(); }"
+                             @onmouseout="() => { OnPlayerOut(); }">
                             <p class="player-name">@c.Name</p>
                             <p class="player-hp">HP: @c.Stats.CurrentHealth / @c.Stats.MaxHealth</p>
                         </div>
@@ -66,19 +68,10 @@
             </div>
 
             <div class="archetype-hud-container">
-                @if (CombatState.Player is Doctor)
+                @if (GetArchetypeComponentType() != null)
                 {
-                    <DoctorCombatUI @ref="doctorCombatUI"
-                                    CombatState="CombatState"
-                                    OnTargetCharacter="OnArchetypeTargetCharacter"
-                                    OnCancelSelection="CancelSelection" />
-                }
-                else if (CombatState.Player is BellRinger)
-                {
-                    <BellRingerCombatUI @ref="bellRingerCombatUI"
-                                         CombatState="CombatState"
-                                         OnTargetCharacter="OnArchetypeTargetCharacter"
-                                         OnCancelSelection="CancelSelection" />
+                    <DynamicComponent Type="@GetArchetypeComponentType()"
+                                      Parameters="@GetArchetypeParameters()" />
                 }
             </div>
         </div>
@@ -88,11 +81,13 @@
 <ExaminateModal @ref="examinateModal" CharacterProfile="itemToExamine" OnClose="OnModalClosed" />
 
 @code {
-    private ExaminateModal? examinateModal;
-    private BaseCharacter? itemToExamine;
+    private IArchetypeCombatView? activeArchetypeUI;
 
     [Parameter]
     public CombatState CombatState { get; set; } = default!;
+
+    private ExaminateModal? examinateModal;
+    private BaseCharacter? itemToExamine;
 
     private BaseCard? selectedCard;
     private BaseCharacter? hoveredCharacter;
@@ -100,6 +95,28 @@
     private bool examining = false;
     private DoctorCombatUI? doctorCombatUI;
     private BellRingerCombatUI? bellRingerCombatUI;
+
+
+    private Type? GetArchetypeComponentType()
+    {
+        if (CombatState?.Player == null) return null;
+        return ArchetypeViewResolver.GetViewType(CombatState.Player);
+    }
+
+    private Dictionary<string, object> GetArchetypeParameters()
+    {
+        return new Dictionary<string, object>
+        {
+            { "CombatState", CombatState },
+            { "OnCancelSelection", (Action)CancelSelection },
+            { "OnRegister", EventCallback.Factory.Create<IArchetypeCombatView>(this, RegisterArchetypeUI) }
+        };
+    }
+
+    private void RegisterArchetypeUI(IArchetypeCombatView view)
+    {
+        this.activeArchetypeUI = view;
+    }
 
     private void OpenExamine(BaseCharacter pessoa)
     {
@@ -172,17 +189,12 @@
         {
             CombatState.PlayCard(selectedCard, character);
             selectedCard = null;
-            hoveredCharacter = null;
-            isPlayerHovered = false;
             StateHasChanged();
         }
         else if (examining)
         {
             itemToExamine = character;
-            if (examinateModal != null)
-            {
-                examinateModal.OpenModal(itemToExamine);
-            }
+            if (examinateModal != null) examinateModal.OpenModal(itemToExamine);
         }
     }
 
@@ -193,18 +205,17 @@
 
     private bool HandleArchetypeTargetSelection(BaseCharacter character)
     {
-        if (CombatState.Player is Doctor && doctorCombatUI != null && doctorCombatUI.IsInInfectMode())
+        if (activeArchetypeUI != null && activeArchetypeUI.IsInSpecialMode())
         {
-            doctorCombatUI.HandleTargetSelection(character);
-            return true;
-        }
-        
-        if(CombatState.Player is BellRinger && bellRingerCombatUI != null && bellRingerCombatUI.IsInBellRingMode())
-        {
-            bellRingerCombatUI.HandleTargetSelection(character);
-            return true;
+            bool processed = activeArchetypeUI.HandleTargetSelection(character);
+            return processed;
         }
         return false;
+    }
+
+    private bool IsArchetypeAbilityActive()
+    {
+        return activeArchetypeUI?.IsInSpecialMode() ?? false;
     }
 
     private void OnEnemyHover(BaseCharacter enemy)
@@ -259,15 +270,6 @@
             hoveredCharacter = null;
             StateHasChanged();
         }
-    }
-
-    private bool IsArchetypeAbilityActive()
-    {
-        if (CombatState.Player is Doctor && doctorCombatUI != null)
-        {
-            return doctorCombatUI.IsInInfectMode();
-        }
-        return false;
     }
 
     private string GetPlayerCardClass()
