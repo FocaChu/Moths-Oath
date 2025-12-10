@@ -16,6 +16,7 @@ public class Doctor : Player
 
         this.Name = player.Name;
         this.Archetype = player.Archetype;
+        this.Race = player.Race;
         this.Allegiance = player.Allegiance;
 
         var s = player.Stats;

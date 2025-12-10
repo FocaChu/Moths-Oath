@@ -9,4 +9,9 @@ public abstract class BasePassiveEffect
     public abstract string Description { get; set; }
 
     public bool IsActive { get; set; } = true;
+
+    public virtual BasePassiveEffect Clone()
+    {
+        return (BasePassiveEffect)this.MemberwiseClone();
+    }
 }

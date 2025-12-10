@@ -9,7 +9,7 @@ using MothsOath.Core.StatusEffect.StatusEffectsRandomGenerators;
 
 namespace MothsOath.Core.PassiveEffects;
 
-public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, IStatusEffectDoneReactor
+public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, IStatusEffectDoneReactor, ITurnStartReactor
 {
     public override string Id { get; set; } = "eve_glory_passive";
 
@@ -18,6 +18,8 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
     public override string Description { get; set; } = "Concede uma glória ao começo de um combate.";
 
     public int Priority { get; set; } = 0;
+
+    public int Counter { get; set; } = 0;
 
     public void OnCombatStart(BaseCharacter target, CombatState context)
     {
@@ -46,7 +48,77 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
 
         target.ApplyPureStatusEffect(echo);
 
-        Console.WriteLine($"{target.Name} recebeu um eco de {plan.StatusEffect.Name}.");
+        if(!target.IsTransformed)
+            Counter++;
 
+        Console.WriteLine($"{target.Name} recebeu um eco de {plan.StatusEffect.Name}.");
+    }
+
+    public void OnTurnStart(BaseCharacter target, CombatState context)
+    {
+        if (target.IsTransformed && Counter > 0)
+            Counter--;
+
+        if(target.IsTransformed && Counter == 0)
+            Detransform(target);
+
+        if (Counter >= 5)
+        {
+            Transform(context, target);
+            Counter = 3;;
+        }
+    }
+
+    private void Transform(CombatState context, BaseCharacter target)
+    {
+        target.IsTransformed = true;
+
+        if (target is Player yulkin)
+        {
+            yulkin.Stats.BonusMaxHealth += 20;
+            yulkin.Stats.BonusStrength += yulkin.Level;
+            yulkin.Stats.BonusKnowledge += yulkin.Level + 1;
+            yulkin.Stats.BonusDefense += 3;
+            yulkin.Stats.Shield += 15;
+        }
+        else
+        {
+            target.Stats.BonusStrength += 3;
+            target.Stats.BonusKnowledge += 3;
+            target.Stats.BonusDefense += 1;
+        }
+
+        target.RecievePureHeal(target.Stats.Regeneration);
+
+        var allies = context.BuildPlayerTeam();
+        foreach (var ally in allies)
+        {
+            var level = ally is Player player ? player.Level : 2;
+
+            var glory = RandomGloryGenerator.GenerateRandomGlory(level, 2);
+            ally.ApplyPureStatusEffect(glory);
+            Console.WriteLine($"{ally.Name} recebeu a glória {glory.Name}.");
+        }
+
+        Console.WriteLine($"{target.Name} se transformou devido a {Name}!");
+    }
+
+    private void Detransform(BaseCharacter target)
+    {
+        target.IsTransformed = false;
+        if (target is Player yulkin)
+        {
+            yulkin.Stats.BonusMaxHealth -= 20;
+            yulkin.Stats.BonusStrength -= yulkin.Level;
+            yulkin.Stats.BonusKnowledge -= yulkin.Level + 1;
+            yulkin.Stats.BonusDefense -= 3;
+        }
+        else
+        {
+            target.Stats.BonusStrength -= 3;
+            target.Stats.BonusKnowledge -= 3;
+            target.Stats.BonusDefense -= 1;
+        }
+        Console.WriteLine($"{target.Name} retornou à sua forma normal.");
     }
 }

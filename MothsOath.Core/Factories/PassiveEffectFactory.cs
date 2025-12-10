@@ -43,7 +43,7 @@ public class PassiveEffectFactory
         {
             if (_passives.TryGetValue(passiveId, out var passive))
             {
-                result.Add(passive);
+                result.Add(passive.Clone());
             }
             else
             {
@@ -51,14 +51,14 @@ public class PassiveEffectFactory
                 result.Add(new NullPassiveEffect(passiveId));
             }
         }
-        return result;
+        return result;  
     }
 
     public BasePassiveEffect GetPassiveEffect(string passiveId)
     {
         if (_passives.TryGetValue(passiveId, out var passive))
         {
-            return passive;
+            return passive.Clone();
         }
         else
         {
@@ -82,5 +82,10 @@ public class NullPassiveEffect : BasePassiveEffect
         Id = missingId;
         Name = "Efeito Passivo Desconhecido";
         Description = "Este efeito passivo não pôde ser encontrado.";
+    }
+    
+    public override BasePassiveEffect Clone()
+    {
+        return (BasePassiveEffect)this.MemberwiseClone();
     }
 }

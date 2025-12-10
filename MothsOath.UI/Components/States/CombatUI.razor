@@ -11,7 +11,8 @@
         @if (GetRaceComponentType() != null)
         {
             <DynamicComponent Type="@GetRaceComponentType()"
-                              Parameters="@GetCommonParameters()" />
+                              Parameters="@GetCommonParameters()"
+                              @key="@CombatState.Player.Race" />
         }
     </div>
 
@@ -77,7 +78,8 @@
             @if (GetArchetypeComponentType() != null)
             {
                 <DynamicComponent Type="@GetArchetypeComponentType()"
-                                  Parameters="@GetArchetypeParameters()" />
+                                  Parameters="@GetArchetypeParameters()"
+                                  @key="@CombatState.Player.Archetype" />
             }
         </div>
     </div>
@@ -301,6 +303,11 @@
         {
             classes += " hovered";
         }
+        if (CombatState.Player.IsTransformed)
+        {
+            classes += " giant-form";
+        }
+
         return classes;
     }
 

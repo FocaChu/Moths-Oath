@@ -20,6 +20,8 @@ public abstract class BaseCharacter
 
     public Stats Stats { get; set; } = new Stats();
 
+    public bool IsTransformed { get; set; } = false;
+
     public Allegiance Allegiance { get; set; }
 
     public List<BasePassiveEffect> PassiveEffects { get; set; } = new List<BasePassiveEffect>();

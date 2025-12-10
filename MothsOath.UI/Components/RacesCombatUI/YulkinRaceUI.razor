@@ -4,24 +4,25 @@
 @using MothsOath.Core.States
 @using MothsOath.UI.Interfaces
 
-@if (CombatState.Player.Race == RaceType.Ghoul)
+@if (CombatState.Player.Race == RaceType.Yulkin)
 {
-    @if (ShowBloodLust)
+    @if (IsYulkinTransformed)
     {
-        <div class="ghoul-overlay blood-lust"></div>
-    }
-    @if (IsLowHealth)
-    {
-        <div class="ghoul-overlay low-health-vignette"></div>
+        <div class="snow-overlay">
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="screen-tint"></div> 
+        </div>
     }
 }
 
 @code {
     [Parameter] public CombatState CombatState { get; set; } = default!;
 
-    private bool IsLowHealth => CombatState.Player.Stats.CurrentHealth < (CombatState.Player.Stats.MaxHealth * 0.33);
-
-    private bool ShowBloodLust => CombatState.Player.StatusEffects.Any(x => x.Id == "blood_frenzy_effect");
+    private bool IsYulkinTransformed => CombatState.Player.IsTransformed;
 
     protected override void OnInitialized()
     {

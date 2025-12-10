@@ -8,6 +8,7 @@ public static class RaceViewResolver
     private static readonly Dictionary<RaceType, Type> _raceMap = new()
     {
         { RaceType.Ghoul, typeof(GhoulRaceUI) },
+        { RaceType.Yulkin, typeof(YulkinRaceUI) },
         { RaceType.Human, typeof(EmptyRaceUI) } 
     };
 
