@@ -37,6 +37,8 @@ public abstract class BaseCharacter
         this.Stats.TemporaryStrength = 0;
         this.Stats.TemporaryKnowledge = 0;
         this.Stats.TemporaryDefense = 0;
+        this.Stats.TemporaryCriticalChance = 0;
+        this.Stats.TemporaryCriticalDamageMultiplier = 0;
     }
 
     public virtual void Clean()
@@ -45,6 +47,9 @@ public abstract class BaseCharacter
         this.Stats.BonusStrength = 0;
         this.Stats.BonusKnowledge = 0;
         this.Stats.BonusDefense = 0;
+        this.Stats.BonusCriticalChance = 0;
+        this.Stats.BonusCriticalDamage = 0;
+        this.Stats.Shield = 0;
 
         this.StatusEffects.Clear();
     }
@@ -57,7 +62,7 @@ public abstract class BaseCharacter
         OnDamageTaken?.Invoke(this, amount);
     }
 
-    public void ReceiveDamage(ActionContext context, DamagePlan plan)
+    public void ReceiveDamage(ActionContext context, HealthModifierPlan plan)
     {
         if (context.CanIncomingModifiers)
         {
@@ -71,12 +76,12 @@ public abstract class BaseCharacter
             }
         }
 
-        plan.FinalDamageAmount = CalculateDamageAmount(plan.FinalDamageAmount, plan.BypassResistance);
+        plan.FinalValue = CalculateDamageAmount(plan.FinalValue, plan.BypassResistance);
 
-        if (!plan.CanProceed || plan.FinalDamageAmount == 0)
+        if (!plan.CanProceed || plan.FinalValue == 0)
             return;
 
-        Stats.CurrentHealth -= plan.FinalDamageAmount;
+        Stats.CurrentHealth -= plan.FinalValue;
 
         if (context.CanRecievedReactors)
         {
@@ -115,7 +120,7 @@ public abstract class BaseCharacter
         Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + amount, Stats.TotalMaxHealth);
     }
 
-    public void RecieveHeal(ActionContext context, HealPlan plan)
+    public void RecieveHeal(ActionContext context, HealthModifierPlan plan)
     {
         if (context.CanIncomingModifiers)
         {
@@ -129,15 +134,15 @@ public abstract class BaseCharacter
             }
         }
 
-        if (!plan.CanProceed || plan.FinalHealAmount == 0)
+        if (!plan.CanProceed || plan.FinalValue == 0)
             return;
 
         int healthBefore = Stats.CurrentHealth;
 
-        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + plan.FinalHealAmount, Stats.TotalMaxHealth);
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + plan.FinalValue, Stats.TotalMaxHealth);
 
         int actualHealedAmount = Stats.CurrentHealth - healthBefore;
-        plan.FinalHealAmount = actualHealedAmount;
+        plan.FinalValue = actualHealedAmount;
 
         if (context.CanRecievedReactors)
         {

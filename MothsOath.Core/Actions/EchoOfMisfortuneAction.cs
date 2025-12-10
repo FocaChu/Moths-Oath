@@ -11,7 +11,7 @@ public class EchoOfMisfortuneAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        if (!ValidadeTargets(context))
+        if (!ValidateTargets(context))
             return;
 
         var rng = new Random();
@@ -37,7 +37,7 @@ public class EchoOfMisfortuneAction : BaseAction
         if (context.CanOutgoingModifiers)
             ApplyStatusEffectModifiers(context, effectPlan);
 
-        if (!ValidadeTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
+        if (!ValidateTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
             return;
 
         target.ApplyStatusEffect(context, effectPlan);

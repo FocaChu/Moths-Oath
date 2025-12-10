@@ -125,7 +125,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void OnDamageDealt(ActionContext context, DamagePlan plan, BaseCharacter target)
+    public void OnDamageDealt(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         var effects = Symptoms.OfType<IDamageDealtReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
@@ -134,7 +134,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void OnDamageReceived(ActionContext context, DamagePlan plan, BaseCharacter target)
+    public void OnDamageReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         var effects = Symptoms.OfType<IDamageReceivedReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
@@ -143,7 +143,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void ModifyIncomingDamage(ActionContext context, DamagePlan plan, BaseCharacter target)
+    public void ModifyIncomingDamage(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         var effects = Symptoms.OfType<IIncomingDamageModifier>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
@@ -152,7 +152,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void ModifyOutgoingDamage(ActionContext context, DamagePlan plan)
+    public void ModifyOutgoingDamage(ActionContext context, HealthModifierPlan plan)
     {
         var effects = Symptoms.OfType<IOutgoingDamageModifier>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
@@ -161,7 +161,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void OnHealingDone(ActionContext context, HealPlan plan, BaseCharacter target)
+    public void OnHealingDone(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         var effects = Symptoms.OfType<IHealingDoneReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
@@ -170,7 +170,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void OnHealingReceived(ActionContext context, HealPlan plan, BaseCharacter target)
+    public void OnHealingReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         var effects = Symptoms.OfType<IHealingReceivedReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
@@ -179,7 +179,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void ModifyIncomingHealing(ActionContext context, HealPlan plan, BaseCharacter target)
+    public void ModifyIncomingHealing(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         var effects = Symptoms.OfType<IIncomingHealingModifier>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
@@ -188,7 +188,7 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void ModifyOutgoingHealing(ActionContext context, HealPlan plan)
+    public void ModifyOutgoingHealing(ActionContext context, HealthModifierPlan plan)
     {
         var effects = Symptoms.OfType<IOutgoingHealingModifier>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)

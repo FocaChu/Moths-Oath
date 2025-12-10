@@ -27,8 +27,15 @@ public class Stats
     public int TemporaryDefense { get; set; } = 0;
     public int TotalDefense => BaseDefense + BonusDefense + TemporaryDefense;
 
-    public int CriticalChance { get; set; } = 5;
-    public float CriticalDamage { get; set; } = 1.5f;
+    public int BaseCriticalChance { get; set; } = 5;
+    public int BonusCriticalChance { get; set; } = 0;      
+    public int TemporaryCriticalChance { get; set; } = 0;
+    public int TotalCriticalChance => BaseCriticalChance + BonusCriticalChance + TemporaryCriticalChance;
+
+    public float BaseCriticalDamageMultiplier { get; set; } = 1.5f;
+    public float BonusCriticalDamage { get; set; } = 0f;
+    public float TemporaryCriticalDamageMultiplier { get; set; } = 0f;
+    public float TotalCriticalDamageMultiplier => BaseCriticalDamageMultiplier + BonusCriticalDamage + TemporaryCriticalDamageMultiplier;
 
     public int Shield { get; set; } = 0;
     public int Regeneration { get; set; } = 0;

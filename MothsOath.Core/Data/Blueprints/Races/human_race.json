@@ -9,6 +9,8 @@
   "BaseKnowledge": 5,
   "BaseResistance": 2,
   "BaseRegeneration": 0,
+  "BaseCriticalChance": 5,
+  "BaseCriticalDamageMultiplier": 1.5,
   "BonusXpMultiplier": 0.1,
   "PassiveDescription": "Ganho de Experiência aumentado em 10%.",
   "StartingCardIds": [ "strike_card", "strike_card" ]

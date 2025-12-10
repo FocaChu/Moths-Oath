@@ -34,6 +34,8 @@ public class PlayerFactory
             BaseKnowledge = raceBlueprint.BaseKnowledge + archetypeBlueprint.BonusKnowledge + 1,
             BaseDefense = raceBlueprint.BaseDefense + archetypeBlueprint.BonusDefense + 1,
             Regeneration = raceBlueprint.BaseRegeneration + archetypeBlueprint.BonusRegeneration,
+            BaseCriticalChance = raceBlueprint.BaseCriticalChance + archetypeBlueprint.BonusCriticalChance,
+            BaseCriticalDamageMultiplier = raceBlueprint.BaseCriticalDamageMultiplier + archetypeBlueprint.BonusCriticalDamageMultiplier,
         };
 
         var player = new Player

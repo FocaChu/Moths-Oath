@@ -9,6 +9,8 @@
   "BaseKnowledge": 4,
   "BaseResistance": 4,
   "BaseRegeneration": 2,
+  "BaseCriticalChance": 5,
+  "BaseCriticalDamageMultiplier": 1.5,
   "BonusXpMultiplier": 0,
   "PassiveEffectId": "eve_glory_passive",
   "PassiveDescription": "Ganham uma glória a cada começo de combate.",

@@ -29,12 +29,12 @@ public class KarmaEffect : BaseStatusEffect, IHealingDoneReactor
         Duration = duration;
     }
 
-    public void OnHealingDone(ActionContext context, HealPlan plan, BaseCharacter originalTarget)
+    public void OnHealingDone(ActionContext context, HealthModifierPlan plan, BaseCharacter originalTarget)
     {
         if (!IsActive() || originalTarget == context.Source)
             return;
 
-        int healingAmount = plan.FinalHealAmount / 2 + Level;
+        int healingAmount = plan.FinalValue / 2 + Level;
 
         context.Source.RecievePureHeal(healingAmount);
         Console.WriteLine($"{context.Source.Name} é curado por {healingAmount} devido ao efeito de Karma.");

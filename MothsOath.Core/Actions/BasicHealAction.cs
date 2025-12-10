@@ -11,13 +11,16 @@ public class BasicHealAction : BaseAction
     {
         int heal = (int)(context.Source.Stats.TotalKnowledge / 2);
 
-        var plan = new HealPlan(heal);
+        var plan = new HealthModifierPlan(heal);
 
         if (context.CanOutgoingModifiers)
             ApplyHealModifiers(context, plan);
 
-        if (!ValidadeTargets(context) || !ValidateHealPlan(context, plan))
+        if (!ValidateTargets(context) || !ValidateHealPlan(context, plan))
             return;
+
+        if (plan.CanCritical)
+            plan = CalculateCriticalValue(context, plan);
 
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];

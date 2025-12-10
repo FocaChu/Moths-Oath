@@ -5,5 +5,5 @@ namespace MothsOath.Core.Common.EffectInterfaces.Healing;
 public interface IIncomingHealingModifier
 {
     int Priority { get; set; }
-    void ModifyIncomingHealing(ActionContext context, HealPlan plan, BaseCharacter target);
+    void ModifyIncomingHealing(ActionContext context, HealthModifierPlan plan, BaseCharacter target);
 }

@@ -26,6 +26,10 @@ public class RaceBlueprint : IBlueprint
 
     public int BaseRegeneration { get; set; } = 0;
 
+    public int BaseCriticalChance { get; set; } = 5;
+
+    public float BaseCriticalDamageMultiplier { get; set; } = 1.5f;
+
     public float BonusXpMultiplier { get; set; } = 0;
 
     public string PassiveDrescription { get; set; } = "No passive ability.";

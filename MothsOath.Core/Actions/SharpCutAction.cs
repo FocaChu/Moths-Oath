@@ -1,6 +1,7 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
+using System.Numerics;
 
 namespace MothsOath.Core.Abilities;
 
@@ -12,13 +13,16 @@ public class SharpCutAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var damagePlan = new DamagePlan(damage, false);
+        var damagePlan = new HealthModifierPlan(damage);
 
         if (context.CanOutgoingModifiers)
             ApplyDamageModifiers(context, damagePlan);
 
-        if (!ValidadeTargets(context) || !ValidateDamagePlan(context, damagePlan))
+        if (!ValidateTargets(context) || !ValidateDamagePlan(context, damagePlan))
             return;
+
+        if (damagePlan.CanCritical)
+            damagePlan = CalculateCriticalValue(context, damagePlan);
 
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
@@ -34,7 +38,7 @@ public class SharpCutAction : BaseAction
         if (context.CanOutgoingModifiers)
             ApplyStatusEffectModifiers(context, effectPlan);
 
-        if (!ValidadeTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
+        if (!ValidateTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
             return;
 
         target.ApplyStatusEffect(context, effectPlan);

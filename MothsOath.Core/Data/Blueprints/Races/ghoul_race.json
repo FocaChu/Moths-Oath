@@ -9,6 +9,8 @@
   "BaseKnowledge": 4,
   "BaseResistance": 2,
   "BaseRegeneration": 2,
+  "BaseCriticalChance": 6,
+  "BaseCriticalDamageMultiplier": 1.5,
   "BonusXpMultiplier": 0,
   "PassiveEffectId": "blood_knot_passive",
   "PassiveDescription": "Maior regeneração e vampirismo.",

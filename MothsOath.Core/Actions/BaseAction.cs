@@ -3,10 +3,6 @@ using MothsOath.Core.Common.EffectInterfaces.Damage;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.Plans;
-using MothsOath.Core.Entities;
-using MothsOath.Core.Models.Enums;
-using System;
-using System.Numerics;
 
 namespace MothsOath.Core.Abilities;
 
@@ -16,12 +12,31 @@ public abstract class BaseAction
 
     public abstract void Execute(ActionContext context);
 
-    public virtual bool ValidadeTargets(ActionContext context)
+    public virtual bool ValidateTargets(ActionContext context)
     {
         return context.FinalTargets.Count > 0 || context.FinalTargets != null;
     }
 
-    public virtual DamagePlan ApplyDamageModifiers(ActionContext context, DamagePlan plan)
+    public virtual HealthModifierPlan CalculateCriticalValue(ActionContext context, HealthModifierPlan plan)
+    {
+        var source = context.Source;
+        var criticalChance = source.Stats.TotalCriticalChance;
+        var criticalDamageMultiplier = source.Stats.TotalCriticalDamageMultiplier;
+
+        if (criticalChance <= 0)
+            return plan;
+
+        int criticalRoll = new Random().Next(0, 100);
+        if (criticalRoll < criticalChance)
+        {
+            plan.FinalValue = (int)(plan.BaseHealthAmount * criticalDamageMultiplier);
+            Console.WriteLine($"DEBUG: Critico: {plan.FinalValue}");
+        }
+
+        return plan;
+    }
+
+    public virtual HealthModifierPlan ApplyDamageModifiers(ActionContext context, HealthModifierPlan plan)
     {
         var damageModifiers = context.Source.StatusEffects.OfType<IOutgoingDamageModifier>().ToList()
             .Concat(context.Source.PassiveEffects.OfType<IOutgoingDamageModifier>().ToList())
@@ -35,12 +50,12 @@ public abstract class BaseAction
         return plan;
     }
 
-    public virtual bool ValidateDamagePlan(ActionContext context, DamagePlan plan)
+    public virtual bool ValidateDamagePlan(ActionContext context, HealthModifierPlan plan)
     {
-        return context.CanProceed && plan.FinalDamageAmount > 0;
+        return context.CanProceed && plan.FinalValue > 0;
     }
 
-    public virtual HealPlan ApplyHealModifiers(ActionContext context, HealPlan plan)
+    public virtual HealthModifierPlan ApplyHealModifiers(ActionContext context, HealthModifierPlan plan)
     {
         var healModifiers = context.Source.StatusEffects.OfType<IOutgoingHealingModifier>().ToList()
             .Concat(context.Source.PassiveEffects.OfType<IOutgoingHealingModifier>().ToList())
@@ -54,9 +69,9 @@ public abstract class BaseAction
         return plan;
     }
 
-    public virtual bool ValidateHealPlan(ActionContext context, HealPlan plan)
+    public virtual bool ValidateHealPlan(ActionContext context, HealthModifierPlan plan)
     {
-        return context.CanProceed && plan.FinalHealAmount > 0;
+        return context.CanProceed && plan.FinalValue > 0;
     }
 
     public virtual StatusEffectPlan ApplyStatusEffectModifiers(ActionContext context, StatusEffectPlan plan)

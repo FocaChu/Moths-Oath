@@ -9,15 +9,18 @@ public class PowerStrikeAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        int damage = (int)(context.Source.Stats.TotalStrength * 2);
+        int damage = (int)(context.Source.Stats.TotalStrength * 1.5);
 
-        var plan = new DamagePlan(damage, false);
+        var plan = new HealthModifierPlan(damage);
 
         if (context.CanOutgoingModifiers)
             ApplyDamageModifiers(context, plan);
 
-        if (!ValidadeTargets(context) || !ValidateDamagePlan(context, plan))
+        if (!ValidateTargets(context) || !ValidateDamagePlan(context, plan))
             return;
+
+        if (plan.CanCritical)
+            plan = CalculateCriticalValue(context, plan);
 
         var rng = new Random();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];

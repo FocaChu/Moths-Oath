@@ -26,6 +26,10 @@ public class NpcBlueprint : IBlueprint
 
     public int BaseRegeneration { get; set; }
 
+    public int BaseCriticalChance { get; set; } = 5;
+
+    public float BaseCriticalDamageMultiplier { get; set; } = 1.5f;
+
     public List<string> PassiveEffectIds { get; set; } = new List<string>();
 
     public string NormalBehaviorId { get; set; } = string.Empty;

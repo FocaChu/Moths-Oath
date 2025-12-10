@@ -9,6 +9,8 @@
   "BonusKnowledge": 3,
   "BonusDefense": 2,
   "BonusRegeneration": 1,
+  "BonusCriticalChance": 0,
+  "BonusCriticalDamageMultiplier": 0,
   "InitialGold": 15,
   "PassiveEffectIds": [],
   "StartingCardIds": [ "toxic_jab_card", "heal_card", "sharp_cut_card" ]

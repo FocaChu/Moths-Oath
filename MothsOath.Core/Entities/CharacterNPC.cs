@@ -2,7 +2,6 @@
 using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
-using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.Entities;
@@ -67,7 +66,7 @@ public class CharacterNPC : BaseCharacter
         else
         {
             BasicAttack.Execute(context);
-            Console.WriteLine($"{Name} usou {BasicAttack.Id}!");
+            //Console.WriteLine($"{Name} usou {BasicAttack.Id}!");
         }
 
         if (this.CanUseSpecial)
@@ -78,7 +77,5 @@ public class CharacterNPC : BaseCharacter
         {
             CurrentCooldown--;
         }
-
-        Console.WriteLine($"{Name} terminou seu turno.");
     }
 }

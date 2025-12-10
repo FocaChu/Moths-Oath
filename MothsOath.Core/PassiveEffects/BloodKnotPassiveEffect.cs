@@ -20,7 +20,7 @@ public class BloodKnotPassiveEffect : BasePassiveEffect, IDamageReceivedReactor,
 
     public bool HasActivated { get; set; } = false;
 
-    public void OnDamageReceived(ActionContext context, DamagePlan plan, BaseCharacter target)
+    public void OnDamageReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         ExecuteEffect(target);
     }
@@ -30,7 +30,7 @@ public class BloodKnotPassiveEffect : BasePassiveEffect, IDamageReceivedReactor,
         ExecuteEffect(target);
     }
 
-    public void OnHealingReceived(ActionContext context, HealPlan plan, BaseCharacter target)
+    public void OnHealingReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         ExecuteEffect(target);
     }

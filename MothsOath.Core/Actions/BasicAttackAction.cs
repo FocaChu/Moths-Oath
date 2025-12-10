@@ -11,13 +11,16 @@ public class BasicAttackAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var plan = new DamagePlan(damage, false);
+        var plan = new HealthModifierPlan(damage);
 
         if(context.CanOutgoingModifiers)
             ApplyDamageModifiers(context, plan);
 
-        if (!ValidadeTargets(context) || !ValidateDamagePlan(context, plan))
+        if (!ValidateTargets(context) || !ValidateDamagePlan(context, plan))
             return;
+
+        if(plan.CanCritical)
+            plan = CalculateCriticalValue(context, plan);
 
         var rng = Random.Shared;
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
@@ -26,6 +29,6 @@ public class BasicAttackAction : BaseAction
         context.FinalTargets.Add(target);
 
         target.ReceiveDamage(context, plan);
-        Console.WriteLine($"{context.Source.Name} attacks {target.Name} for {damage} damage.");
+        Console.WriteLine($"{context.Source.Name} attacks {target.Name} for {plan.FinalValue} damage.");
     }
 }

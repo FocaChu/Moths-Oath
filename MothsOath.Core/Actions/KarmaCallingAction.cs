@@ -11,7 +11,7 @@ public class KarmaCallingAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        if (!ValidadeTargets(context))
+        if (!ValidateTargets(context))
             return;
 
         var rng = new Random();
@@ -27,7 +27,7 @@ public class KarmaCallingAction : BaseAction
         if (context.CanOutgoingModifiers)
             ApplyStatusEffectModifiers(context, effectPlan);
 
-        if (!ValidadeTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
+        if (!ValidateTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
             return;
 
         target.ApplyStatusEffect(context, effectPlan);

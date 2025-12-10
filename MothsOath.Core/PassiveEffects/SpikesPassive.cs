@@ -14,13 +14,13 @@ public class SpikesPassive : BasePassiveEffect, IDamageReceivedReactor
 
     public int Priority { get; set; } = 0;
 
-    public void OnDamageReceived(ActionContext context, DamagePlan plan, BaseCharacter target)
+    public void OnDamageReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
-        if (plan.CanProceed && plan.FinalDamageAmount > 0)
+        if (plan.CanProceed && plan.FinalValue > 0)
         {
             int spikeDamage = (int)(target.Stats.TotalDefense / 2) + (int)(target.Stats.TotalStrength / 4);
 
-            var damagePlan = new DamagePlan(spikeDamage, true);
+            var damagePlan = new HealthModifierPlan(spikeDamage);
 
             context.CanDealtReactors = false;
             context.CanRecievedReactors = false;

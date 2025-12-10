@@ -10,6 +10,8 @@
   "BaseKnowledge": 3,
   "BaseDefense": 3,
   "BaseRegeneration": 0,
+  "BaseCriticalChance": 6,
+  "BaseCriticalDamageMultiplier": 1.6,
   "PassiveEffectIds": [ "bubble_of_mana_passive" ],
   "NormalBehaviorId": "target_opposing_team_behavior",
   "SpecialBehaviorId": "target_opposing_team_behavior",

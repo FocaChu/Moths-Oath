@@ -44,6 +44,8 @@ public class NpcFactory
             BaseKnowledge = blueprint.BaseKnowledge,
             BaseDefense = blueprint.BaseDefense,
             Regeneration = blueprint.BaseRegeneration,
+            BaseCriticalChance = blueprint.BaseCriticalChance,
+            BaseCriticalDamageMultiplier = blueprint.BaseCriticalDamageMultiplier,
         };
 
         var npc = new CharacterNPC

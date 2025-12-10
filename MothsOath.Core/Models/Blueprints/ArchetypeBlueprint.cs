@@ -23,6 +23,8 @@ public class ArchetypeBlueprint : IBlueprint
     public int BonusDefense { get; set; } = 0;
 
     public int BonusRegeneration { get; set; } = 0;
+    public int BonusCriticalChance { get; set; } = 0;
+    public float BonusCriticalDamageMultiplier { get; set; } = 0;
 
     public int InitialGold { get; set; } = 0;
 

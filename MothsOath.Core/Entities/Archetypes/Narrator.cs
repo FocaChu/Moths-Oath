@@ -21,11 +21,10 @@ public class Narrator : Player
             MaxHealth = s.MaxHealth,
             CurrentHealth = s.CurrentHealth,
             BaseStrength = s.BaseStrength,
-            BonusStrength = s.BonusStrength,
             BaseKnowledge = s.BaseKnowledge,
-            BonusKnowledge = s.BonusKnowledge,
             BaseDefense = s.BaseDefense,
-            BonusDefense = s.BonusDefense,
+            BaseCriticalChance = s.BaseCriticalChance,
+            BaseCriticalDamageMultiplier = s.BaseCriticalDamageMultiplier,
             Shield = s.Shield,
             Regeneration = s.Regeneration
         };

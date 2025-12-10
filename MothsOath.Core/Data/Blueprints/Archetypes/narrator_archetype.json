@@ -9,6 +9,8 @@
   "BonusKnowledge": 6,
   "BonusDefense": 1,
   "BonusRegeneration": 0,
+  "BonusCriticalChance": 1,
+  "BonusCriticalDamageMultiplier": 0.1,
   "InitialGold": 20,
   "PassiveEffectIds": [],
   "StartingCardIds": [ "heal_card", "heal_card" ]

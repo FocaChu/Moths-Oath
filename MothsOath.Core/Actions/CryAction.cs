@@ -8,7 +8,7 @@ public class CryAction : BaseAction
 
     public override void Execute(ActionContext context)
     {
-        if (!ValidadeTargets(context))
+        if (!ValidateTargets(context))
             return;
 
         var rng = new Random();
