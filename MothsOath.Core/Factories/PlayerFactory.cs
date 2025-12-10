@@ -39,6 +39,8 @@ public class PlayerFactory
         var player = new Player
         {
             Archetype = archetypeBlueprint.Name,
+            Race = GetRaceTypeFromId(raceId),
+            Level = 1,
             Allegiance = Allegiance.Ally,
             Name = playerName,
             Stats = stats,
@@ -79,6 +81,18 @@ public class PlayerFactory
         }
 
         return player;
+    }
+
+    private RaceType GetRaceTypeFromId(string raceId)
+    {
+        return raceId.ToLower() switch
+        {
+            "ghoul" => RaceType.Ghoul,
+            "human" => RaceType.Human,
+            "yulkin" => RaceType.Yulkin,
+            _ => RaceType.Human
+        };
+
     }
 
     public List<RaceBlueprint> GetAllRaceBlueprints()

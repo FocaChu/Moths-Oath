@@ -6,6 +6,15 @@
 @using MothsOath.UI.Helpers
 
 <div class="combat-container" @onclick="CancelSelection">
+
+    <div class="race-layer">
+        @if (GetRaceComponentType() != null)
+        {
+            <DynamicComponent Type="@GetRaceComponentType()"
+                              Parameters="@GetCommonParameters()" />
+        }
+    </div>
+
     <div class="enemy-area">
         @foreach (var enemy in CombatState.Enemies)
         {
@@ -14,7 +23,7 @@
                  @onmouseover="() => OnEnemyHover(enemy)"
                  @onmouseout="() => OnEnemyOut(enemy)">
                 <p>@enemy.Name</p>
-                <p>HP: @enemy.Stats.CurrentHealth / @enemy.Stats.MaxHealth</p>
+                <p>HP: @enemy.Stats.CurrentHealth / @enemy.Stats.TotalMaxHealth</p>
             </div>
         }
     </div>
@@ -32,7 +41,7 @@
                              @onmouseover="() => { OnPlayerHover(); }"
                              @onmouseout="() => { OnPlayerOut(); }">
                             <p class="player-name">@c.Name</p>
-                            <p class="player-hp">HP: @c.Stats.CurrentHealth / @c.Stats.MaxHealth</p>
+                            <p class="player-hp">HP: @c.Stats.CurrentHealth / @c.Stats.TotalMaxHealth</p>
                         </div>
                     }
                     else
@@ -42,7 +51,7 @@
                              @onmouseover="() => OnAllyHover(c)"
                              @onmouseout="() => OnAllyOut(c)">
                             <p class="player-name">@c.Name</p>
-                            <p class="player-hp">HP: @c.Stats.CurrentHealth / @c.Stats.MaxHealth</p>
+                            <p class="player-hp">HP: @c.Stats.CurrentHealth / @c.Stats.TotalMaxHealth</p>
                         </div>
                     }
                 }
@@ -64,7 +73,7 @@
         <div class="player-actions">
             <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>
             <button @onclick="ExamineClicked" @onclick:stopPropagation="true">Examinar</button>
-            
+
             @if (GetArchetypeComponentType() != null)
             {
                 <DynamicComponent Type="@GetArchetypeComponentType()"
@@ -93,6 +102,18 @@
     private BellRingerCombatUI? bellRingerCombatUI;
     private NarratorCombatUI? narratorCombatUI;
 
+    private Type? GetRaceComponentType()
+    {
+        return RaceViewResolver.GetViewType(CombatState.Player.Race);
+    }
+
+    private Dictionary<string, object> GetCommonParameters()
+    {
+        return new Dictionary<string, object>
+        {
+            { "CombatState", CombatState }
+        };
+    }
 
     private Type? GetArchetypeComponentType()
     {

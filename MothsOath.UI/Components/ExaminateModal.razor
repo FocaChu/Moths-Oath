@@ -10,29 +10,69 @@
                     <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Saúde:</strong> @CharacterProfile.Stats.CurrentHealth/@CharacterProfile.Stats.MaxHealth</p>
+
+                    <p>
+                        <strong>Saúde:</strong> @CharacterProfile.Stats.CurrentHealth/@CharacterProfile.Stats.TotalMaxHealth
+                        @if (CharacterProfile.Stats.TotalMaxHealth != CharacterProfile.Stats.MaxHealth)
+                        {
+                            <span> (Base: @CharacterProfile.Stats.MaxHealth</span>
+                            @if (CharacterProfile.Stats.BonusMaxHealth != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.BonusMaxHealth [B]</span>
+                            }
+                            @if (CharacterProfile.Stats.TemporaryMaxHealth != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.TemporaryMaxHealth [T]</span>
+                            }
+                            <span>)</span>
+                        }
+                    </p>
 
                     <p>
                         <strong>Força:</strong> @CharacterProfile.Stats.BaseStrength
-                        @if (CharacterProfile.Stats.BonusStrength != 0)
+                        @if (CharacterProfile.Stats.TotalStrength != CharacterProfile.Stats.BaseStrength)
                         {
-                            <span> + @CharacterProfile.Stats.BonusStrength = @CharacterProfile.Stats.TotalStrength</span>
+                            @if (CharacterProfile.Stats.BonusStrength != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.BonusStrength [B]</span>
+                            }
+                            @if (CharacterProfile.Stats.TemporaryStrength != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.TemporaryStrength [T]</span>
+                            }
+                            <span> = @CharacterProfile.Stats.TotalStrength</span>
                         }
                     </p>
 
                     <p>
                         <strong>Inteligência:</strong> @CharacterProfile.Stats.BaseKnowledge
-                        @if (CharacterProfile.Stats.BonusKnowledge != 0)
+                        @if (CharacterProfile.Stats.TotalKnowledge != CharacterProfile.Stats.BaseKnowledge)
                         {
-                            <span> + @CharacterProfile.Stats.BonusKnowledge = @CharacterProfile.Stats.TotalKnowledge</span>
+                            @if (CharacterProfile.Stats.BonusKnowledge != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.BonusKnowledge [B]</span>
+                            }
+                            @if (CharacterProfile.Stats.TemporaryKnowledge != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.TemporaryKnowledge [T]</span>
+                            }
+                            <span> = @CharacterProfile.Stats.TotalKnowledge</span>
                         }
                     </p>
 
                     <p>
                         <strong>Defesa:</strong> @CharacterProfile.Stats.BaseDefense
-                        @if (CharacterProfile.Stats.BonusDefense != 0)
+                        @if (CharacterProfile.Stats.TotalDefense != CharacterProfile.Stats.BaseDefense)
                         {
-                            <span> + @CharacterProfile.Stats.BonusDefense = @CharacterProfile.Stats.TotalDefense</span>
+                            @if (CharacterProfile.Stats.BonusDefense != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.BonusDefense [B]</span>
+                            }
+                            @if (CharacterProfile.Stats.TemporaryDefense != 0)
+                            {
+                                <span> + @CharacterProfile.Stats.TemporaryDefense [T]</span>
+                            }
+                            <span> = @CharacterProfile.Stats.TotalDefense</span>
                         }
                     </p>
 

@@ -50,13 +50,13 @@
     <None Update="Data\Blueprints\NPCs\skeleton.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Blueprints\Races\yulkinRace.json">
+    <None Update="Data\Blueprints\Races\yulkin_race.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Blueprints\Races\ghoulRace.json">
+    <None Update="Data\Blueprints\Races\ghoul_race.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Blueprints\Races\humanRace.json">
+    <None Update="Data\Blueprints\Races\human_race.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

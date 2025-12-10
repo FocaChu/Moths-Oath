@@ -29,11 +29,22 @@ public abstract class BaseCharacter
 
     public virtual void Restore()
     {
-        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + Stats.Regeneration, Stats.MaxHealth);
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + Stats.Regeneration, Stats.TotalMaxHealth);
 
+        this.Stats.TemporaryMaxHealth = 0;
+        this.Stats.TemporaryStrength = 0;
+        this.Stats.TemporaryKnowledge = 0;
+        this.Stats.TemporaryDefense = 0;
+    }
+
+    public virtual void Clean()
+    {
+        this.Stats.BonusMaxHealth = 0;
         this.Stats.BonusStrength = 0;
         this.Stats.BonusKnowledge = 0;
         this.Stats.BonusDefense = 0;
+
+        this.StatusEffects.Clear();
     }
 
     public void RecievePureDamage(int amount)
@@ -99,7 +110,7 @@ public abstract class BaseCharacter
     {
         if (amount <= 0)
             return;
-        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + amount, Stats.MaxHealth);
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + amount, Stats.TotalMaxHealth);
     }
 
     public void RecieveHeal(ActionContext context, HealPlan plan)
@@ -121,7 +132,7 @@ public abstract class BaseCharacter
 
         int healthBefore = Stats.CurrentHealth;
 
-        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + plan.FinalHealAmount, Stats.MaxHealth);
+        Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + plan.FinalHealAmount, Stats.TotalMaxHealth);
 
         int actualHealedAmount = Stats.CurrentHealth - healthBefore;
         plan.FinalHealAmount = actualHealedAmount;

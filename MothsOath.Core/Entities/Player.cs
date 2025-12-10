@@ -1,4 +1,5 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.Entities;
@@ -6,6 +7,8 @@ namespace MothsOath.Core.Entities;
 public class Player : BaseCharacter
 {
     public string Archetype { get; set; } = null!;
+
+    public RaceType Race { get; set; }
 
     public int MaxMana { get; set; }
 

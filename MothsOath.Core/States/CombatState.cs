@@ -215,13 +215,15 @@ public class CombatState : IGameState
             {
                 if (ally.Stats.IsAlive)
                 {
-                    ally.StatusEffects.Clear();
+                    ally.Clean();
                     ally.RecievePureDamage(ally.Stats.Regeneration);
                     Player.StorageAllies.Add(ally);
                 }
             }
 
             Allies.Clear();
+
+            Player.Clean();
 
             var resultState = _stateFactory.CreateCombatResultState(_gameManager, Player, TotalXPReward, TotalGoldReward, TurnCount, EnemiesDefeatedCount);
             _gameManager.TransitionToState(resultState);
