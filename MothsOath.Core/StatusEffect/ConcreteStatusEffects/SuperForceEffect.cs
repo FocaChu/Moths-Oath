@@ -5,11 +5,11 @@ using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.ConcreteStatusEffects;
 
-public class StrongBodyEffect : BaseStatusEffect, ITurnStartReactor
+public class SuperForceEffect : BaseStatusEffect, ITurnStartReactor
 {
-    public override string Id { get; set; } = "strong_body_effect";
+    public override string Id { get; set; } = "super_force_effect";
 
-    public override string Name { get; set; } = "Corpo Forte";
+    public override string Name { get; set; } = "Super Força";
 
     public override string Description { get; set; } = "Aumenta a força temporariamente.";
 
@@ -23,7 +23,7 @@ public class StrongBodyEffect : BaseStatusEffect, ITurnStartReactor
 
     public override StatusEffectType EffectType { get; set; } = StatusEffectType.Positive;
 
-    public StrongBodyEffect(int level, int duration)
+    public SuperForceEffect(int level, int duration)
     {
         Level = level;
         Duration = duration;

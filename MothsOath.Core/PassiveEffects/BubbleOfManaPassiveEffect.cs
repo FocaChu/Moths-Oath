@@ -1,6 +1,5 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces.Death;
-using MothsOath.Core.States;
 
 namespace MothsOath.Core.PassiveEffects;
 

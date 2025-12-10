@@ -1,21 +1,20 @@
 ﻿using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
-using MothsOath.Core.Common.EffectInterfaces.Damage;
+using MothsOath.Core.Common.EffectInterfaces.Combat;
+using MothsOath.Core.Common.EffectInterfaces.Death;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
-using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 using MothsOath.Core.StatusEffect.DiseaseEffect.Symptoms;
-using System.Numerics;
 
 namespace MothsOath.Core.StatusEffect.DiseaseEffect;
 
-public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReactor, ITurnStartReactor, IFadingReactor,
-                                               IGlobalDamageInteractor, IGlobalHealingInteractor, IGlobalStatusEffectInteractor,
-                                               IActionPlanModifier
+public class DiseaseEffect : BaseStatusEffect, IGlobalCombatReactor, IGlobalDeadReactor,
+                                               IGlobalHealthInteractor, IGlobalStatusEffectInteractor,
+                                               IActionPlanModifier, IFadingReactor
 {
     public override string Id { get; set; }
 
@@ -125,75 +124,39 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
-    public void OnDamageDealt(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
+    public void ReactHealthModified(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
-        var effects = Symptoms.OfType<IDamageDealtReactor>().ToList().OrderByDescending(e => e.Priority);
+        var effects = Symptoms.OfType<IHealthModifierReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
         {
-            effect.OnDamageDealt(context, plan, target);
+            effect.ReactHealthModified(context, plan, target);
         }
     }
 
-    public void OnDamageReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
+    public void OnHealthModifierApplied(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
-        var effects = Symptoms.OfType<IDamageReceivedReactor>().ToList().OrderByDescending(e => e.Priority);
+        var effects = Symptoms.OfType<IModifiedHealthReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
         {
-            effect.OnDamageReceived(context, plan, target);
+            effect.OnHealthModifierApplied(context, plan, target);
         }
     }
 
-    public void ModifyIncomingDamage(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
+    public void ModifyIncomingHealthModifier(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
-        var effects = Symptoms.OfType<IIncomingDamageModifier>().ToList().OrderByDescending(e => e.Priority);
+        var effects = Symptoms.OfType<IIncomingHealthModifierReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
         {
-            effect.ModifyIncomingDamage(context, plan, target);
+            effect.ModifyIncomingHealthModifier(context, plan, target);
         }
     }
 
-    public void ModifyOutgoingDamage(ActionContext context, HealthModifierPlan plan)
+    public void ModifyOutgoingHealthModifier(ActionContext context, HealthModifierPlan plan)
     {
-        var effects = Symptoms.OfType<IOutgoingDamageModifier>().ToList().OrderByDescending(e => e.Priority);
+        var effects = Symptoms.OfType<IOutgoingHealthModifierReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
         {
-            effect.ModifyOutgoingDamage(context, plan);
-        }
-    }
-
-    public void OnHealingDone(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
-    {
-        var effects = Symptoms.OfType<IHealingDoneReactor>().ToList().OrderByDescending(e => e.Priority);
-        foreach (var effect in effects)
-        {
-            effect.OnHealingDone(context, plan, target);
-        }
-    }
-
-    public void OnHealingReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
-    {
-        var effects = Symptoms.OfType<IHealingReceivedReactor>().ToList().OrderByDescending(e => e.Priority);
-        foreach (var effect in effects)
-        {
-            effect.OnHealingReceived(context, plan, target);
-        }
-    }
-
-    public void ModifyIncomingHealing(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
-    {
-        var effects = Symptoms.OfType<IIncomingHealingModifier>().ToList().OrderByDescending(e => e.Priority);
-        foreach (var effect in effects)
-        {
-            effect.ModifyIncomingHealing(context, plan, target);
-        }
-    }
-
-    public void ModifyOutgoingHealing(ActionContext context, HealthModifierPlan plan)
-    {
-        var effects = Symptoms.OfType<IOutgoingHealingModifier>().ToList().OrderByDescending(e => e.Priority);
-        foreach (var effect in effects)
-        {
-            effect.ModifyOutgoingHealing(context, plan);
+            effect.ModifyOutgoingHealthModifier(context, plan);
         }
     }
 
@@ -242,12 +205,39 @@ public class DiseaseEffect : BaseStatusEffect, ICombatStartReactor, ITurnEndReac
         }
     }
 
+    public void OnCombatEnd(CombatState state, BaseCharacter source)
+    {
+        var effects = Symptoms.OfType<ICombatEndReactor>().ToList().OrderByDescending(e => e.Priority);
+        foreach (var effect in effects)
+        {
+            effect.OnCombatEnd(state, source);
+        }
+    }
+
     public void OnFading(BaseCharacter target, CombatState context)
     {
         var effects = Symptoms.OfType<IFadingReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
         {
             effect.OnFading(target, context);
+        }
+    }
+
+    public void OnDeath(ActionContext context, BaseCharacter victim)
+    {
+        var effects = Symptoms.OfType<IDeathReactor>().ToList().OrderByDescending(e => e.Priority);
+        foreach (var effect in effects)
+        {
+            effect.OnDeath(context, victim);
+        }
+    }
+
+    public void OnKill(ActionContext context, BaseCharacter victim)
+    {
+        var effects = Symptoms.OfType<IKillReactor>().ToList().OrderByDescending(e => e.Priority);
+        foreach (var effect in effects)
+        {
+            effect.OnKill(context, victim);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.Abilities;
 
@@ -11,7 +12,7 @@ public class BasicAttackAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var plan = new HealthModifierPlan(damage);
+        var plan = new HealthModifierPlan(damage, HealthModifierType.Damage);
 
         if(context.CanOutgoingModifiers)
             ApplyDamageModifiers(context, plan);

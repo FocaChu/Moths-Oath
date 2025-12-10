@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Models.Enums;
 using MothsOath.Core.StatusEffect.ConcreteEffects;
 
 namespace MothsOath.Core.Abilities;
@@ -12,7 +13,7 @@ public class ToxicJabAction : BaseAction
     {
         int damage = context.Source.Stats.TotalStrength;
 
-        var damagePlan = new HealthModifierPlan(damage);
+        var damagePlan = new HealthModifierPlan(damage, HealthModifierType.Damage);
 
         if (context.CanOutgoingModifiers)
             ApplyDamageModifiers(context, damagePlan);

@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.Abilities;
 
@@ -11,7 +12,7 @@ public class BasicHealAction : BaseAction
     {
         int heal = (int)(context.Source.Stats.TotalKnowledge / 2);
 
-        var plan = new HealthModifierPlan(heal);
+        var plan = new HealthModifierPlan(heal, HealthModifierType.Healing);
 
         if (context.CanOutgoingModifiers)
             ApplyHealModifiers(context, plan);

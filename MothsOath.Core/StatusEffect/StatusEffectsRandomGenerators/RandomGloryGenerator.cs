@@ -11,7 +11,7 @@ public static class RandomGloryGenerator
         var glories = new List<BaseStatusEffect>
         {
             new HealingAuraEffect(level, duration),
-            new StrongBodyEffect(level, duration)
+            new SuperForceEffect(level, duration)
         };
 
         int index = rng.Next(glories.Count);

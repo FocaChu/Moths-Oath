@@ -1,5 +1,4 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces.Damage;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.Plans;
@@ -38,13 +37,13 @@ public abstract class BaseAction
 
     public virtual HealthModifierPlan ApplyDamageModifiers(ActionContext context, HealthModifierPlan plan)
     {
-        var damageModifiers = context.Source.StatusEffects.OfType<IOutgoingDamageModifier>().ToList()
-            .Concat(context.Source.PassiveEffects.OfType<IOutgoingDamageModifier>().ToList())
+        var damageModifiers = context.Source.StatusEffects.OfType<IOutgoingHealthModifierReactor>().ToList()
+            .Concat(context.Source.PassiveEffects.OfType<IOutgoingHealthModifierReactor>().ToList())
             .OrderByDescending(m => m.Priority);
 
         foreach (var effect in damageModifiers)
         {
-            effect.ModifyOutgoingDamage(context, plan);
+            effect.ModifyOutgoingHealthModifier(context, plan);
         }
 
         return plan;
@@ -57,13 +56,13 @@ public abstract class BaseAction
 
     public virtual HealthModifierPlan ApplyHealModifiers(ActionContext context, HealthModifierPlan plan)
     {
-        var healModifiers = context.Source.StatusEffects.OfType<IOutgoingHealingModifier>().ToList()
-            .Concat(context.Source.PassiveEffects.OfType<IOutgoingHealingModifier>().ToList())
+        var healModifiers = context.Source.StatusEffects.OfType<IOutgoingHealthModifierReactor>().ToList()
+            .Concat(context.Source.PassiveEffects.OfType<IOutgoingHealthModifierReactor>().ToList())
             .OrderByDescending(m => m.Priority);
 
         foreach (var effect in healModifiers)
         {
-            effect.ModifyOutgoingHealing(context, plan);
+            effect.ModifyOutgoingHealthModifier(context, plan);
         }
 
         return plan;

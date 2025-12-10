@@ -7,7 +7,7 @@ using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
-public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEndReactor
+public class BleedingEffect : BaseStatusEffect, IHealthModifierReactor, ITurnEndReactor
 {
     public override string Id { get; set; } = "bleeding_effect";
 
@@ -40,9 +40,9 @@ public class BleedingEffect : BaseStatusEffect, IHealingReceivedReactor, ITurnEn
         Console.WriteLine($"{target.Name} sofre {Level} de dano por sangramento. HP:{target.Stats.CurrentHealth}");
     }
 
-    public void OnHealingReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
+    public void ReactHealthModified(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
-        if (!IsActive() || plan.FinalValue <= 0) 
+        if (!IsActive() || plan.FinalValue <= 0 || plan.ModifierType != HealthModifierType.Healing) 
             return;
 
         Level--;

@@ -5,7 +5,7 @@ using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.StatusEffect.ConcreteStatusEffects;
 
-public class KarmaEffect : BaseStatusEffect, IHealingDoneReactor
+public class KarmaEffect : BaseStatusEffect, IModifiedHealthReactor
 {
     public override string Id { get; set; } = "karma_effect";
 
@@ -29,9 +29,9 @@ public class KarmaEffect : BaseStatusEffect, IHealingDoneReactor
         Duration = duration;
     }
 
-    public void OnHealingDone(ActionContext context, HealthModifierPlan plan, BaseCharacter originalTarget)
+    public void OnHealthModifierApplied(ActionContext context, HealthModifierPlan plan, BaseCharacter originalTarget)
     {
-        if (!IsActive() || originalTarget == context.Source)
+        if (!IsActive() || originalTarget == context.Source || plan.ModifierType != HealthModifierType.Healing)
             return;
 
         int healingAmount = plan.FinalValue / 2 + Level;

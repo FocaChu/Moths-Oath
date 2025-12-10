@@ -1,14 +1,14 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces.Combat;
-using MothsOath.Core.Common.EffectInterfaces.Damage;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Entities;
 using MothsOath.Core.States;
+using MothsOath.Core.StatusEffect.ConcreteEffects;
 
 namespace MothsOath.Core.PassiveEffects;
 
-public class BloodKnotPassiveEffect : BasePassiveEffect, IDamageReceivedReactor, IHealingReceivedReactor, ITurnStartReactor
+public class BloodKnotPassiveEffect : BasePassiveEffect, IModifiedHealthReactor, ITurnStartReactor
 {
     public override string Id { get; set; } = "blood_knot_passive";
 
@@ -20,7 +20,7 @@ public class BloodKnotPassiveEffect : BasePassiveEffect, IDamageReceivedReactor,
 
     public bool HasActivated { get; set; } = false;
 
-    public void OnDamageReceived(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
+    public void OnHealthModifierApplied(ActionContext context, HealthModifierPlan plan, BaseCharacter target)
     {
         ExecuteEffect(target);
     }
@@ -37,7 +37,11 @@ public class BloodKnotPassiveEffect : BasePassiveEffect, IDamageReceivedReactor,
 
     private void ExecuteEffect(BaseCharacter target)
     {
-        if (IsLowHealth(target) && !HasActivated)
+        if (IsLowHealth(target) && HasActivated)
+        {
+            ApplyBloodFrenzyEffect(target);
+        }
+        else if (IsLowHealth(target) && !HasActivated)
         {
             HasActivated = true;
             ApplyStats(target);
@@ -98,12 +102,12 @@ public class BloodKnotPassiveEffect : BasePassiveEffect, IDamageReceivedReactor,
         if(target is Player ghoul)
         {
             var level = ghoul.Level;
-            var bloodFrenzy = new StatusEffect.ConcreteEffects.BloodFrenzyEffect(level, 1);
+            var bloodFrenzy = new BloodFrenzyEffect(level, 1);
             target.ApplyPureStatusEffect(bloodFrenzy);
         }
         else
         {
-            var bloodFrenzy = new StatusEffect.ConcreteEffects.BloodFrenzyEffect(3, 1);
+            var bloodFrenzy = new BloodFrenzyEffect(3, 1);
             target.ApplyPureStatusEffect(bloodFrenzy);
         }
 
