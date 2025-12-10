@@ -1,16 +1,30 @@
-﻿.doctor-hud {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
+﻿:root {
+    --font-base: 14px;
+    --font-large: 18px;
+    --font-xlarge: 20px;
 }
 
-.doctor-hud-btn {
-    min-width: 120px;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
+.archetype-btn {
+    min-width: 140px;
+    padding: 0.9rem 1.2rem;
+    font-size: var(--font-large);
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+
+.archetype-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 @media (max-width: 520px) {
-    .doctor-hud { flex-direction: column; }
-    .doctor-hud-btn { min-width: 100%; }
+    .archetype-btn { 
+        min-width: 120px; 
+        font-size: 16px;
+        padding: 0.75rem 1rem;
+    }
 }

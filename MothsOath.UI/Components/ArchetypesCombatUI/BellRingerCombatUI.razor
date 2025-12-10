@@ -5,14 +5,12 @@
 @using MothsOath.Core.Common
 @using MothsOath.UI.Interfaces
 
-<div class="bell-ringer-hud">
-    <button class="bell-ringer-hud-btn btn btn-primary"
-            disabled="@(!CanUseBellRingAbility)"
-            @onclick="ToggleBellRing"
-            @onclick:stopPropagation="true">
-        Tocar Sino
-    </button>
-</div>
+<button class="archetype-btn btn btn-primary"
+        disabled="@(!CanUseBellRingAbility)"
+        @onclick="ToggleBellRing"
+        @onclick:stopPropagation="true">
+    Tocar Sino
+</button>
 
 @code {
     [Parameter] public CombatState CombatState { get; set; } = default!;
@@ -68,9 +66,8 @@
         if (!CanUseBellRingAbility ||
             CombatState.Player is not BellRinger bellRinger ||
             target is Player) 
-        {
             return false;
-        }
+        
 
         bellRinger.BellRingAbility(CombatState, target);
 

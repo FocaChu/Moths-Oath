@@ -1,0 +1,15 @@
+{
+  "Id": "narrator",
+  "Name": "Narrador",
+  "Description": "O grande Mestre de Pista, o condutor do espetáculo. Suas habilidades de manipulação e invocação são seu trunfo para seduzir a plateia.",
+  "BonusHealth": 0,
+  "BonusMana": 15,
+  "BonusStamina": 0,
+  "BonusStrength": 1,
+  "BonusKnowledge": 6,
+  "BonusDefense": 1,
+  "BonusRegeneration": 0,
+  "InitialGold": 20,
+  "PassiveEffectIds": [],
+  "StartingCardIds": [ "heal_card", "heal_card" ]
+}

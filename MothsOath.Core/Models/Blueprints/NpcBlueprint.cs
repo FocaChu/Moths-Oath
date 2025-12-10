@@ -26,7 +26,7 @@ public class NpcBlueprint : IBlueprint
 
     public int BaseRegeneration { get; set; }
 
-    public List<string> PassiveEffectIds { get; set; } = new();
+    public List<string> PassiveEffectIds { get; set; } = new List<string>();
 
     public string NormalBehaviorId { get; set; } = string.Empty;
 

@@ -2,7 +2,6 @@
 using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Blueprints;
 using MothsOath.Core.Models.Enums;
-using MothsOath.Core.PassiveEffects;
 using MothsOath.Core.Services;
 
 namespace MothsOath.Core.Factories;
@@ -57,6 +56,16 @@ public class PlayerFactory
 
             if (racePassive != null && racePassive is not NullPassiveEffect)
                 player.PassiveEffects.Add(racePassive);
+        }
+
+        if (archetypeBlueprint.PassiveEffectIds != null)
+        {
+            foreach (var passiveEffectId in archetypeBlueprint.PassiveEffectIds)
+            {
+                var passiveEffect = _passiveEffectFactory.GetPassiveEffect(passiveEffectId);
+                if (passiveEffect != null && passiveEffect is not NullPassiveEffect)
+                    player.PassiveEffects.Add(passiveEffect);
+            }
         }
 
         List<string> allCardsId = new List<string>();

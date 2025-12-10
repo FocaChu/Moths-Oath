@@ -10,5 +10,6 @@
   "BonusDefense": 2,
   "BonusRegeneration": 1,
   "InitialGold": 15,
+  "PassiveEffectIds": [],
   "StartingCardIds": [ "toxic_jab_card", "heal_card", "sharp_cut_card" ]
 }

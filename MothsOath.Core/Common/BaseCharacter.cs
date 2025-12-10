@@ -1,8 +1,9 @@
 ﻿using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.EffectInterfaces.Damage;
+using MothsOath.Core.Common.EffectInterfaces.Death;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
-using MothsOath.Core.Common.EffectInterfaces.Turn;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.PassiveEffects;
@@ -76,17 +77,22 @@ public abstract class BaseCharacter
             }
         }
 
-        if (!context.CanDealtReactors)
+        if (context.CanDealtReactors)
+        {
+            var sourceDamageReactors = context.Source.StatusEffects.OfType<IDamageDealtReactor>().ToList()
+                .Concat(context.Source.PassiveEffects.OfType<IDamageDealtReactor>().ToList())
+                .OrderByDescending(m => m.Priority);
+
+            foreach (var effect in sourceDamageReactors)
+            {
+                effect.OnDamageDealt(context, plan, this);
+            }
+        }
+
+        if (Stats.IsAlive)
             return;
 
-        var sourceDamageReactors = context.Source.StatusEffects.OfType<IDamageDealtReactor>().ToList()
-            .Concat(context.Source.PassiveEffects.OfType<IDamageDealtReactor>().ToList())
-            .OrderByDescending(m => m.Priority);
-
-        foreach (var effect in sourceDamageReactors)
-        {
-            effect.OnDamageDealt(context, plan, this);
-        }
+        CallDeathEffects(context);
     }
 
     public void RecievePureHeal(int amount)
@@ -132,17 +138,22 @@ public abstract class BaseCharacter
             }
         }
 
-        if (!context.CanDealtReactors)
-            return;
-
-        var sourceHealthReactors = context.Source.StatusEffects.OfType<IHealingDoneReactor>().ToList()
-            .Concat(context.Source.PassiveEffects.OfType<IHealingDoneReactor>().ToList())
-            .OrderByDescending(m => m.Priority);
-
-        foreach (var effect in sourceHealthReactors)
+        if (context.CanDealtReactors)
         {
-            effect.OnHealingDone(context, plan, this);
+            var sourceHealthReactors = context.Source.StatusEffects.OfType<IHealingDoneReactor>().ToList()
+                .Concat(context.Source.PassiveEffects.OfType<IHealingDoneReactor>().ToList())
+                .OrderByDescending(m => m.Priority);
+
+            foreach (var effect in sourceHealthReactors)
+            {
+                effect.OnHealingDone(context, plan, this);
+            }
         }
+
+        if (Stats.IsAlive)
+            return;
+        
+        CallDeathEffects(context);
     }
 
     public void ApplyPureStatusEffect(BaseStatusEffect statusEffect)
@@ -232,6 +243,27 @@ public abstract class BaseCharacter
             return finalDamage;
         }
         return 0;
+    }
+
+    private void CallDeathEffects(ActionContext context)
+    {
+        var deathReactors = this.StatusEffects.OfType<IDeathReactor>().ToList()
+            .Concat(this.PassiveEffects.OfType<IDeathReactor>().ToList())
+            .OrderByDescending(m => m.Priority);
+
+        foreach (var effect in deathReactors)
+        {
+            effect.OnDeath(context, this);
+        }
+
+        var sourceKillReactors = context.Source.StatusEffects.OfType<IKillReactor>().ToList()
+            .Concat(context.Source.PassiveEffects.OfType<IKillReactor>().ToList())
+            .OrderByDescending(m => m.Priority);
+
+        foreach (var effect in sourceKillReactors)
+        {
+            effect.OnKill(context, this);
+        }
     }
 
     public void ActivateTurnStartEffects(CombatState combatState)

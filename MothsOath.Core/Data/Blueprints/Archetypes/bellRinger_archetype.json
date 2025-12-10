@@ -10,5 +10,6 @@
   "BonusDefense": 2,
   "BonusRegeneration": 2,
   "InitialGold": 10,
+  "PassiveEffectIds": [],
   "StartingCardIds": [ "heal_card", "heal_card", "echo_of_misfortune_card" ]
 }

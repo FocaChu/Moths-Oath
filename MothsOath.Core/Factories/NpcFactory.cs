@@ -22,7 +22,7 @@ public class NpcFactory
         _npcBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<NpcBlueprint>("NPCs");
     }
 
-    public CharacterNPC CreateNPC(string blueprintId)
+    public CharacterNPC CreateNpc(string blueprintId)
     {
         if (!_npcBlueprints.TryGetValue(blueprintId, out var blueprint))
         {
@@ -71,7 +71,7 @@ public class NpcFactory
         var enemies = new List<BaseCharacter>();
         foreach (var id in blueprintIds)
         {
-            enemies.Add(CreateNPC(id));
+            enemies.Add(CreateNpc(id));
         }
         return enemies;
     }
@@ -98,7 +98,7 @@ public class NpcFactory
         {
             var index = Random.Shared.Next(blueprintIds.Count);
             var id = blueprintIds[index];
-            result.Add(CreateNPC(id));
+            result.Add(CreateNpc(id));
         }
 
         foreach (var enemy in result)

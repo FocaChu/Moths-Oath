@@ -8,7 +8,7 @@
   "Maxhealth": 30,
   "BaseStrength": 9,
   "BaseKnowledge": 4,
-  "BaseDefense": 2,
+  "BaseDefense": 1,
   "BaseRegeneration": 0,
   "PassiveEffectIds": [],
   "NormalBehaviorId": "target_opposing_team_behavior",

@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces.Turn;
+using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;
 

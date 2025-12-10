@@ -6,15 +6,13 @@
 @using MothsOath.Core.Common
 @using MothsOath.UI.Interfaces
 
-<div class="doctor-hud">
-    <button class="doctor-hud-btn btn btn-secondary" @onclick="ShowDisease" @onclick:stopPropagation="true">Exibir Patógeno</button>
-    <button class="doctor-hud-btn btn btn-danger"
-            disabled="@(!CanUseInfectAbility)"
-            @onclick="ToggleInfect"
-            @onclick:stopPropagation="true">
-        Infectar
-    </button>
-</div>
+<button class="archetype-btn btn btn-secondary" @onclick="ShowDisease" @onclick:stopPropagation="true">Exibir Patógeno</button>
+<button class="archetype-btn btn btn-danger"
+        disabled="@(!CanUseInfectAbility)"
+        @onclick="ToggleInfect"
+        @onclick:stopPropagation="true">
+    Infectar
+</button>
 
 <DoctorDiseaseModal @ref="doctorDiseaseModal" />
 

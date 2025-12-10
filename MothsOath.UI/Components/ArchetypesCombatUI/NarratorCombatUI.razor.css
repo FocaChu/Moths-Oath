@@ -1,0 +1,64 @@
+﻿:root {
+    --font-base: 14px;
+    --font-large: 18px;
+    --font-xlarge: 20px;
+}
+
+.archetype-btn {
+    min-width: 140px;
+    padding: 0.9rem 1.2rem;
+    font-size: var(--font-large);
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease, background-color 0.12s ease;
+    border: none;
+    color: white;
+    font-weight: 500;
+}
+
+.archetype-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.narrator-summon-btn {
+    background: linear-gradient(135deg, #7b2cbf 0%, #9d4edd 100%);
+}
+
+.narrator-summon-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #6a1bb9 0%, #8b3dcc 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(123, 44, 191, 0.4);
+}
+
+.narrator-summon-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(123, 44, 191, 0.3);
+}
+
+.narrator-promote-btn {
+    background: linear-gradient(135deg, #f77f00 0%, #ff9500 100%);
+}
+
+.narrator-promote-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #e56f00 0%, #f08500 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(247, 127, 0, 0.4);
+}
+
+.narrator-promote-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(247, 127, 0, 0.3);
+}
+
+@media (max-width: 520px) {
+    .archetype-btn { 
+        min-width: 120px; 
+        font-size: 16px;
+        padding: 0.75rem 1rem;
+    }
+}
+

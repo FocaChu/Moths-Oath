@@ -4,7 +4,7 @@ using MothsOath.Core.Common.EffectInterfaces;
 using MothsOath.Core.Common.EffectInterfaces.Damage;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
-using MothsOath.Core.Common.EffectInterfaces.Turn;
+using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.States;

@@ -8,14 +8,16 @@
 
   <ItemGroup>
     <Folder Include="Data\Blueprints\Diseases\" />
-    <Folder Include="Data\Blueprints\NPCs\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\Blueprints\Archetypes\bellRingerArchetype.json">
+    <None Update="Data\Blueprints\Archetypes\bellRinger_archetype.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Blueprints\Archetypes\doctorArchetype.json">
+    <None Update="Data\Blueprints\Archetypes\narrator_archetype.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Blueprints\Archetypes\doctor_archetype.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Blueprints\Cards\echo_of_misfortune_card.json">
@@ -37,6 +39,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Blueprints\Diseases\virus_disease.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Blueprints\NPCs\narrator_extra.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Blueprints\NPCs\neko.json">

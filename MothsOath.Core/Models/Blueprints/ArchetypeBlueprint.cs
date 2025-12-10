@@ -26,5 +26,7 @@ public class ArchetypeBlueprint : IBlueprint
 
     public int InitialGold { get; set; } = 0;
 
+    public List<string> PassiveEffectIds { get; set; } = new List<string>();
+
     public List<string> StartingCardIds { get; set; } = new List<string>();
 }

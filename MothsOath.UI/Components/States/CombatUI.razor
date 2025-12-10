@@ -62,18 +62,14 @@
             }
         </div>
         <div class="player-actions">
-            <div class="action-buttons">
-                <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>
-                <button @onclick="ExamineClicked" @onclick:stopPropagation="true">Examinar</button>
-            </div>
-
-            <div class="archetype-hud-container">
-                @if (GetArchetypeComponentType() != null)
-                {
-                    <DynamicComponent Type="@GetArchetypeComponentType()"
-                                      Parameters="@GetArchetypeParameters()" />
-                }
-            </div>
+            <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>
+            <button @onclick="ExamineClicked" @onclick:stopPropagation="true">Examinar</button>
+            
+            @if (GetArchetypeComponentType() != null)
+            {
+                <DynamicComponent Type="@GetArchetypeComponentType()"
+                                  Parameters="@GetArchetypeParameters()" />
+            }
         </div>
     </div>
 </div>
@@ -95,6 +91,7 @@
     private bool examining = false;
     private DoctorCombatUI? doctorCombatUI;
     private BellRingerCombatUI? bellRingerCombatUI;
+    private NarratorCombatUI? narratorCombatUI;
 
 
     private Type? GetArchetypeComponentType()

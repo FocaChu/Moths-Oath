@@ -8,7 +8,8 @@ public static class ArchetypeViewResolver
     private static readonly Dictionary<Type, Type> _viewMap = new()
     {
         { typeof(Doctor), typeof(DoctorCombatUI) },
-        { typeof(BellRinger), typeof(BellRingerCombatUI) }
+        { typeof(BellRinger), typeof(BellRingerCombatUI) },
+        { typeof(Narrator), typeof(NarratorCombatUI) }
     };
 
     public static Type GetViewType(object player)

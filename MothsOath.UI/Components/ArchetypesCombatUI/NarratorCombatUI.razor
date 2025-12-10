@@ -1,0 +1,107 @@
+﻿@implements IDisposable
+@implements IArchetypeCombatView
+@using MothsOath.Core.Entities.Archetypes
+@using MothsOath.Core.Models.Enums
+@using MothsOath.Core.StatusEffect.DiseaseEffect
+@using MothsOath.Core.States
+@using MothsOath.Core.Common
+@using MothsOath.UI.Interfaces
+
+<button class="archetype-btn narrator-summon-btn" 
+        disabled="@(!CanUseCallToStageAbility)"
+        @onclick="CallToStageAbility"
+        @onclick:stopPropagation="true">
+    Convocar Figurante
+</button>
+<button class="archetype-btn narrator-promote-btn"
+        disabled="@(!CanUsePromoteActorAbility)"
+        @onclick="TogglePromote"
+        @onclick:stopPropagation="true">
+    Promover Ator
+</button>
+
+@code {
+    [Parameter] public CombatState CombatState { get; set; } = default!;
+    [Parameter] public EventCallback<IArchetypeCombatView> OnRegister { get; set; }
+    [Parameter] public Action? OnCancelSelection { get; set; } 
+
+    private bool abilityUsedThisTurn = false;
+    private bool promotingActor = false;
+
+    protected override void OnInitialized()
+    {
+        if (CombatState != null)
+        {
+            CombatState.OnPlayerTurnStart += ResetAbilityUsage;
+        }
+        OnRegister.InvokeAsync(this);
+    }
+
+    public void Dispose()
+    {
+        if (CombatState != null)
+        {
+            CombatState.OnPlayerTurnStart -= ResetAbilityUsage;
+        }
+    }
+
+    private void ResetAbilityUsage()
+    {
+        abilityUsedThisTurn = false;
+        promotingActor = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void TogglePromote()
+    {
+        if (abilityUsedThisTurn) return;
+        promotingActor = !promotingActor;
+        StateHasChanged();
+    }
+
+    private bool CanUseCallToStageAbility =>
+        CombatState.Player is Narrator narrator &&
+        narrator.CalculateExtraCost(CombatState.Allies.Count) <= narrator.CurrentMana &&
+        !abilityUsedThisTurn;
+
+
+    private void CallToStageAbility()
+    {
+        if (!CanUseCallToStageAbility) 
+            return;
+
+        if (CombatState.Player is Narrator narrator)
+        {
+            narrator.CallToStageAbility(CombatState);
+            abilityUsedThisTurn = true;
+            StateHasChanged();
+        }
+    }
+
+    private bool CanUsePromoteActorAbility =>
+        CombatState.Player is Narrator narrator &&
+        !abilityUsedThisTurn;
+
+    public bool IsInSpecialMode() => promotingActor;
+
+
+    public bool HandleTargetSelection(BaseCharacter target)
+    {
+        if (CombatState.Player is not Narrator narrator
+            || !CanUsePromoteActorAbility || target.Allegiance != Allegiance.Ally)
+            return false;
+
+        var actorTier = narrator.GetActorTier(target);
+
+        if (actorTier == 0 || actorTier == 3
+            || narrator.CalculatePromotionCost(CombatState.Allies.Count(), actorTier) > narrator.CurrentMana)
+            return false;
+
+        narrator.PromoteActorAbility(CombatState, target);
+        abilityUsedThisTurn = true;
+        promotingActor = false;
+
+        StateHasChanged();
+        return true;
+    }
+}

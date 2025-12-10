@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces;
+using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Factories;
 using MothsOath.Core.Models.DifficultyConfig;
@@ -99,7 +99,7 @@ public class CombatState : IGameState
             effect.OnCombatStart(Player, this);
         }
 
-        foreach(var ally in Allies)
+        foreach (var ally in Allies)
         {
             var allyOnStartPassives = ally.PassiveEffects.OfType<ICombatStartReactor>().ToList();
             foreach (var effect in allyOnStartPassives)
@@ -160,7 +160,7 @@ public class CombatState : IGameState
         {
             foreach (var defeated in defeatedEnemies)
             {
-                if(defeated is CharacterNPC enemy)
+                if (defeated is CharacterNPC enemy)
                 {
                     TotalGoldReward += enemy.GoldReward;
                     TotalXPReward += enemy.XpReward;
@@ -180,7 +180,7 @@ public class CombatState : IGameState
 
     private void CheckForCombatEnd()
     {
-        if(CombatEnded)
+        if (CombatEnded)
             return;
 
         if (Enemies.Count == 0)
@@ -190,9 +190,30 @@ public class CombatState : IGameState
             Player.GainXp(TotalXPReward);
             Player.Gold += TotalGoldReward;
 
-            foreach(var ally in Allies)
+            var playerOnCombatEndEffects = Player.StatusEffects.OfType<ICombatEndReactor>().ToList()
+                                                               .Concat(Player.PassiveEffects.OfType<ICombatEndReactor>().ToList())
+                                                               .OrderByDescending(m => m.Priority);
+
+            foreach (var effect in playerOnCombatEndEffects)
             {
-                if(ally.Stats.IsAlive)
+                effect.OnCombatEnd(this, Player);
+            }
+
+            foreach (var ally in Allies)
+            {
+                var allyOnCombatEndEffects = ally.StatusEffects.OfType<ICombatEndReactor>().ToList()
+                                                 .Concat(ally.PassiveEffects.OfType<ICombatEndReactor>().ToList())
+                                                 .OrderByDescending(m => m.Priority);
+
+                foreach (var effect in allyOnCombatEndEffects)
+                {
+                    effect.OnCombatEnd(this, ally);
+                }
+            }
+
+            foreach (var ally in Allies)
+            {
+                if (ally.Stats.IsAlive)
                 {
                     ally.StatusEffects.Clear();
                     ally.RecievePureDamage(ally.Stats.Regeneration);
@@ -226,7 +247,7 @@ public class CombatState : IGameState
 
         Player.OnTurnStart(this);
 
-        foreach(var enemy in Enemies)
+        foreach (var enemy in Enemies)
         {
             enemy.Restore();
         }
@@ -249,7 +270,7 @@ public class CombatState : IGameState
 
         foreach (var enemy in Enemies)
         {
-            if(enemy is CharacterNPC enemyNpc) 
+            if (enemy is CharacterNPC enemyNpc)
                 enemyNpc.TakeTurn(this);
         }
 
@@ -291,7 +312,7 @@ public class CombatState : IGameState
 
     private void ApplyStatusEffectsAtTurnStart()
     {
-        foreach(var ally in Allies)
+        foreach (var ally in Allies)
         {
             ally.ActivateTurnStartEffects(this);
         }
@@ -312,7 +333,7 @@ public class CombatState : IGameState
 
     private void TickStatusEffects()
     {
-        foreach(var allies in Allies)
+        foreach (var allies in Allies)
         {
             allies.TickStatusEffects(this);
         }
@@ -361,5 +382,10 @@ public class CombatState : IGameState
     public DifficultyConfig GetDifficultyConfig()
     {
         return _gameManager.DifficultyConfig;
+    }
+
+    public BaseCharacter CreateNpc(string blueprintId)
+    {
+        return _npcFactory.CreateNpc(blueprintId);
     }
 }

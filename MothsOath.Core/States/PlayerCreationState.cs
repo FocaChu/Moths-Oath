@@ -69,6 +69,10 @@ public class PlayerCreationState : IGameState
             case "Doutor":
                 CreateDoctor(player);
                 break;
+            case "Narrador":
+                Console.WriteLine("Você criou um Narrador!");
+                CreateNarrator(player);
+                break;
             default:
                 var combatState = _gameManager.StateFactory.CreateCombatState(_gameManager, player);
                 _gameManager.TransitionToState(combatState);
@@ -80,6 +84,13 @@ public class PlayerCreationState : IGameState
     {
         var bellRinger = new BellRinger(player);
         var combatState = _gameManager.StateFactory.CreateCombatState(_gameManager, bellRinger);
+        _gameManager.TransitionToState(combatState);
+    }
+
+    private void CreateNarrator(Player player)
+    {
+        var narrator = new Narrator(player);
+        var combatState = _gameManager.StateFactory.CreateCombatState(_gameManager, narrator);
         _gameManager.TransitionToState(combatState);
     }
 
