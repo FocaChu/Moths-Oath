@@ -79,6 +79,7 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
             yulkin.Stats.BonusStrength += yulkin.Level;
             yulkin.Stats.BonusKnowledge += yulkin.Level + 1;
             yulkin.Stats.BonusDefense += 3;
+            yulkin.Stats.BonusCriticalChance += 3;
             yulkin.Stats.Shield += 15;
         }
         else
@@ -86,6 +87,8 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
             target.Stats.BonusStrength += 3;
             target.Stats.BonusKnowledge += 3;
             target.Stats.BonusDefense += 1;
+            target.Stats.BonusCriticalChance += 3;
+
         }
 
         target.RecievePureHeal(target.Stats.Regeneration);
@@ -112,12 +115,14 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
             yulkin.Stats.BonusStrength -= yulkin.Level;
             yulkin.Stats.BonusKnowledge -= yulkin.Level + 1;
             yulkin.Stats.BonusDefense -= 3;
+            yulkin.Stats.BonusCriticalChance -= 3;
         }
         else
         {
             target.Stats.BonusStrength -= 3;
             target.Stats.BonusKnowledge -= 3;
             target.Stats.BonusDefense -= 1;
+            target.Stats.BonusCriticalChance -= 3;
         }
         Console.WriteLine($"{target.Name} retornou à sua forma normal.");
     }
