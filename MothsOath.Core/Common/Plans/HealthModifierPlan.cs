@@ -10,6 +10,8 @@ public class HealthModifierPlan
 
     public int FinalValue { get; set; } = 0;
 
+    public bool HasCritical { get; set; } = false;
+
     public bool CanProceed { get; set; } = true;
 
     public bool CanCritical { get; set; } = true;
@@ -20,5 +22,6 @@ public class HealthModifierPlan
     {
         BaseHealthAmount = baseHealthAmount;
         FinalValue = baseHealthAmount;
+        ModifierType = modifierType;
     }
 }

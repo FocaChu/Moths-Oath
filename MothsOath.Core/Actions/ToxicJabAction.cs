@@ -30,7 +30,7 @@ public class ToxicJabAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.ReceiveDamage(context, damagePlan);
+        target.HandleHealthModifier(context, damagePlan);
 
         var poisonEffect = new PoisonEffect(level: (int)(context.Source.Stats.BaseKnowledge / 2), duration: 3);
         var effectPlan = new StatusEffectPlan(poisonEffect);

@@ -223,21 +223,21 @@ public class DiseaseEffect : BaseStatusEffect, IGlobalCombatReactor, IGlobalDead
         }
     }
 
-    public void OnDeath(ActionContext context, BaseCharacter victim)
+    public void OnDeath(ActionContext context, MortuaryPlan plan, BaseCharacter victim)
     {
         var effects = Symptoms.OfType<IDeathReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
         {
-            effect.OnDeath(context, victim);
+            effect.OnDeath(context, plan, victim);
         }
     }
 
-    public void OnKill(ActionContext context, BaseCharacter victim)
+    public void OnKill(ActionContext context, MortuaryPlan plan, BaseCharacter victim)
     {
         var effects = Symptoms.OfType<IKillReactor>().ToList().OrderByDescending(e => e.Priority);
         foreach (var effect in effects)
         {
-            effect.OnKill(context, victim);
+            effect.OnKill(context, plan, victim);
         }
     }
 }

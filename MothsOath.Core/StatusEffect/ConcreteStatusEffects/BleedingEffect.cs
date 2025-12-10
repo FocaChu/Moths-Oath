@@ -36,7 +36,7 @@ public class BleedingEffect : BaseStatusEffect, IHealthModifierReactor, ITurnEnd
         if(!IsActive())
             return;
 
-        target.RecievePureDamage(Level);
+        target.ReceivePureDamage(Level);
         Console.WriteLine($"{target.Name} sofre {Level} de dano por sangramento. HP:{target.Stats.CurrentHealth}");
     }
 

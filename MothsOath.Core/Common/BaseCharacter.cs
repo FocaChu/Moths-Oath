@@ -53,15 +53,7 @@ public abstract class BaseCharacter
         this.StatusEffects.Clear();
     }
 
-    public void RecievePureDamage(int amount)
-    {
-        if (amount <= 0)
-            return;
-        Stats.CurrentHealth -= amount;
-        OnDamageTaken?.Invoke(this, amount);
-    }
-
-    public void ReceiveDamage(ActionContext context, HealthModifierPlan plan)
+    public void HandleHealthModifier(ActionContext context, HealthModifierPlan plan)
     {
         if (context.CanIncomingModifiers)
         {
@@ -75,10 +67,47 @@ public abstract class BaseCharacter
             }
         }
 
-        plan.FinalValue = CalculateDamageAmount(plan.FinalValue, plan.BypassResistance);
-
         if (!plan.CanProceed || plan.FinalValue == 0)
             return;
+
+        if (plan.ModifierType == HealthModifierType.Damage)
+        {
+            ReceiveDamage(context, plan);
+        }
+        else if (plan.ModifierType == HealthModifierType.Healing)
+        {
+            RecieveHeal(context, plan);
+        }
+    }
+
+    public void ReceivePureDamage(int amount)
+    {
+        if (amount <= 0)
+            return;
+        Stats.CurrentHealth -= amount;
+        OnDamageTaken?.Invoke(this, amount);
+    }
+
+    public void ReceiveDamage(ActionContext context, HealthModifierPlan plan)
+    {
+        if (!plan.BypassResistance)
+            plan.FinalValue = CalculateDamageAmount(plan.FinalValue);
+
+        if (plan.FinalValue == 0)
+            return;
+
+        int healthBefore = Stats.CurrentHealth;
+
+        var mortuaryPlan = null as MortuaryPlan;
+        if ((healthBefore - plan.FinalValue) <= 0 && context.CanDealtReactors)
+        {
+            mortuaryPlan = new MortuaryPlan
+            {
+                HealthModifierPlan = plan,
+                HealthBeforeDeath = healthBefore,
+                ExcessDamage = plan.FinalValue - healthBefore
+            };
+        }
 
         Stats.CurrentHealth -= plan.FinalValue;
 
@@ -106,10 +135,10 @@ public abstract class BaseCharacter
             }
         }
 
-        if (Stats.IsAlive)
+        if (Stats.IsAlive || !context.CanDeathReactors || mortuaryPlan == null)
             return;
 
-        CallDeathEffects(context);
+        CallDeathEffects(context, mortuaryPlan);
     }
 
     public void RecievePureHeal(int amount)
@@ -121,22 +150,18 @@ public abstract class BaseCharacter
 
     public void RecieveHeal(ActionContext context, HealthModifierPlan plan)
     {
-        if (context.CanIncomingModifiers)
-        {
-            var incomingModifiers = this.StatusEffects.OfType<IIncomingHealthModifierReactor>().ToList()
-                .Concat(this.PassiveEffects.OfType<IIncomingHealthModifierReactor>().ToList())
-                .OrderByDescending(m => m.Priority);
-
-            foreach (var modifier in incomingModifiers)
-            {
-                modifier.ModifyIncomingHealthModifier(context, plan, this);
-            }
-        }
-
-        if (!plan.CanProceed || plan.FinalValue == 0)
-            return;
-
         int healthBefore = Stats.CurrentHealth;
+
+        var mortuaryPlan = null as MortuaryPlan;
+        if (Stats.CurrentHealth + plan.FinalValue <= 0 && context.CanDealtReactors)
+        {
+            mortuaryPlan = new MortuaryPlan
+            {
+                HealthModifierPlan = plan,
+                HealthBeforeDeath = healthBefore,
+                ExcessDamage = plan.FinalValue - healthBefore
+            };
+        }
 
         Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + plan.FinalValue, Stats.TotalMaxHealth);
 
@@ -167,10 +192,10 @@ public abstract class BaseCharacter
             }
         }
 
-        if (Stats.IsAlive)
+        if (Stats.IsAlive || !context.CanDeathReactors || mortuaryPlan == null)
             return;
-        
-        CallDeathEffects(context);
+
+        CallDeathEffects(context, mortuaryPlan);
     }
 
     public void ApplyPureStatusEffect(BaseStatusEffect statusEffect)
@@ -237,32 +262,24 @@ public abstract class BaseCharacter
         }
     }
 
-    private int CalculateDamageAmount(int baseAmount, bool bypassResistance)
+    private int CalculateDamageAmount(int baseAmount)
     {
-        if (baseAmount > 0)
+        if (baseAmount <= 0)
+            return 0;
+
+        baseAmount -= Stats.TotalDefense;
+
+        if (Stats.Shield > 0)
         {
-            if (bypassResistance)
-            {
-                return baseAmount;
-            }
-
-            baseAmount -= Stats.TotalDefense;
-
-            if (Stats.Shield > 0)
-            {
-                int absorvedDamage = Math.Min(baseAmount, Stats.Shield);
-                baseAmount -= absorvedDamage;
-                Stats.Shield -= absorvedDamage;
-            }
-
-            int finalDamage = Math.Max(baseAmount, 0);
-
-            return finalDamage;
+            int absorvedDamage = Math.Min(baseAmount, Stats.Shield);
+            baseAmount -= absorvedDamage;
+            Stats.Shield -= absorvedDamage;
         }
-        return 0;
+
+        return baseAmount;
     }
 
-    private void CallDeathEffects(ActionContext context)
+    private void CallDeathEffects(ActionContext context, MortuaryPlan plan)
     {
         var deathReactors = this.StatusEffects.OfType<IDeathReactor>().ToList()
             .Concat(this.PassiveEffects.OfType<IDeathReactor>().ToList())
@@ -270,7 +287,7 @@ public abstract class BaseCharacter
 
         foreach (var effect in deathReactors)
         {
-            effect.OnDeath(context, this);
+            effect.OnDeath(context, plan, this);
         }
 
         var sourceKillReactors = context.Source.StatusEffects.OfType<IKillReactor>().ToList()
@@ -279,7 +296,7 @@ public abstract class BaseCharacter
 
         foreach (var effect in sourceKillReactors)
         {
-            effect.OnKill(context, this);
+            effect.OnKill(context, plan, this);
         }
     }
 

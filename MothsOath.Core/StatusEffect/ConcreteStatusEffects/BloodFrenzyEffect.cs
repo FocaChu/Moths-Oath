@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces.Death;
+using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
@@ -28,7 +29,7 @@ public class BloodFrenzyEffect : BaseStatusEffect, IKillReactor
         Duration = duration;
     }
 
-    public void OnKill(ActionContext context, BaseCharacter victim)
+    public void OnKill(ActionContext context, MortuaryPlan plan, BaseCharacter victim)
     {
         var killer = context.Source;
 

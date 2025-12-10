@@ -26,6 +26,6 @@ public class NecrosisSymptomEffect : BaseSymptomEffect, ITurnEndReactor
 
         var damageAmount = (int)(target.Stats.MaxHealth / 20) + bonusDamage;
 
-        target.RecievePureDamage(damageAmount);
+        target.ReceivePureDamage(damageAmount);
     }
 }

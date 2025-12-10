@@ -30,7 +30,7 @@ public class SharpCutAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.ReceiveDamage(context, damagePlan);
+        target.HandleHealthModifier(context, damagePlan);
 
         var bleedingEffect = new BleedingEffect(level: (int)(context.Source.Stats.BaseStrength / 2) + 1, duration: 2);
         var effectPlan = new StatusEffectPlan(bleedingEffect);

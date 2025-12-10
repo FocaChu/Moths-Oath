@@ -28,6 +28,7 @@ public abstract class BaseAction
         int criticalRoll = new Random().Next(0, 100);
         if (criticalRoll < criticalChance)
         {
+            plan.HasCritical = true;
             plan.FinalValue = (int)(plan.BaseHealthAmount * criticalDamageMultiplier);
             Console.WriteLine($"DEBUG: Critico: {plan.FinalValue}");
         }

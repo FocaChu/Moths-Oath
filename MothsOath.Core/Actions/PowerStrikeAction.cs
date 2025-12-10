@@ -29,7 +29,7 @@ public class PowerStrikeAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.ReceiveDamage(context, plan);
+        target.HandleHealthModifier(context, plan);
         Console.WriteLine($"{context.Source.Name} uses Power Strike on {target.Name} for {damage} damage.");
     }
 }

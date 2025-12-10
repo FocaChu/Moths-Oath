@@ -29,7 +29,7 @@ public class BasicAttackAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.ReceiveDamage(context, plan);
+        target.HandleHealthModifier(context, plan);
         Console.WriteLine($"{context.Source.Name} attacks {target.Name} for {plan.FinalValue} damage.");
     }
 }

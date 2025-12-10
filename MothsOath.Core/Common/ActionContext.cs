@@ -15,7 +15,7 @@ public class ActionContext
 
     public BaseCard? Card { get; set; }
 
-    public bool CanUseSpecial { get; set; }
+    public bool CanUseSpecial { get; set; } = true;
 
     public bool CanProceed { get; set; } = true;
 
@@ -26,6 +26,8 @@ public class ActionContext
     public bool CanRecievedReactors { get; set; } = true;
 
     public bool CanDealtReactors { get; set; } = true;
+
+    public bool CanDeathReactors { get; set; } = true;
 
     public ActionContext(BaseCharacter source, List<BaseCharacter> baseTargets, CombatState gameState, BaseCard? card)
     {

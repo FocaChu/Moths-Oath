@@ -216,7 +216,7 @@ public class CombatState : IGameState
                 if (ally.Stats.IsAlive)
                 {
                     ally.Clean();
-                    ally.RecievePureDamage(ally.Stats.Regeneration);
+                    ally.ReceivePureDamage(ally.Stats.Regeneration);
                     Player.StorageAllies.Add(ally);
                 }
             }

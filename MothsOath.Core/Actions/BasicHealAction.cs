@@ -29,7 +29,7 @@ public class BasicHealAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        target.RecieveHeal(context, plan);
+        target.HandleHealthModifier(context, plan);
 
         Console.WriteLine($"{target} get healed!");
     }
