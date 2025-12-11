@@ -1,15 +1,18 @@
 ﻿using MothsOath.Core.Abilities;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
-using MothsOath.Core.StatusEffect.ConcreteStatusEffects;
+using MothsOath.Core.Entities;
+using MothsOath.Core.StatusEffect.ConcreteEffects;
 namespace MothsOath.Core.Actions;
 
-public class KarmaCallingAction : BaseAction
+public class SilenceAction : BaseAction
 {
-    public override string Id => "action_karma_calling";
+    public override string Id => "action_silence";
 
     public override void Execute(ActionContext context)
     {
+        context.FinalTargets.RemoveAll(t => t is Player);
+
         if (!ValidateTargets(context))
             return;
 
@@ -19,10 +22,10 @@ public class KarmaCallingAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        var level = (int)(context.Source.Stats.TotalKnowledge / 3) >= 2 ? (int)(context.Source.Stats.TotalKnowledge / 2) : 1;
-        var karmaEffect = new KarmaEffect(level, 3);
+        var duration = (int)(context.Source.Stats.TotalKnowledge / 10) >= 2 ? (int)(context.Source.Stats.TotalKnowledge / 10) : 2;
+        var silenceEffect = new SilenceEffect(duration);
 
-        var effectPlan = new StatusEffectPlan(karmaEffect);
+        var effectPlan = new StatusEffectPlan(silenceEffect);
 
         if (context.CanOutgoingModifiers)
             ApplyStatusEffectModifiers(context, effectPlan);
@@ -32,6 +35,6 @@ public class KarmaCallingAction : BaseAction
 
         target.ApplyStatusEffect(context, effectPlan);
 
-        Console.WriteLine($"{context.Source.Name} invokes a call of karma upon {target.Name}!");
+        Console.WriteLine($"{context.Source.Name} silencia {target.Name}!");
     }
 }

@@ -13,7 +13,7 @@ public abstract class BaseAction
 
     public virtual bool ValidateTargets(ActionContext context)
     {
-        return context.FinalTargets.Count > 0 || context.FinalTargets != null;
+        return context.FinalTargets != null && context.FinalTargets.Count > 0;
     }
 
     public virtual HealthModifierPlan CalculateCriticalValue(ActionContext context, HealthModifierPlan plan)

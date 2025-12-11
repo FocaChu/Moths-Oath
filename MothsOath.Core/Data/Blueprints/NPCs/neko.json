@@ -16,6 +16,6 @@
   "NormalBehaviorId": "target_opposing_team_behavior",
   "SpecialBehaviorId": "target_random_behavior",
   "BasicAttackAbilityId": "action_basic_attack",
-  "SpecialAbilityId": "action_cry",
+  "SpecialAbilityId": "action_power_strike",
   "SpecialAbilityCooldown": 3
 }

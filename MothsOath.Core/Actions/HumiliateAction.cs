@@ -1,12 +1,13 @@
 ﻿using MothsOath.Core.Abilities;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
-using MothsOath.Core.StatusEffect.ConcreteStatusEffects;
+using MothsOath.Core.Entities;
+using MothsOath.Core.StatusEffect.ConcreteEffects;
 namespace MothsOath.Core.Actions;
 
-public class KarmaCallingAction : BaseAction
+public class HumiliateAction : BaseAction
 {
-    public override string Id => "action_karma_calling";
+    public override string Id => "action_humiliate";
 
     public override void Execute(ActionContext context)
     {
@@ -19,10 +20,18 @@ public class KarmaCallingAction : BaseAction
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);
 
-        var level = (int)(context.Source.Stats.TotalKnowledge / 3) >= 2 ? (int)(context.Source.Stats.TotalKnowledge / 2) : 1;
-        var karmaEffect = new KarmaEffect(level, 3);
+        target.Stats.TemporaryCriticalChance--;
+        target.Stats.TemporaryKnowledge--;
 
-        var effectPlan = new StatusEffectPlan(karmaEffect);
+        Console.WriteLine($"{context.Source.Name} humilha {target.Name}!");
+
+        if (target is Player)
+            return;
+
+        var level = (int)(context.Source.Stats.TotalKnowledge / 2) >= 2 ? (int)(context.Source.Stats.TotalKnowledge / 2) : 1;
+        var tauntedEffect = new TauntedEffect(level, 3, context.Source);
+
+        var effectPlan = new StatusEffectPlan(tauntedEffect);
 
         if (context.CanOutgoingModifiers)
             ApplyStatusEffectModifiers(context, effectPlan);
@@ -32,6 +41,5 @@ public class KarmaCallingAction : BaseAction
 
         target.ApplyStatusEffect(context, effectPlan);
 
-        Console.WriteLine($"{context.Source.Name} invokes a call of karma upon {target.Name}!");
     }
 }
