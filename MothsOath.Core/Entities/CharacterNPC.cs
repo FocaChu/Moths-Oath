@@ -14,7 +14,7 @@ public class CharacterNPC : BaseCharacter
 
     public IBehavior SpecialBehavior { get; set; } = null!;
 
-    public BaseAction BasicAttack { get; set; } = null!;
+    public BaseAction BasicAbility { get; set; } = null!;
 
     public BaseAction SpecialAbility { get; set; } = null!;
 
@@ -65,7 +65,7 @@ public class CharacterNPC : BaseCharacter
         }
         else
         {
-            BasicAttack.Execute(context);
+            BasicAbility.Execute(context);
             //Console.WriteLine($"{Name} usou {BasicAttack.Id}!");
         }
 

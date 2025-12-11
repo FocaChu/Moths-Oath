@@ -93,7 +93,7 @@
 
         var actorTier = narrator.GetActorTier(target);
 
-        if (actorTier == 0 || actorTier == 3
+        if (actorTier == 0 || actorTier == 4
             || narrator.CalculatePromotionCost(CombatState.Allies.Count(), actorTier) > narrator.CurrentMana)
             return false;
 

@@ -59,7 +59,7 @@ public class NpcFactory
             PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
             NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
             SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),
-            BasicAttack = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
+            BasicAbility = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
             SpecialAbility = _abilityFactory.GetAbility(blueprint.SpecialAbilityId),
             SpecialAbilityCooldown = blueprint.SpecialAbilityCooldown,
             CurrentCooldown = blueprint.SpecialAbilityCooldown,

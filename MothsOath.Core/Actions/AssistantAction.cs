@@ -1,13 +1,13 @@
 ﻿using MothsOath.Core.Abilities;
 using MothsOath.Core.Common;
 using MothsOath.Core.Common.Plans;
-using MothsOath.Core.StatusEffect.ConcreteEffects;
 using MothsOath.Core.StatusEffect.ConcreteStatusEffects;
+
 namespace MothsOath.Core.Actions;
 
-public class KarmaCallingAction : BaseAction
+public class AssistantAction : BaseAction
 {
-    public override string Id => "action_karma_calling";
+    public override string Id => "action_assistant";
 
     public override void Execute(ActionContext context)
     {
@@ -21,9 +21,9 @@ public class KarmaCallingAction : BaseAction
         context.FinalTargets.Add(target);
 
         var level = (int)(context.Source.Stats.TotalKnowledge / 3) >= 1 ? (int)(context.Source.Stats.TotalKnowledge / 3) : 1;
-        var karmaEffect = new KarmaEffect(level, 3);
+        var superForceEffect = new SuperForceEffect(level, 3);
 
-        var effectPlan = new StatusEffectPlan(karmaEffect);
+        var effectPlan = new StatusEffectPlan(superForceEffect);
 
         if (context.CanOutgoingModifiers)
             ApplyStatusEffectModifiers(context, effectPlan);
@@ -31,8 +31,8 @@ public class KarmaCallingAction : BaseAction
         if (!ValidateTargets(context) || !ValidateStatusEffectPlan(context, effectPlan))
             return;
 
+        target.Stats.BonusCriticalDamageMultiplier += 0.1f;
+        target.ReceivePureHeal(level);
         target.ApplyStatusEffect(context, effectPlan);
-
-        Console.WriteLine($"{context.Source.Name} invokes a call of karma upon {target.Name}!");
     }
 }

@@ -31,6 +31,6 @@ public class HealingAuraEffect : BaseStatusEffect, ITurnStartReactor
 
     public void OnTurnStart(BaseCharacter target, CombatState context)
     {
-        target.RecievePureHeal(this.Level);
+        target.ReceivePureHeal(this.Level);
     }
 }

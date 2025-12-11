@@ -1,6 +1,7 @@
 ﻿using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces.Death;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.PassiveEffects;
 
@@ -16,6 +17,52 @@ public class CleaveDamagePassiveEffect : BasePassiveEffect, IKillReactor
 
     public void OnKill(ActionContext context, MortuaryPlan plan, BaseCharacter target)
     {
-        // Implementar a lógica para distribuir o dano excedente entre inimigos próximos
+        if (plan.ExcessDamage <= 0 || target.Allegiance == context.Source.Allegiance)
+            return;
+
+        if (target.Allegiance == Allegiance.Enemy)
+        {
+            var enemies = context.GameState.Enemies;
+
+            if (enemies.Count <= 1)
+                return;
+
+            var targetIndex = enemies.IndexOf(target);
+
+            if (targetIndex == -1)
+                return;
+
+            var adjacentTargets = new List<BaseCharacter>();
+
+            if (targetIndex > 0)
+            {
+                var leftNeighborIndex = targetIndex - 1;
+                var leftNeighbor = enemies[leftNeighborIndex];
+
+                if(leftNeighbor.Stats.IsAlive)
+                    adjacentTargets.Add(leftNeighbor);
+            }
+
+            if (targetIndex < enemies.Count - 1)
+            {
+                var rightNeighborIndex = targetIndex + 1;
+                var rightNeighbor = enemies[rightNeighborIndex];
+
+                if(rightNeighbor.Stats.IsAlive)
+                    adjacentTargets.Add(rightNeighbor);
+            }
+
+            if (adjacentTargets.Count == 0)
+                return;
+
+            var random = new Random();
+            var randomIndex = random.Next(0, adjacentTargets.Count); 
+            var newTarget = adjacentTargets[randomIndex];
+
+            var newContext = new ActionContext(context.Source, new List<BaseCharacter> { newTarget }, context.GameState, null);
+            var damagePlan = new HealthModifierPlan(plan.ExcessDamage, HealthModifierType.Damage);
+
+            newTarget.HandleHealthModifier(newContext, damagePlan);
+        }
     }
 }

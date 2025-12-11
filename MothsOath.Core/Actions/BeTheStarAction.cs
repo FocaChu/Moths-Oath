@@ -4,11 +4,36 @@ using MothsOath.Core.Models.Enums;
 
 namespace MothsOath.Core.Abilities;
 
-public class BasicAttackAction : BaseAction
+public class BeTheStarAction : BaseAction
 {
-    public override string Id => "action_basic_attack";
+    public override string Id => "action_be_the_star";
 
     public override void Execute(ActionContext context)
+    {
+        AssistAction(context);
+        AttackAction(context);
+    }
+
+    private void AssistAction(ActionContext context)
+    {
+        var source = context.Source;
+        var value = (int)(source.Stats.TotalKnowledge / 3) >= 1 ? (int)(source.Stats.TotalKnowledge / 3) : 1;
+
+        source.Stats.BonusCriticalDamageMultiplier += 0.01f;
+        source.Stats.Shield += value;
+
+        var allies = context.BaseTargets.Where(t => t.Allegiance == context.Source.Allegiance && t.Stats.IsAlive).ToList();
+
+        if(allies.Count == 0)
+            return;
+
+        var rng = Random.Shared;
+        var target = allies[rng.Next(allies.Count)];
+
+        target.ReceivePureHeal(value);
+    }
+
+    private void AttackAction(ActionContext context)
     {
         int damage = context.Source.Stats.TotalStrength;
 
@@ -24,6 +49,7 @@ public class BasicAttackAction : BaseAction
             plan = CalculateCriticalValue(context, plan);
 
         var rng = Random.Shared;
+        context.FinalTargets = context.FinalTargets.Where(t => t.Allegiance != context.Source.Allegiance).ToList();
         var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
 
         context.FinalTargets.Clear();

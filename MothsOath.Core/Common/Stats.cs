@@ -33,9 +33,9 @@ public class Stats
     public int TotalCriticalChance => BaseCriticalChance + BonusCriticalChance + TemporaryCriticalChance;
 
     public float BaseCriticalDamageMultiplier { get; set; } = 1.5f;
-    public float BonusCriticalDamage { get; set; } = 0f;
+    public float BonusCriticalDamageMultiplier { get; set; } = 0f;
     public float TemporaryCriticalDamageMultiplier { get; set; } = 0f;
-    public float TotalCriticalDamageMultiplier => BaseCriticalDamageMultiplier + BonusCriticalDamage + TemporaryCriticalDamageMultiplier;
+    public float TotalCriticalDamageMultiplier => BaseCriticalDamageMultiplier + BonusCriticalDamageMultiplier + TemporaryCriticalDamageMultiplier;
 
     public int Shield { get; set; } = 0;
     public int Regeneration { get; set; } = 0;

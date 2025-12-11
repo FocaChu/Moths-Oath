@@ -91,7 +91,7 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
 
         }
 
-        target.RecievePureHeal(target.Stats.Regeneration);
+        target.ReceivePureHeal(target.Stats.Regeneration);
 
         var allies = context.BuildPlayerTeam();
         foreach (var ally in allies)

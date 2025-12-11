@@ -47,7 +47,7 @@ public abstract class BaseCharacter
         this.Stats.BonusKnowledge = 0;
         this.Stats.BonusDefense = 0;
         this.Stats.BonusCriticalChance = 0;
-        this.Stats.BonusCriticalDamage = 0;
+        this.Stats.BonusCriticalDamageMultiplier = 0;
         this.Stats.Shield = 0;
 
         this.StatusEffects.Clear();
@@ -76,7 +76,7 @@ public abstract class BaseCharacter
         }
         else if (plan.ModifierType == HealthModifierType.Healing)
         {
-            RecieveHeal(context, plan);
+            ReceiveHeal(context, plan);
         }
     }
 
@@ -141,14 +141,14 @@ public abstract class BaseCharacter
         CallDeathEffects(context, mortuaryPlan);
     }
 
-    public void RecievePureHeal(int amount)
+    public void ReceivePureHeal(int amount)
     {
         if (amount <= 0)
             return;
         Stats.CurrentHealth = Math.Min(Stats.CurrentHealth + amount, Stats.TotalMaxHealth);
     }
 
-    public void RecieveHeal(ActionContext context, HealthModifierPlan plan)
+    public void ReceiveHeal(ActionContext context, HealthModifierPlan plan)
     {
         int healthBefore = Stats.CurrentHealth;
 

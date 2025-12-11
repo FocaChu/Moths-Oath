@@ -1,11 +1,16 @@
 ﻿using MothsOath.Core.Abilities;
+using MothsOath.Core.Actions;
+using MothsOath.Core.Behaviors;
 using MothsOath.Core.Common;
+using MothsOath.Core.PassiveEffects;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.Entities.Archetypes;
 
 public class Narrator : Player
 {
+    private const int HighestTier = 4;
+
     public Narrator(Player player)
     {
         this.Id = player.Id;
@@ -52,7 +57,7 @@ public class Narrator : Player
 
     public void CallToStageAbility(CombatState state)
     {
-        if (state.Allies.Count >= 5)
+        if (state.Allies.Count >= 6)
             return;
 
         var cost = CalculateExtraCost(state.Allies.Count);
@@ -89,7 +94,7 @@ public class Narrator : Player
         var currentAllies = state.Allies.Count;
         var currentTier = GetActorTier(character);
 
-        if(currentTier == 0 || currentTier == 3)
+        if(currentTier == 0 || currentTier == HighestTier)
             return;
 
         var cost = CalculatePromotionCost(currentAllies, currentTier);
@@ -97,7 +102,7 @@ public class Narrator : Player
         if (this.CurrentMana < cost) 
             return;
 
-        if(!PromoteTitle(actor, currentTier))
+        if(!PromoteTitle(state, actor, currentTier))
             return;
 
         this.CurrentMana -= cost;
@@ -109,13 +114,17 @@ public class Narrator : Player
         {
            string name when name.Contains("Figurante") => 1,
            string name when name.Contains("Coadjuvante") => 2,
+           string name when name.Contains("Protagonista") => 3,
+           string name when name.Contains("Vilão") => 4,
+           string name when name.Contains("Herói") => 4,
+           string name when name.Contains("Estagiário") => 4,
             _ => 0,
         };
     }
 
-    public bool PromoteTitle(CharacterNPC actor, int tier)
+    public bool PromoteTitle(CombatState state, CharacterNPC actor, int tier)
     {
-        if (tier == 0 || tier == 3) 
+        if (tier == 0 || tier == HighestTier) 
             return false;
 
         switch (tier)
@@ -124,31 +133,116 @@ public class Narrator : Player
                 actor.Name = "Coadjuvante";
 
                 actor.Stats.MaxHealth += 10;
-                actor.RecievePureHeal(10 + actor.Stats.Regeneration);
+                actor.ReceivePureHeal(10 + actor.Stats.Regeneration);
 
                 actor.Stats.BaseStrength += 2;
                 actor.Stats.BaseKnowledge += 2;
                 actor.Stats.BaseDefense += 1;
 
-                actor.SpecialAbility = new PowerStrikeAction();
+                actor.SpecialBehavior = new TargetOthersFromSameTeam();
+                actor.SpecialAbility = new AssistantAction();
                 break;  
 
             case 2:
                 actor.Name = "Protagonista";
 
                 actor.Stats.MaxHealth += 15;
-                actor.RecievePureHeal(15 + actor.Stats.Regeneration);
+                actor.ReceivePureHeal(15 + actor.Stats.Regeneration);
 
                 actor.Stats.BaseStrength += 2;
                 actor.Stats.BaseKnowledge += 2;
                 actor.Stats.BaseDefense += 1;
 
+                actor.SpecialBehavior = new TargetAllBehavior();
+                actor.SpecialAbility = new BeTheStarAction();
+                break;
+
+            case 3:
+                if(MegaEvolveActor(state, actor, tier)){
+                    return true;
+                }
                 break;
             default:
                 return false;
         }
 
         return true;
+    }
+
+    private bool MegaEvolveActor(CombatState state, CharacterNPC actor, int tier)
+    {
+        if(tier != 3) 
+            return false;
+
+        if(actor.Stats.CurrentHealth < actor.Stats.TotalMaxHealth * 0.5f && actor.CanUseSpecial)
+        {
+            MegaEvolveVillain(state, actor);
+            return true;
+        }
+        else if(actor.Stats.CurrentHealth >= actor.Stats.TotalMaxHealth * 0.5f && actor.CanUseSpecial)
+        {
+            MegaEvolveHero(state, actor);
+            return true;
+        }
+        else if(!actor.CanUseSpecial)
+        {
+            MegaEvolveTrainee(state, actor);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void MegaEvolveVillain(CombatState state, CharacterNPC actor)
+    {
+        Console.WriteLine("Plot Twist! O protagonista se tornou um vilão!");
+        actor.Name = "Vilão";
+
+        actor.Stats.MaxHealth += 15;
+        actor.ReceivePureHeal(20 + actor.Stats.Regeneration);
+
+        actor.Stats.BaseStrength += 3;
+        actor.Stats.BaseDefense += 1;
+        actor.Stats.BaseCriticalChance += 1;
+
+        actor.PassiveEffects.Add(new CleaveDamagePassiveEffect());
+        actor.PassiveEffects.Add(new VampirismPassiveEffect());
+        actor.SpecialBehavior = new TargetOpposingTeam();
+        actor.SpecialAbility = new BeTheVillainAction();
+    }
+
+    private void MegaEvolveHero(CombatState state, CharacterNPC actor)
+    {
+        Console.WriteLine("Climax! O protagonista se tornou um herói!");
+        actor.Name = "Herói";
+
+        actor.Stats.MaxHealth += 15;
+        actor.ReceivePureHeal(15 + actor.Stats.Regeneration);
+
+        actor.Stats.BaseStrength += 3;
+        actor.Stats.BaseDefense += 1;
+        actor.Stats.Regeneration += 1;
+
+        actor.PassiveEffects.Add(new VictoriousGloryPassiveEffect());
+        actor.SpecialAbility = new BeTheHeroAction();
+    }
+
+    private void MegaEvolveTrainee(CombatState state, CharacterNPC actor)
+    {
+        Console.WriteLine("Mudança de elenco! O protagonista se tornou um estagiário!");
+        actor.Name = "Estagiário";
+
+        actor.Stats.MaxHealth += 10;
+        actor.ReceivePureHeal(15 + actor.Stats.Regeneration);
+
+        actor.Stats.BaseKnowledge += 2;
+        actor.Stats.BaseDefense += 1;
+
+        actor.NormalBehavior = new TargetOthersFromSameTeam();
+        actor.BasicAbility = new AssistantAction();
+
+        actor.SpecialBehavior = new TargetOthersFromSameTeam();
+        actor.SpecialAbility = new BeTheTraineeAction();
     }
 
     public int CalculatePromotionCost(int currentAllies, int currentTier)

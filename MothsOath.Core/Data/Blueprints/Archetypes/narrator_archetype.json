@@ -3,7 +3,7 @@
   "Name": "Narrador",
   "Description": "O grande Mestre de Pista, o condutor do espetáculo. Suas habilidades de manipulação e invocação são seu trunfo para seduzir a plateia.",
   "BonusHealth": 0,
-  "BonusMana": 15,
+  "BonusMana": 10,
   "BonusStamina": 0,
   "BonusStrength": 1,
   "BonusKnowledge": 6,

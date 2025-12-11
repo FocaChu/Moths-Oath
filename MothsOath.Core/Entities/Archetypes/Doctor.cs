@@ -53,7 +53,7 @@ public class Doctor : Player
         this.DiscartPile.Clear();
         this.DiscartPile.AddRange(player.DiscartPile);
 
-        Disease = disease ?? new DiseaseEffect("unknown_disease", "Nenhuma", "Sem doença atribuída.", false, new TargetRandomBehavior(), new List<BaseSymptomEffect>(), new List<BaseSymptomEffect>());
+        Disease = disease ?? new DiseaseEffect("unknown_disease", "Nenhuma", "Sem doença atribuída.", false, new TargetAllBehavior(), new List<BaseSymptomEffect>(), new List<BaseSymptomEffect>());
     }
 
     public override void OnTurnStart(CombatState state)

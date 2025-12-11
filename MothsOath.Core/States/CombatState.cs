@@ -263,7 +263,22 @@ public class CombatState : IGameState
         Console.WriteLine("--- Turno do Inimigo Começou ---");
         OnEnemyTurnStart?.Invoke();
 
+        ExecuteAlliesTurns();
+
         ExecuteEnemyTurns();
+    }
+
+    private void ExecuteAlliesTurns()
+    {
+        CurrentPhase = CombatPhase.EnemyTurn_Resolution;
+
+        foreach (var ally in Allies)
+        {
+            if (ally is CharacterNPC allyNpc)
+                allyNpc.TakeTurn(this);
+        }
+
+        EndTurn();
     }
 
     private void ExecuteEnemyTurns()
