@@ -13,12 +13,12 @@ public class PlayerFactory
     private readonly PassiveEffectFactory _passiveEffectFactory;
     private readonly CardFactory _cardFactory;
 
-    public PlayerFactory(CardFactory cardFactory, PassiveEffectFactory passiveEffectFactory, BlueprintLoader blueprintLoader)
+    public PlayerFactory(CardFactory cardFactory, PassiveEffectFactory passiveEffectFactory, BlueprintCache blueprintCache)
     {
         _cardFactory = cardFactory;
         _passiveEffectFactory = passiveEffectFactory;
-        _raceBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<RaceBlueprint>("Races");
-        _archetypeBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<ArchetypeBlueprint>("Archetypes");
+        _raceBlueprints = blueprintCache.GetRaces();
+        _archetypeBlueprints = blueprintCache.GetArchetypes();
     }
 
     public Player CreatePlayer(string playerName, string raceId, string archetypeId)

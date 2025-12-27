@@ -1,0 +1,8 @@
+{
+  "Id": "sharp_cut_card",
+  "Type": "Standard",
+  "Name": "Corte Afiado",
+  "Description": "Causa dano equivalente a força e aplica sangramento.",
+  "StaminaCost": 25,
+  "Action": "action_sharp_cut"
+}

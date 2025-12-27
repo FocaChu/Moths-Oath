@@ -14,12 +14,12 @@ public class NpcFactory
     private readonly BehaviorFactory _behaviorFactory;
     private readonly PassiveEffectFactory _passiveEffectFactory;
 
-    public NpcFactory(ActionFactory abilityFactory, BehaviorFactory behaviorFactory , PassiveEffectFactory passiveEffectFactory, BlueprintLoader blueprintLoader)
+    public NpcFactory(ActionFactory abilityFactory, BehaviorFactory behaviorFactory , PassiveEffectFactory passiveEffectFactory, BlueprintCache blueprintCache)
     {
         _abilityFactory = abilityFactory;
         _behaviorFactory = behaviorFactory;
         _passiveEffectFactory = passiveEffectFactory;
-        _npcBlueprints = blueprintLoader.LoadAllBlueprintsFromFiles<NpcBlueprint>("NPCs");
+        _npcBlueprints = blueprintCache.GetNpcs();
     }
 
     public CharacterNPC CreateNpc(string blueprintId)

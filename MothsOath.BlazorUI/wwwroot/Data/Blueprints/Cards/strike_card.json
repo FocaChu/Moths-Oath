@@ -1,0 +1,8 @@
+{
+  "Id": "strike_card",
+  "Type": "Standard",
+  "Name": "Golpe",
+  "Description": "Causa dano equivalente a força",
+  "StaminaCost": 20,
+  "Action": "action_basic_attack"
+}

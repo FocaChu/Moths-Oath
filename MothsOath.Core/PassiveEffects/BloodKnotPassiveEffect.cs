@@ -99,7 +99,10 @@ public class BloodKnotPassiveEffect : BasePassiveEffect, IModifiedHealthReactor,
 
     private void ApplyBloodFrenzyEffect(BaseCharacter target)
     {
-        if(target is Player ghoul)
+        if (target.StatusEffects.Exists(se => se.Id == "blood_frenzy_effect" && se.IsActive()))
+            return;
+
+        if (target is Player ghoul)
         {
             var level = ghoul.Level;
             var bloodFrenzy = new BloodFrenzyEffect(level, 1);

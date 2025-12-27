@@ -1,0 +1,163 @@
+﻿@implements IDisposable
+@using MothsOath.Core.Entities.Archetypes
+@using MothsOath.BlazorUI.Components.ArchetypesCombatUI
+@using MothsOath.Core.Models.Enums
+@using MothsOath.BlazorUI.Interfaces
+@using MothsOath.BlazorUI.Helpers
+
+<div class="combat-container" @onclick="CancelSelection">
+
+    <div class="race-layer">
+        @if (GetRaceComponentType() != null)
+        {
+            <DynamicComponent Type="@GetRaceComponentType()"
+                              Parameters="@GetCommonParameters()"
+                              @key="@CombatState.Player.Race" />
+        }
+    </div>
+
+    <div class="enemy-area">
+        @foreach (var enemy in CombatState.Enemies)
+        {
+            <CharacterEntityCard Character="enemy"
+                                 IsSelectable="@IsCharacterSelectable(enemy)"
+                                 OnLeftClick="TargetCharacter"
+                                 OnRightClick="OpenExamine"
+                                 OnHover="OnEntityHover"
+                                 OnHoverOut="OnEntityHoverOut" />
+        }
+    </div>
+
+    <div class="player-area">
+        <div class="player-display-area">
+            <div class="player-team">
+                @foreach (var c in CombatState.PlayerTeam)
+                {
+                    <CharacterEntityCard Character="c"
+                                         IsSelectable="@IsCharacterSelectable(c)"
+                                         OnLeftClick="TargetCharacter"
+                                         OnRightClick="OpenExamine"
+                                         OnHover="OnEntityHover"
+                                         OnHoverOut="OnEntityHoverOut" />
+                }
+            </div>
+        </div>
+
+        <div class="player-hand-container">
+            @if (selectedCard == null && !IsExaminingMode)
+            {
+                <div class="hand">
+                    @foreach (var card in CombatState.Player.Hand)
+                    {
+                        <div @onclick="() => SelectCard(card)" @onclick:stopPropagation="true">
+                            <CardComponent CardData="card" />
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="player-actions">
+            <button @onclick="EndTurnClicked" @onclick:stopPropagation="true">Finalizar Turno</button>
+
+            @if (GetArchetypeComponentType() != null)
+            {
+                <DynamicComponent Type="@GetArchetypeComponentType()"
+                                  Parameters="@GetArchetypeParameters()"
+                                  @key="@CombatState.Player.Archetype" />
+            }
+        </div>
+    </div>
+</div>
+
+<ExaminateModal @ref="examinateModal" CharacterProfile="itemToExamine" OnClose="OnModalClosed" />
+
+@code {
+    [Parameter] public CombatState CombatState { get; set; } = default!;
+
+    private IArchetypeCombatView? activeArchetypeUI;
+    private ExaminateModal? examinateModal;
+    private BaseCharacter? itemToExamine;
+    private BaseCard? selectedCard;
+
+    private BaseCharacter? hoveredCharacter;
+
+    private bool IsExaminingMode => itemToExamine != null; 
+
+    private Type? GetRaceComponentType() => RaceViewResolver.GetViewType(CombatState.Player.Race);
+    private Type? GetArchetypeComponentType() => ArchetypeViewResolver.GetViewType(CombatState.Player);
+
+    private Dictionary<string, object> GetCommonParameters() => new() { { "CombatState", CombatState } };
+
+    private Dictionary<string, object> GetArchetypeParameters() => new()
+    {
+        { "CombatState", CombatState },
+        { "OnCancelSelection", (Action)CancelSelection },
+        { "OnRegister", EventCallback.Factory.Create<IArchetypeCombatView>(this, view => activeArchetypeUI = view) }
+    };
+
+    private bool IsCharacterSelectable(BaseCharacter character)
+    {
+        return selectedCard != null || (activeArchetypeUI?.IsInSpecialMode() ?? false);
+    }
+
+    private void SelectCard(BaseCard card)
+    {
+        selectedCard = card;
+        StateHasChanged();
+    }
+
+    private void TargetCharacter(BaseCharacter character)
+    {
+        if (activeArchetypeUI != null && activeArchetypeUI.IsInSpecialMode())
+        {
+            if (activeArchetypeUI.HandleTargetSelection(character)) return;
+        }
+
+        if (selectedCard != null)
+        {
+            CombatState.PlayCard(selectedCard, character);
+            selectedCard = null;
+            StateHasChanged();
+        }
+    }
+
+    private void OpenExamine(BaseCharacter character)
+    {
+        if (selectedCard != null) selectedCard = null;
+
+        itemToExamine = character;
+        examinateModal?.OpenModal(itemToExamine);
+        StateHasChanged();
+    }
+
+    private void OnModalClosed()
+    {
+        itemToExamine = null;
+        StateHasChanged();
+    }
+
+    private void CancelSelection()
+    {
+        selectedCard = null;
+        hoveredCharacter = null;
+        if (IsExaminingMode) OnModalClosed();
+        StateHasChanged();
+    }
+
+    private void OnEntityHover(BaseCharacter character)
+    {
+        hoveredCharacter = character;
+    }
+
+    private void OnEntityHoverOut(BaseCharacter character)
+    {
+        if (hoveredCharacter == character) hoveredCharacter = null;
+    }
+
+    private void EndTurnClicked() => CombatState.EndPlayerTurn();
+
+    protected override void OnInitialized() => CombatState.OnCombatStateChanged += InvokeStateHasChanged;
+    public void Dispose() => CombatState.OnCombatStateChanged -= InvokeStateHasChanged;
+    private void InvokeStateHasChanged() => InvokeAsync(StateHasChanged);
+}

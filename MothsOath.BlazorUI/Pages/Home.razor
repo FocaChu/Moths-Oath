@@ -1,0 +1,47 @@
+﻿@page "/"
+@inject GameStateManager GameManager
+@using MothsOath.BlazorUI.Components.States
+@using MothsOath.Core.States
+
+<PageTitle>Moth's Oath</PageTitle>
+
+@if (GameManager.CurrentState is MainMenuState menuState)
+{
+    <MainMenuUI MenuState="menuState" />
+}
+else if (GameManager.CurrentState is DifficultySelectionState diffState)
+{
+    <DifficultySelectionUI State="diffState" />
+}
+else if (GameManager.CurrentState is PlayerCreationState creationState)
+{
+    <PlayerCreationStateUI CreationState="creationState" />
+}
+else if (GameManager.CurrentState is DoctorCreationState doctorState)
+{
+    <DoctorCreationStateUI DoctorState="doctorState" />
+}
+else if (GameManager.CurrentState is CombatState combatState)
+{
+    <CombatUI CombatState="combatState" />
+}
+else if (GameManager.CurrentState is CombatResultState resultState)
+{
+    <CombatResultUI ResultState="resultState" />
+}
+else
+{
+    <p>Carregando...</p>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        GameManager.OnStateChanged += (newState) => InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        GameManager.OnStateChanged -= (newState) => InvokeAsync(StateHasChanged);
+    }
+}

@@ -10,9 +10,9 @@ public class CardFactory
     private readonly Dictionary<string, JsonElement> _cardBlueprints;
     private readonly ActionFactory _abilityFactory;
 
-    public CardFactory(BlueprintLoader blueprintLoader, ActionFactory abilityFactory)
+    public CardFactory(BlueprintCache blueprintCache, ActionFactory abilityFactory)
     {
-        _cardBlueprints = blueprintLoader.LoadAllRawBlueprints("Cards");
+        _cardBlueprints = blueprintCache.GetCards();
         _abilityFactory = abilityFactory;
     }
 

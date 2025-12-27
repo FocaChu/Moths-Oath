@@ -1,0 +1,90 @@
+﻿@using MothsOath.Core.Common
+@using MothsOath.Core.Models.Enums
+
+<div class="@GetCssClasses()"
+@onclick="HandleLeftClick"
+@oncontextmenu="HandleRightClick"
+@oncontextmenu:preventDefault="true"
+@onmouseover="HandleHover"
+@onmouseout="HandleHoverOut">
+
+    <div class="card-header">
+        <span class="entity-name">@Character.Name</span>
+    </div>
+
+    <div class="card-body">
+        <div class="entity-sprite-placeholder"></div>
+
+        <div class="status-icons">
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <div class="hp-bar-container">
+            <div class="hp-bar-fill" style="width: @GetHpPercentage()%;"></div>
+            <span class="hp-text">@Character.Stats.CurrentHealth / @Character.Stats.TotalMaxHealth</span>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public BaseCharacter Character { get; set; } = default!;
+
+    [Parameter] public bool IsSelectable { get; set; }
+
+    [Parameter] public EventCallback<BaseCharacter> OnLeftClick { get; set; }
+    [Parameter] public EventCallback<BaseCharacter> OnRightClick { get; set; }
+    [Parameter] public EventCallback<BaseCharacter> OnHover { get; set; }
+    [Parameter] public EventCallback<BaseCharacter> OnHoverOut { get; set; }
+
+    private async Task HandleLeftClick()
+    {
+        await OnLeftClick.InvokeAsync(Character);
+    }
+
+    private async Task HandleRightClick()
+    {
+        await OnRightClick.InvokeAsync(Character);
+    }
+
+    private async Task HandleHover()
+    {
+        await OnHover.InvokeAsync(Character);
+    }
+
+    private async Task HandleHoverOut()
+    {
+        await OnHoverOut.InvokeAsync(Character);
+    }
+
+    private string GetCssClasses()
+    {
+        var classes = new List<string> { "entity-card" };
+
+        if (IsSelectable) classes.Add("selectable");
+
+        if (Character is Player) classes.Add("type-player");
+        else if (Character.Allegiance == Allegiance.Enemy) classes.Add("type-enemy");
+        else classes.Add("type-ally");
+
+        switch (Character.Posture)
+        {
+            case CombatPosture.Retreat: classes.Add("posture-retreat"); break;
+            case CombatPosture.Advance: classes.Add("posture-advance"); break;
+            case CombatPosture.Camouflage: classes.Add("posture-camouflage"); break;
+        }
+
+        if (Character.IsTransformed)
+        {
+            classes.Add("giant-form");
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    private double GetHpPercentage()
+    {
+        if (Character.Stats.TotalMaxHealth == 0) return 0;
+        return Math.Clamp((double)Character.Stats.CurrentHealth / Character.Stats.TotalMaxHealth * 100, 0, 100);
+    }
+}

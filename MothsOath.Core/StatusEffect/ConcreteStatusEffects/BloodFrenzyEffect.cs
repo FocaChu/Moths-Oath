@@ -36,5 +36,6 @@ public class BloodFrenzyEffect : BaseStatusEffect, IKillReactor
         killer.Stats.CurrentHealth += Level;
         Console.WriteLine($"{killer.Name} restaura {Level} de vida ao matar {victim.Name}. HP:{killer.Stats.CurrentHealth}");
 
+        base.TickTime(killer);
     }
 }

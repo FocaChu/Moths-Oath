@@ -9,7 +9,7 @@ using MothsOath.Core.StatusEffect.StatusEffectsRandomGenerators;
 
 namespace MothsOath.Core.PassiveEffects;
 
-public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, IStatusEffectDoneReactor, ITurnStartReactor
+public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, IStatusEffectDoneReactor, ITurnStartReactor, ICombatEndReactor
 {
     public override string Id { get; set; } = "eve_glory_passive";
 
@@ -30,6 +30,13 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
         target.ApplyPureStatusEffect(glory);
 
         Console.WriteLine($"{target.Name} recebeu a glória {glory.Name} no começo do combate.");
+    }
+
+
+    public void OnCombatEnd(CombatState state, BaseCharacter source)
+    {
+        Counter = 0;
+        Detransform(source);
     }
 
     public void OnStatusEffectDone(ActionContext context, StatusEffectPlan plan, BaseCharacter target)
@@ -93,8 +100,8 @@ public class EveGloryPassiveEffect : BasePassiveEffect, ICombatStartReactor, ISt
 
         target.ReceivePureHeal(target.Stats.Regeneration);
 
-        var allies = context.BuildPlayerTeam();
-        foreach (var ally in allies)
+        var team = context.PlayerTeam;
+        foreach (var ally in team)
         {
             var level = ally is Player player ? player.Level : 2;
 

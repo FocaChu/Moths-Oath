@@ -1,0 +1,43 @@
+﻿@implements IRaceCombatView
+@implements IDisposable
+@using MothsOath.Core.Models.Enums
+@using MothsOath.Core.States
+@using MothsOath.BlazorUI.Interfaces
+
+@if (CombatState.Player.Race == RaceType.Ghoul)
+{
+    @if (ShowBloodLust)
+    {
+        <div class="ghoul-overlay blood-lust"></div>
+    }
+    @if (IsLowHealth)
+    {
+        <div class="ghoul-overlay low-health-vignette"></div>
+    }
+}
+
+@code {
+    [Parameter] public CombatState CombatState { get; set; } = default!;
+
+    private bool IsLowHealth => CombatState.Player.Stats.CurrentHealth < (CombatState.Player.Stats.MaxHealth * 0.33);
+
+    private bool ShowBloodLust => CombatState.Player.StatusEffects.Any(x => x.Id == "blood_frenzy_effect");
+
+    protected override void OnInitialized()
+    {
+        CombatState.OnPlayerTurnStart += OnPlayerTurnStartHandler;
+    }
+
+    private void OnPlayerTurnStartHandler()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (CombatState != null)
+        {
+            CombatState.OnPlayerTurnStart -= OnPlayerTurnStartHandler;
+        }
+    }
+}

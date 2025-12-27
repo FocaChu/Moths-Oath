@@ -21,6 +21,8 @@ public abstract class BaseCharacter
 
     public bool IsTransformed { get; set; } = false;
 
+    public CombatPosture Posture { get; set; } = CombatPosture.Neutral;
+
     public Allegiance Allegiance { get; set; }
 
     public List<BasePassiveEffect> PassiveEffects { get; set; } = new List<BasePassiveEffect>();
@@ -42,6 +44,13 @@ public abstract class BaseCharacter
 
     public virtual void Clean()
     {
+        this.Stats.TemporaryMaxHealth = 0;
+        this.Stats.TemporaryStrength = 0;
+        this.Stats.TemporaryKnowledge = 0;
+        this.Stats.TemporaryDefense = 0;
+        this.Stats.TemporaryCriticalChance = 0;
+        this.Stats.TemporaryCriticalDamageMultiplier = 0;
+
         this.Stats.BonusMaxHealth = 0;
         this.Stats.BonusStrength = 0;
         this.Stats.BonusKnowledge = 0;
@@ -324,28 +333,19 @@ public abstract class BaseCharacter
         }
     }
 
-    public void TickStatusEffects(CombatState context)
+    public void ClearFadingStatusEffects(CombatState context)
     {
         if (!StatusEffects.Any())
             return;
 
-        foreach (var statusEffect in StatusEffects)
-        {
-            statusEffect.TickTime(this);
-        }
+        var fadedEffects = this.StatusEffects.Where(se => se.Duration <= 0).ToList();
 
-        ClearFadingStatusEffects(context);
-    }
-
-    public void ClearFadingStatusEffects(CombatState context)
-    {
-
-        var effects = this.StatusEffects.OfType<IFadingReactor>().ToList();
+        var effects = fadedEffects.OfType<IFadingReactor>().ToList();
         foreach (var effect in effects)
         {
             effect.OnFading(this, context);
         }
 
-        StatusEffects.RemoveAll(se => se.Duration <= 0);
+        StatusEffects.RemoveAll(se => !se.IsActive());
     }
 }

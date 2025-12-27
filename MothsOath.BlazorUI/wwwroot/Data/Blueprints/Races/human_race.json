@@ -1,0 +1,17 @@
+{
+  "Id": "human",
+  "Name": "Humano",
+  "Description": "Humanos são versáteis e adaptáveis, capazes de prosperar em diversas condições. Sua curiosidade e engenhosidade os tornam mestres em diversas habilidades.",
+  "BaseHealth": 100,
+  "BaseMana": 100,
+  "BaseStamina": 100,
+  "BaseStrength": 5,
+  "BaseKnowledge": 5,
+  "BaseResistance": 2,
+  "BaseRegeneration": 0,
+  "BaseCriticalChance": 5,
+  "BaseCriticalDamageMultiplier": 1.5,
+  "BonusXpMultiplier": 0.1,
+  "PassiveDescription": "Ganho de Experiência aumentado em 10%.",
+  "StartingCardIds": [ "strike_card", "strike_card" ]
+}

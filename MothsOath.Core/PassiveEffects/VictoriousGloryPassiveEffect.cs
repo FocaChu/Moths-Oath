@@ -24,7 +24,7 @@ public class VictoriousGloryPassiveEffect : BasePassiveEffect, IKillReactor
 
         var glory = RandomGloryGenerator.GenerateRandomGlory(level, 2);
 
-        var targets = context.GameState.BuildPlayerTeam().Where(c => c.Id != source.Id).ToList();
+        var targets = context.GameState.PlayerTeam.Where(c => c.Id != source.Id).ToList();
 
         var rng = new Random();
         var target = targets[rng.Next(targets.Count)];

@@ -1,0 +1,45 @@
+﻿@implements IRaceCombatView
+@implements IDisposable
+@using MothsOath.Core.Models.Enums
+@using MothsOath.Core.States
+@using MothsOath.BlazorUI.Interfaces
+
+@if (CombatState.Player.Race == RaceType.Yulkin)
+{
+    @if (IsYulkinTransformed)
+    {
+        <div class="snow-overlay">
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="snowflake"></div>
+            <div class="screen-tint"></div> 
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public CombatState CombatState { get; set; } = default!;
+
+    private bool IsYulkinTransformed => CombatState.Player.IsTransformed;
+
+    protected override void OnInitialized()
+    {
+        CombatState.OnPlayerTurnStart += OnPlayerTurnStartHandler;
+    }
+
+    private void OnPlayerTurnStartHandler()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (CombatState != null)
+        {
+            CombatState.OnPlayerTurnStart -= OnPlayerTurnStartHandler;
+        }
+    }
+}

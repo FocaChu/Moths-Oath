@@ -33,5 +33,7 @@ public class SuperForceEffect : BaseStatusEffect, ITurnStartReactor
     {
        var effectLevel = (int)(this.Level / 2) > 1 ? (int)(this.Level / 2) : 2;
        target.Stats.TemporaryStrength += effectLevel;
+
+       base.TickTime(target);
     }
 }

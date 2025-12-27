@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.22" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MothsOath.Core\MothsOath.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Copy Data files to wwwroot so they're accessible via HTTP in WebAssembly -->
+  <Target Name="CopyDataFilesToWwwroot" BeforeTargets="Build">
+    <ItemGroup>
+      <DataFiles Include="..\MothsOath.Core\Data\Blueprints\**\*.json" />
+    </ItemGroup>
+    <PropertyGroup>
+      <WwwrootDataPath>$(MSBuildProjectDirectory)\wwwroot\Data\Blueprints</WwwrootDataPath>
+    </PropertyGroup>
+    <MakeDir Directories="$(WwwrootDataPath)" Condition="!Exists('$(WwwrootDataPath)')" />
+    <Copy SourceFiles="@(DataFiles)" 
+          DestinationFiles="@(DataFiles->'$(WwwrootDataPath)\%(RecursiveDir)%(Filename)%(Extension)')" 
+          SkipUnchangedFiles="true" />
+    <Message Text="Copied @(DataFiles->Count()) Data blueprint files to wwwroot" Importance="normal" />
+  </Target>
+
+</Project>

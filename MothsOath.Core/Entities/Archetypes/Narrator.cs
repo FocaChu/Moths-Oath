@@ -71,7 +71,7 @@ public class Narrator : Player
         
         var newExtra = state.CreateNpc("narrator_extra");
 
-        state.Allies.Add(newExtra);
+        state.AddAlly(newExtra);
     }
 
     public int CalculateExtraCost(int currentAllies)

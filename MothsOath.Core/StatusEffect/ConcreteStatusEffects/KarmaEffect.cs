@@ -36,7 +36,11 @@ public class KarmaEffect : BaseStatusEffect, IModifiedHealthReactor
 
         int healingAmount = plan.FinalValue / 2 + Level;
 
-        context.Source.ReceivePureHeal(healingAmount);
-        Console.WriteLine($"{context.Source.Name} é curado por {healingAmount} devido ao efeito de Karma.");
+        var source = context.Source;
+
+        source.ReceivePureHeal(healingAmount);
+        Console.WriteLine($"{source.Name} é curado por {healingAmount} devido ao efeito de Karma.");
+
+        base.TickTime(source);
     }
 }

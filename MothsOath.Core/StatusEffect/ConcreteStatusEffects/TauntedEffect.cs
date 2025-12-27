@@ -1,11 +1,13 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.EffectInterfaces.Healing;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
+using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
-public class TauntedEffect : BaseStatusEffect, IOutgoingHealthModifierReactor
+public class TauntedEffect : BaseStatusEffect, IOutgoingHealthModifierReactor, ITurnEndReactor
 {
     public override string Id { get; set; } = "taunted_effect";
 
@@ -46,5 +48,10 @@ public class TauntedEffect : BaseStatusEffect, IOutgoingHealthModifierReactor
             return;
 
         context.FinalTargets = new List<BaseCharacter> { Source };
+    }
+
+    public void OnTurnEnd(BaseCharacter target, CombatState context)
+    {
+        base.TickTime(target);
     }
 }
