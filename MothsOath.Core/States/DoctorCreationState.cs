@@ -23,14 +23,15 @@ public class DoctorCreationState : IGameState
     
     public BaseSymptomEffect? SelectedInitialSymptom { get; private set; }
     public string DiseaseName { get; set; } = "";
+    public bool IsInitialized { get; private set; } = false;
 
-    public DoctorCreationState(GameStateManager gameManager, BlueprintLoader blueprintLoader, BehaviorFactory behaviorFactory, Player basePlayer)
+    private DoctorCreationState(GameStateManager gameManager, BlueprintLoader blueprintLoader, BehaviorFactory behaviorFactory, Player basePlayer, List<DiseaseBlueprint> availableDiseases)
     {
         _gameManager = gameManager;
         _blueprintLoader = blueprintLoader;
         _basePlayer = basePlayer;
         _behaviorFactory = behaviorFactory;
-        _availableDiseases = _blueprintLoader.LoadAllBlueprintsFromFiles<DiseaseBlueprint>("Diseases").Values.ToList();
+        _availableDiseases = availableDiseases;
         
         var symptoms = GetAllSymptoms();
         _allSymptoms = symptoms
@@ -38,6 +39,14 @@ public class DoctorCreationState : IGameState
             .GroupBy(s => s.Id)
             .Select(g => g.First())
             .ToDictionary(s => s.Id, s => s);
+
+        IsInitialized = true;
+    }
+
+    public static async Task<DoctorCreationState> CreateAsync(GameStateManager gameManager, BlueprintLoader blueprintLoader, BehaviorFactory behaviorFactory, Player basePlayer)
+    {
+        var availableDiseases = await blueprintLoader.LoadAllBlueprintsFromFilesAsync<DiseaseBlueprint>("Diseases");
+        return new DoctorCreationState(gameManager, blueprintLoader, behaviorFactory, basePlayer, availableDiseases.Values.ToList());
     }
 
     public void NextDisease()

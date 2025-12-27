@@ -94,9 +94,9 @@ public class PlayerCreationState : IGameState
         _gameManager.TransitionToState(combatState);
     }
 
-    private void CreateDoctor(Player player)
+    private async void CreateDoctor(Player player)
     {
-        var doctorCreationState = _gameManager.StateFactory.CreateDoctorCreationState(_gameManager, player);
+        var doctorCreationState = await _gameManager.StateFactory.CreateDoctorCreationStateAsync(_gameManager, player);
         _gameManager.TransitionToState(doctorCreationState);
     }
 

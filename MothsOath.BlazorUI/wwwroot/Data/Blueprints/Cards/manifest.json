@@ -1,0 +1,10 @@
+{
+  "files": [
+    "echo_of_misfortune_card.json",
+    "heal_card.json",
+    "karma_calling_card.json",
+    "sharp_cut_card.json",
+    "strike_card.json",
+    "toxic_jab_card.json"
+  ]
+}

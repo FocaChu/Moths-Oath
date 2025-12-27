@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Blueprints\Diseases\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Data\Blueprints\Archetypes\bellRinger_archetype.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

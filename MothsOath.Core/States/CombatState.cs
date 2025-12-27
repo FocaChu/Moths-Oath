@@ -281,8 +281,8 @@ public class CombatState : IGameState
         OnEnemyTurnStart?.Invoke();
 
         ExecuteAlliesTurns();
-
         ExecuteEnemyTurns();
+        EndTurn();
     }
 
     private void ExecuteAlliesTurns()
@@ -300,8 +300,6 @@ public class CombatState : IGameState
 
             ClearFadedEffects();
         }
-
-        EndTurn();
     }
 
     private void ExecuteEnemyTurns()
@@ -319,8 +317,6 @@ public class CombatState : IGameState
 
             ClearFadedEffects();
         }
-
-        EndTurn();
     }
 
     private void EndTurn()

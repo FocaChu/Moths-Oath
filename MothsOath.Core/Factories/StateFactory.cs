@@ -51,8 +51,8 @@ public class StateFactory
         return new PlayerCreationState(gameManager, _playerFactory, _blueprintLoader);
     }
 
-    public DoctorCreationState CreateDoctorCreationState(GameStateManager gameManager, Player basePlayer)
+    public Task<DoctorCreationState> CreateDoctorCreationStateAsync(GameStateManager gameManager, Player basePlayer)
     {
-        return new DoctorCreationState(gameManager, _blueprintLoader, _behaviorFactory, basePlayer);
+        return DoctorCreationState.CreateAsync(gameManager, _blueprintLoader, _behaviorFactory, basePlayer);
     }
 }

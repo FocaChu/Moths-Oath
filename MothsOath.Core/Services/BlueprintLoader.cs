@@ -11,7 +11,6 @@ public class BlueprintLoader
     public BlueprintLoader(HttpClient? httpClient = null)
     {
         _httpClient = httpClient;
-        // Detecta se está rodando no WebAssembly verificando se HttpClient foi fornecido
         _isWebAssembly = httpClient != null;
     }
 
@@ -31,8 +30,6 @@ public class BlueprintLoader
     {
         if (_isWebAssembly && _httpClient != null)
         {
-            // No WebAssembly, não podemos usar GetAwaiter().GetResult() porque bloqueia
-            // Este método não deve ser chamado no WebAssembly - use LoadAllBlueprintsFromFilesAsync
             throw new InvalidOperationException(
                 "LoadAllBlueprintsFromFiles não pode ser usado no WebAssembly. Use LoadAllBlueprintsFromFilesAsync e aguarde a inicialização assíncrona.");
         }
@@ -55,7 +52,11 @@ public class BlueprintLoader
             return loadedBlueprints;
         }
 
-        var blueprintFiles = Directory.GetFiles(absoluteFolderPath, "*.json");
+        var manifestFiles = LoadManifestFromFileSystem(folderPath);
+        var blueprintFiles = manifestFiles.Count > 0 
+            ? manifestFiles.Select(f => Path.Combine(absoluteFolderPath, f)).Where(File.Exists).ToArray()
+            : Directory.GetFiles(absoluteFolderPath, "*.json").Where(f => !f.EndsWith("manifest.json")).ToArray();
+
         Console.WriteLine($"--- Carregando Blueprints do Tipo: {typeof(T).Name} ---");
         Console.WriteLine($"Encontrados {blueprintFiles.Length} arquivos em '{folderPath}'.");
 
@@ -99,11 +100,8 @@ public class BlueprintLoader
             return loadedBlueprints;
         }
 
-        // Lista conhecida de arquivos JSON - no WebAssembly não podemos listar diretórios
-        // Vamos tentar carregar arquivos comuns ou usar uma lista pré-definida
-        var knownFiles = GetKnownBlueprintFiles(folderPath);
+        var knownFiles = await LoadManifestFromHttpAsync(folderPath);
 
-        // Normaliza o nome da pasta para a URL (NPCs -> NPCs, mas aceita npcs também)
         var normalizedFolderPath = NormalizeFolderPath(folderPath);
 
         Console.WriteLine($"--- Carregando Blueprints do Tipo: {typeof(T).Name} (WebAssembly) ---");
@@ -152,7 +150,6 @@ public class BlueprintLoader
 
     private string NormalizeFolderPath(string folderPath)
     {
-        // Normaliza o nome da pasta para corresponder ao case correto no sistema de arquivos
         var normalized = folderPath.ToLower().Trim();
         return normalized switch
         {
@@ -161,23 +158,67 @@ public class BlueprintLoader
             "archetypes" => "Archetypes",
             "cards" => "Cards",
             "diseases" => "Diseases",
-            _ => folderPath // Mantém o original se não conhecido
+            _ => folderPath 
         };
     }
 
-    private List<string> GetKnownBlueprintFiles(string folderPath)
+    private async Task<List<string>> LoadManifestFromHttpAsync(string folderPath)
     {
-        // Retorna lista de arquivos conhecidos baseado na pasta (case-insensitive)
-        var normalizedPath = folderPath.ToLower().Trim();
-        return normalizedPath switch
+        if (_httpClient == null)
         {
-            "races" => new List<string> { "ghoul_race.json", "human_race.json", "yulkin_race.json" },
-            "archetypes" => new List<string> { "bellRinger_archetype.json", "doctor_archetype.json", "narrator_archetype.json" },
-            "cards" => new List<string> { "echo_of_misfortune_card.json", "heal_card.json", "karma_calling_card.json", "sharp_cut_card.json", "strike_card.json", "toxic_jab_card.json" },
-            "npcs" or "npc" => new List<string> { "narrator_extra.json", "neko.json", "skeleton.json" },
-            "diseases" => new List<string> { "virus_disease.json" },
-            _ => new List<string>()
-        };
+            return new List<string>();
+        }
+
+        var normalizedFolderPath = NormalizeFolderPath(folderPath);
+
+        try
+        {
+            var manifestUrl = $"Data/Blueprints/{normalizedFolderPath}/manifest.json";
+            var response = await _httpClient.GetAsync(manifestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[AVISO] Manifest não encontrado em '{manifestUrl}'. Retornando lista vazia.");
+                return new List<string>();
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var manifest = JsonSerializer.Deserialize<BlueprintManifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return manifest?.Files ?? new List<string>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERRO] Falha ao carregar manifest de '{folderPath}'. Detalhes: {ex.Message}");
+            return new List<string>();
+        }
+    }
+
+    private List<string> LoadManifestFromFileSystem(string folderPath)
+    {
+        string assemblyLocation = AppDomain.CurrentDomain.BaseDirectory;
+        string absoluteFolderPath = Path.Combine(assemblyLocation, "Data", "Blueprints", folderPath);
+        string manifestPath = Path.Combine(absoluteFolderPath, "manifest.json");
+
+        try
+        {
+            if (File.Exists(manifestPath))
+            {
+                var json = File.ReadAllText(manifestPath);
+                var manifest = JsonSerializer.Deserialize<BlueprintManifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return manifest?.Files ?? new List<string>();
+            }
+            else
+            {
+                Console.WriteLine($"[INFO] Manifest não encontrado em '{manifestPath}'. Usando descoberta automática de arquivos.");
+                return new List<string>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[AVISO] Falha ao ler manifest de '{manifestPath}'. Usando descoberta automática. Detalhes: {ex.Message}");
+            return new List<string>();
+        }
     }
 
     public async Task<Dictionary<string, JsonElement>> LoadAllRawBlueprintsAsync(string folderPath)
@@ -196,8 +237,6 @@ public class BlueprintLoader
     {
         if (_isWebAssembly && _httpClient != null)
         {
-            // No WebAssembly, não podemos usar GetAwaiter().GetResult() porque bloqueia
-            // Este método não deve ser chamado no WebAssembly - use LoadAllRawBlueprintsAsync
             throw new InvalidOperationException(
                 "LoadAllRawBlueprints não pode ser usado no WebAssembly. Use LoadAllRawBlueprintsAsync e aguarde a inicialização assíncrona.");
         }
@@ -220,7 +259,11 @@ public class BlueprintLoader
             return loadedBlueprints;
         }
 
-        var blueprintFiles = Directory.GetFiles(absoluteFolderPath, "*.json");
+        var manifestFiles = LoadManifestFromFileSystem(folderPath);
+        var blueprintFiles = manifestFiles.Count > 0 
+            ? manifestFiles.Select(f => Path.Combine(absoluteFolderPath, f)).Where(File.Exists).ToArray()
+            : Directory.GetFiles(absoluteFolderPath, "*.json").Where(f => !f.EndsWith("manifest.json")).ToArray();
+
         Console.WriteLine($"--- Carregando Blueprints da Pasta: {folderPath} ---");
         Console.WriteLine($"Encontrados {blueprintFiles.Length} arquivos.");
 
@@ -274,7 +317,7 @@ public class BlueprintLoader
             return loadedBlueprints;
         }
 
-        var knownFiles = GetKnownBlueprintFiles(folderPath);
+        var knownFiles = await LoadManifestFromHttpAsync(folderPath);
         var normalizedFolderPath = NormalizeFolderPath(folderPath);
         Console.WriteLine($"--- Carregando Blueprints da Pasta: {normalizedFolderPath} (WebAssembly) ---");
         Console.WriteLine($"Tentando carregar {knownFiles.Count} arquivos.");
@@ -327,5 +370,10 @@ public class BlueprintLoader
         Console.WriteLine($"Carregamento genérico finalizado para a pasta '{folderPath}'. {loadedBlueprints.Count} de {knownFiles.Count} arquivos carregados com sucesso.");
         Console.WriteLine("--------------------------------------------------");
         return loadedBlueprints;
+    }
+
+    private class BlueprintManifest
+    {
+        public List<string> Files { get; set; } = new List<string>();
     }
 }

@@ -1,5 +1,4 @@
 using MothsOath.Core.Models.Blueprints;
-using MothsOath.Core.Models.Blueprints.Common;
 using System.Text.Json;
 
 namespace MothsOath.Core.Services;
