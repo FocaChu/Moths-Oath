@@ -1,6 +1,9 @@
 ﻿@using MothsOath.BlazorUI.Interfaces
+@using MothsOath.Core.States
 @implements IRaceCombatView
 
-@code {
+@* EmptyRaceUI é usado para raças que não possuem efeitos visuais especiais no combate *@
 
+@code {
+    [Parameter] public CombatState CombatState { get; set; } = default!;
 }

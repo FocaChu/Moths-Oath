@@ -9,7 +9,7 @@ public static class RaceViewResolver
     {
         { RaceType.Ghoul, typeof(GhoulRaceUI) },
         { RaceType.Yulkin, typeof(YulkinRaceUI) },
-        { RaceType.Human, typeof(EmptyRaceUI) } 
+        { RaceType.Human, typeof(EmptyRaceUI) }
     };
 
     public static Type GetViewType(RaceType race)

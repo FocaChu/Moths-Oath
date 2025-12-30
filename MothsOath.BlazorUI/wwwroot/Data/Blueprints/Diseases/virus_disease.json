@@ -1,8 +1,0 @@
-{
-  "Id": "virus_disease",
-  "Name": "Vírus",
-  "BehaviorId": "target_bleeding_or_hurt_character_behavior",
-  "Description": "Uma doença viral altamente contagiosa que causa necrose tecidual e hemorragias internas.",
-  "InitialSymptoms": [ "necrosis_symptom" ],
-  "ViableMutations": [ "necrosis_symptom", "hemorrhage_symptom" ]
-}

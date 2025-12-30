@@ -1,8 +1,0 @@
-{
-  "Id": "karma_calling_card",
-  "Type": "Standard",
-  "Name": "Chamado do Karma",
-  "Description": "Agracia o alvo com Karma.",
-  "ManaCost": 40,
-  "Action": "action_karma_calling"
-}

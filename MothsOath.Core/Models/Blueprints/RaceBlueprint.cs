@@ -32,7 +32,7 @@ public class RaceBlueprint : IBlueprint
 
     public float BonusXpMultiplier { get; set; } = 0;
 
-    public string PassiveDrescription { get; set; } = "No passive ability.";
+    public string PassiveDescription { get; set; } = "No passive ability.";
 
     public List<string> StartingCardIds { get; set; } = new List<string>();
 }

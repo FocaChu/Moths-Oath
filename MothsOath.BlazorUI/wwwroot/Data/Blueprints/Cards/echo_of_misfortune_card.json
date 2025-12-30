@@ -1,8 +1,0 @@
-{
-  "Id": "echo_of_misfortune_card",
-  "Type": "Standard",
-  "Name": "Eco do infortúnio",
-  "Description": "Ecoa um efeito negativo de um inimigo.",
-  "ManaCost": 20,
-  "Action": "action_echo_of_misfortune"
-}
