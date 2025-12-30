@@ -10,6 +10,7 @@ public class BlueprintCache
     private Dictionary<string, ArchetypeBlueprint>? _archetypes;
     private Dictionary<string, JsonElement>? _cards;
     private Dictionary<string, NpcBlueprint>? _npcs;
+    private Dictionary<string, JsonElement>? _tags;
 
     public BlueprintCache(BlueprintLoader loader)
     {
@@ -22,6 +23,7 @@ public class BlueprintCache
         _archetypes = await _loader.LoadAllBlueprintsFromFilesAsync<ArchetypeBlueprint>("Archetypes");
         _cards = await _loader.LoadAllRawBlueprintsAsync("Cards");
         _npcs = await _loader.LoadAllBlueprintsFromFilesAsync<NpcBlueprint>("NPCs");
+        _tags = await _loader.LoadAllRawBlueprintsAsync("Tags");
     }
 
     public Dictionary<string, RaceBlueprint> GetRaces()
@@ -42,6 +44,11 @@ public class BlueprintCache
     public Dictionary<string, NpcBlueprint> GetNpcs()
     {
         return _npcs ?? throw new InvalidOperationException("Blueprints não foram inicializados. Chame InitializeAsync primeiro.");
+    }
+
+    public Dictionary<string, JsonElement> GetTags()
+    {
+        return _tags ?? throw new InvalidOperationException("Blueprints não foram inicializados. Chame InitializeAsync primeiro.");
     }
 }
 

@@ -3,6 +3,7 @@ using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.EffectInterfaces.Death;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.Plans;
+using MothsOath.Core.Entities.Archetypes;
 using MothsOath.Core.States;
 
 namespace MothsOath.Core.PassiveEffects;
@@ -37,6 +38,8 @@ public class BubbleOfManaPassiveEffect : BasePassiveEffect, IDeathReactor, ITurn
         var player = context.GameState.Player;
         int manaRestored = 10;
         player.CurrentMana = Math.Min(player.CurrentMana + manaRestored, player.MaxMana);
+
+        GetNarrator(context.GameState).HypometerLevel--;
     }
 
     public void OnTurnStart(BaseCharacter target, CombatState context)
@@ -54,6 +57,15 @@ public class BubbleOfManaPassiveEffect : BasePassiveEffect, IDeathReactor, ITurn
         target.Stats.TemporaryCriticalChance += frustrationLevel;
         target.Stats.BonusCriticalChance++;
 
+        GetNarrator(context).HypometerLevel++;
+
         Console.WriteLine($"{target.Name} pissoteia o chão em frustração!");
+    }
+    private Narrator GetNarrator(CombatState context)
+    {
+        if (context.Player is not Narrator narrator)
+            throw new InvalidOperationException("O jogador atual não é um Narrador.");
+
+        return narrator;
     }
 }

@@ -35,4 +35,6 @@ public class RaceBlueprint : IBlueprint
     public string PassiveDescription { get; set; } = "No passive ability.";
 
     public List<string> StartingCardIds { get; set; } = new List<string>();
+
+    public List<string> TagIds { get; set; } = new List<string>();
 }

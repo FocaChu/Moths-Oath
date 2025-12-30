@@ -43,6 +43,7 @@ public class Doctor : Player
 
         this.PassiveEffects = player.PassiveEffects.ToList();
         this.StatusEffects = player.StatusEffects.ToList();
+        this.Tags = player.Tags.ToList();
 
         this.Deck.Clear();
         this.Deck.AddRange(player.Deck);

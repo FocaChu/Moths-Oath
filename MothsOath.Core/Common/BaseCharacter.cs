@@ -25,6 +25,8 @@ public abstract class BaseCharacter
 
     public Allegiance Allegiance { get; set; }
 
+    public List<GameTag> Tags { get; set; } = new List<GameTag>();
+
     public List<BasePassiveEffect> PassiveEffects { get; set; } = new List<BasePassiveEffect>();
     public List<BaseStatusEffect> StatusEffects { get; set; } = new List<BaseStatusEffect>();
 
@@ -323,8 +325,8 @@ public abstract class BaseCharacter
 
     public void ActivateTurnEndEffects(CombatState combatState)
     {
-        var effects = this.StatusEffects.OfType<ITurnEndReactor>().ToList()
-            .Concat(this.PassiveEffects.OfType<ITurnEndReactor>().ToList())
+        var effects = this.StatusEffects.OfType<ITurnStartReactor>().ToList()
+            .Concat(this.PassiveEffects.OfType<ITurnStartReactor>().ToList())
             .OrderByDescending(m => m.Priority);
 
         foreach (var effect in effects)

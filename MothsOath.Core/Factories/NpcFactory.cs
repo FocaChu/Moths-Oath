@@ -13,12 +13,14 @@ public class NpcFactory
     private readonly ActionFactory _abilityFactory;
     private readonly BehaviorFactory _behaviorFactory;
     private readonly PassiveEffectFactory _passiveEffectFactory;
+    private readonly GameTagFactory _gameTagFactory;
 
-    public NpcFactory(ActionFactory abilityFactory, BehaviorFactory behaviorFactory , PassiveEffectFactory passiveEffectFactory, BlueprintCache blueprintCache)
+    public NpcFactory(ActionFactory abilityFactory, BehaviorFactory behaviorFactory , PassiveEffectFactory passiveEffectFactory, GameTagFactory gameTagFactory, BlueprintCache blueprintCache)
     {
         _abilityFactory = abilityFactory;
         _behaviorFactory = behaviorFactory;
         _passiveEffectFactory = passiveEffectFactory;
+        _gameTagFactory = gameTagFactory;
         _npcBlueprints = blueprintCache.GetNpcs();
     }
 
@@ -57,6 +59,7 @@ public class NpcFactory
             XpReward = blueprint.XpReward,
             GoldReward = blueprint.GoldReward,  
             PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
+            Tags = _gameTagFactory.GetTags(blueprint.TagIds),
             NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
             SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),
             BasicAbility = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),

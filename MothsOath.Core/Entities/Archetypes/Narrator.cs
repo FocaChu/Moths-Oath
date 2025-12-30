@@ -11,6 +11,8 @@ public class Narrator : Player
 {
     private const int HighestTier = 4;
 
+    public float HypometerLevel { get; set; }
+
     public Narrator(Player player)
     {
         this.Id = player.Id;
@@ -44,6 +46,7 @@ public class Narrator : Player
 
         this.PassiveEffects = player.PassiveEffects.ToList();
         this.StatusEffects = player.StatusEffects.ToList();
+        this.Tags = player.Tags.ToList();
 
         this.Deck.Clear();
         this.Deck.AddRange(player.Deck);

@@ -17,5 +17,6 @@
   "SpecialBehaviorId": "target_opposing_team_behavior",
   "BasicAttackAbilityId": "action_basic_attack",
   "SpecialAbilityId": "action_power_strike",
-  "SpecialAbilityCooldown": 3
+  "SpecialAbilityCooldown": 3,
+  "TagIds": ["undead"]
 }

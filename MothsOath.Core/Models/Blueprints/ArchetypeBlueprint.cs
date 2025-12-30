@@ -31,4 +31,6 @@ public class ArchetypeBlueprint : IBlueprint
     public List<string> PassiveEffectIds { get; set; } = new List<string>();
 
     public List<string> StartingCardIds { get; set; } = new List<string>();
+
+    public List<string> TagIds { get; set; } = new List<string>();
 }

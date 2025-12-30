@@ -1,0 +1,92 @@
+[
+  {
+    "Id": "player",
+    "Name": "Jogador",
+    "Description": "Personagem principal do jogo.",
+    "HexColor": "#ffffff"
+  },
+  {
+    "Id": "undead",
+    "Name": "Morto-Vivo",
+    "Description": "Criatura que já morreu mas continua animada por energia sobrenatural",
+    "HexColor": "#8B4789"
+  },
+  {
+    "Id": "beast",
+    "Name": "Besta",
+    "Description": "Criatura animal ou selvagem",
+    "HexColor": "#8B6914"
+  },
+  {
+    "Id": "humanoid",
+    "Name": "Humanoide",
+    "Description": "Criatura com forma e características humanas",
+    "HexColor": "#D4AF37"
+  },
+  {
+    "Id": "magical",
+    "Name": "Mágico",
+    "Description": "Relacionado com magia ou energia arcana",
+    "HexColor": "#4169E1"
+  },
+  {
+    "Id": "cursed",
+    "Name": "Amaldiçoado",
+    "Description": "Afetado por uma maldição ou magia negra",
+    "HexColor": "#800080"
+  },
+  {
+    "Id": "disease",
+    "Name": "Doença",
+    "Description": "Relacionado a doenças ou enfermidades",
+    "HexColor": "#228B22"
+  },
+  {
+    "Id": "physical",
+    "Name": "Físico",
+    "Description": "Relacionado a ataques e danos físicos",
+    "HexColor": "#8B0000"
+  },
+  {
+    "Id": "ranged",
+    "Name": "Distância",
+    "Description": "Ataque ou habilidade de longa distância",
+    "HexColor": "#4682B4"
+  },
+  {
+    "Id": "melee",
+    "Name": "Corpo-a-Corpo",
+    "Description": "Ataque ou habilidade de curta dist�ncia",
+    "HexColor": "#B22222"
+  },
+  {
+    "Id": "healing",
+    "Name": "Cura",
+    "Description": "Restaura vida ou remove efeitos negativos",
+    "HexColor": "#32CD32"
+  },
+  {
+    "Id": "buff",
+    "Name": "Aprimoramento",
+    "Description": "Melhora atributos ou capacidades",
+    "HexColor": "#00CED1"
+  },
+  {
+    "Id": "debuff",
+    "Name": "Enfraquecimento",
+    "Description": "Reduz atributos ou capacidades",
+    "HexColor": "#8B008B"
+  },
+  {
+    "Id": "aoe",
+    "Name": "Área",
+    "Description": "Afeta múltiplos alvos em uma área",
+    "HexColor": "#FF8C00"
+  },
+  {
+    "Id": "single_target",
+    "Name": "Alvo Único",
+    "Description": "Afeta apenas um alvo",
+    "HexColor": "#DC143C"
+  }
+]

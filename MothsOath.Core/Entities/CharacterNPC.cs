@@ -56,7 +56,10 @@ public class CharacterNPC : BaseCharacter
     {
         var context = CreateActionContext(gameState);
 
-        if (!context.CanProceed || context.FinalTargets == null || context.FinalTargets.Count == 0) return;
+        if (!context.CanProceed || context.FinalTargets == null || context.FinalTargets.Count == 0)
+        {
+            return;
+        }
 
         if (context.CanUseSpecial)
         {

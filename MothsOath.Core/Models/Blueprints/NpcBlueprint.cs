@@ -41,4 +41,6 @@ public class NpcBlueprint : IBlueprint
     public string SpecialAbilityId { get; set; } = string.Empty;
 
     public int SpecialAbilityCooldown { get; set; }
+
+    public List<string> TagIds { get; set; } = new List<string>();
 }

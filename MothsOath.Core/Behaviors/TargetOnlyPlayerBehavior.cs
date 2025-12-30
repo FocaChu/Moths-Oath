@@ -9,8 +9,10 @@ public class TargetOnlyPlayerBehavior : IBehavior
 
     public List<BaseCharacter> GetTargets(BaseCharacter source, CombatState context)
     {
-        List<BaseCharacter> targets = new List<BaseCharacter>();
-        targets.Add(context.Player);
+        List<BaseCharacter> targets = context.GetAllCharacters()
+            .Where(c => c.Stats.IsAlive && c.Tags.Any(t => t.ID == "player"))
+            .ToList();
+
         return targets;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace MothsOath.Core.Common;
 
-public class TagType
+public class GameTag
 {
     public string ID { get; set; }
 
@@ -10,7 +10,7 @@ public class TagType
 
     public string HexColor { get; set; } = "#FFFFFF";
 
-    public TagType(string id, string name, string description, string hexColor)
+    public GameTag(string id, string name, string description, string hexColor)
     {
         ID = id;
         Name = name;

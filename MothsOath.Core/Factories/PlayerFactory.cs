@@ -12,11 +12,13 @@ public class PlayerFactory
     private readonly Dictionary<string, ArchetypeBlueprint> _archetypeBlueprints;
     private readonly PassiveEffectFactory _passiveEffectFactory;
     private readonly CardFactory _cardFactory;
+    private readonly GameTagFactory _gameTagFactory;
 
-    public PlayerFactory(CardFactory cardFactory, PassiveEffectFactory passiveEffectFactory, BlueprintCache blueprintCache)
+    public PlayerFactory(CardFactory cardFactory, PassiveEffectFactory passiveEffectFactory, GameTagFactory gameTagFactory, BlueprintCache blueprintCache)
     {
         _cardFactory = cardFactory;
         _passiveEffectFactory = passiveEffectFactory;
+        _gameTagFactory = gameTagFactory;
         _raceBlueprints = blueprintCache.GetRaces();
         _archetypeBlueprints = blueprintCache.GetArchetypes();
     }
@@ -38,6 +40,15 @@ public class PlayerFactory
             BaseCriticalDamageMultiplier = raceBlueprint.BaseCriticalDamageMultiplier + archetypeBlueprint.BonusCriticalDamageMultiplier,
         };
 
+        // Collect tags from race and archetype, plus default "player" tag
+        var allTagIds = new List<string> { "player" };
+        if (raceBlueprint.TagIds != null)
+            allTagIds.AddRange(raceBlueprint.TagIds);
+        if (archetypeBlueprint.TagIds != null)
+            allTagIds.AddRange(archetypeBlueprint.TagIds);
+        
+        var playerTags = _gameTagFactory.GetTags(allTagIds);
+
         var player = new Player
         {
             Archetype = archetypeBlueprint.Name,
@@ -46,6 +57,7 @@ public class PlayerFactory
             Allegiance = Allegiance.Ally,
             Name = playerName,
             Stats = stats,
+            Tags = playerTags,
             MaxMana = raceBlueprint.BaseMana + archetypeBlueprint.BonusMana,
             CurrentMana = raceBlueprint.BaseMana + archetypeBlueprint.BonusMana,
             MaxStamina = raceBlueprint.BaseStamina + archetypeBlueprint.BonusStamina,

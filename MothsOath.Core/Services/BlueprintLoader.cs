@@ -158,6 +158,7 @@ public class BlueprintLoader
             "archetypes" => "Archetypes",
             "cards" => "Cards",
             "diseases" => "Diseases",
+            "tags" => "Tags",
             _ => folderPath 
         };
     }

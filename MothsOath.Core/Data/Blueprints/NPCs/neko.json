@@ -13,9 +13,10 @@
   "BaseCriticalChance": 5,
   "BaseCriticalDamageMultiplier": 1.5,
   "PassiveEffectIds": [],
-  "NormalBehaviorId": "target_opposing_team_behavior",
+  "NormalBehaviorId": "target_only_player_behavior",
   "SpecialBehaviorId": "target_random_behavior",
   "BasicAttackAbilityId": "action_basic_attack",
   "SpecialAbilityId": "action_power_strike",
-  "SpecialAbilityCooldown": 3
+  "SpecialAbilityCooldown": 3,
+  "TagIds": ["beast"]
 }

@@ -15,11 +15,10 @@
     <ProjectReference Include="..\MothsOath.Core\MothsOath.Core.csproj" />
   </ItemGroup>
 
-  <!-- 
-    Copia automaticamente todos os blueprints JSON de MothsOath.Core para wwwroot
-    Isso elimina a necessidade de manter arquivos duplicados manualmente.
-    Os arquivos em wwwroot/Data/Blueprints são gerados e não devem ser editados diretamente.
-  -->
+  <ItemGroup>
+    <Folder Include="wwwroot\Data\Blueprints\Tags\" />
+  </ItemGroup>
+
   <Target Name="CopyDataFilesToWwwroot" BeforeTargets="BeforeBuild">
     <ItemGroup>
       <DataFiles Include="..\MothsOath.Core\Data\Blueprints\**\*.json" />
@@ -28,16 +27,12 @@
       <WwwrootDataPath>$(MSBuildProjectDirectory)\wwwroot\Data\Blueprints</WwwrootDataPath>
     </PropertyGroup>
     
-    <!-- Limpa arquivos antigos antes de copiar -->
     <RemoveDir Directories="$(WwwrootDataPath)" Condition="Exists('$(WwwrootDataPath)')" />
     <MakeDir Directories="$(WwwrootDataPath)" />
     
-    <!-- Copia todos os arquivos JSON mantendo a estrutura de pastas -->
-    <Copy SourceFiles="@(DataFiles)" 
-          DestinationFiles="@(DataFiles->'$(WwwrootDataPath)\%(RecursiveDir)%(Filename)%(Extension)')" 
-          SkipUnchangedFiles="false" />
+    <Copy SourceFiles="@(DataFiles)" DestinationFiles="@(DataFiles->'$(WwwrootDataPath)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
     
-    <Message Text="? Copiados @(DataFiles->Count()) arquivos de blueprints de MothsOath.Core para wwwroot" Importance="high" />
+    <Message Text="? Copiados @(DataFiles-&gt;Count()) arquivos de blueprints de MothsOath.Core para wwwroot" Importance="high" />
   </Target>
 
 </Project>

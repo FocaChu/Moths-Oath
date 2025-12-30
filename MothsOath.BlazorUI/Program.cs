@@ -27,6 +27,7 @@ builder.Services.AddSingleton<BehaviorFactory>();
 builder.Services.AddSingleton<ActionFactory>();
 
 // Register factories that depend on BlueprintCache (will be initialized after cache)
+builder.Services.AddSingleton<GameTagFactory>();
 builder.Services.AddSingleton<CardFactory>();
 builder.Services.AddSingleton<NpcFactory>();
 builder.Services.AddSingleton<PlayerFactory>();
