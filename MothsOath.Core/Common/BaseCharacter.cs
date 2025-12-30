@@ -325,8 +325,8 @@ public abstract class BaseCharacter
 
     public void ActivateTurnEndEffects(CombatState combatState)
     {
-        var effects = this.StatusEffects.OfType<ITurnStartReactor>().ToList()
-            .Concat(this.PassiveEffects.OfType<ITurnStartReactor>().ToList())
+        var effects = this.StatusEffects.OfType<ITurnEndReactor>().ToList()
+            .Concat(this.PassiveEffects.OfType<ITurnEndReactor>().ToList())
             .OrderByDescending(m => m.Priority);
 
         foreach (var effect in effects)
