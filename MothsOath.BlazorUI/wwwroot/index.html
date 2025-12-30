@@ -10,22 +10,47 @@
     <link rel="stylesheet" href="app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="MothsOath.BlazorUI.styles.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #1a1a1a;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+    <div id="app-loading">
+        <div class="loading-container">
+            <h1 class="loading-title">Moth's Oath</h1>
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Carregando dados do jogo...</p>
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+            </div>
+        </div>
     </div>
+
+    <div id="app"></div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+    
+    <script>
+        window.hideLoadingScreen = function() {
+            const loadingScreen = document.getElementById('app-loading');
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }
+        };
+    </script>
+    
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 

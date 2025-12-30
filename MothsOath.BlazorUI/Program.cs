@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 using MothsOath.BlazorUI;
 using MothsOath.Core;
 using MothsOath.Core.Factories;
@@ -34,8 +35,19 @@ builder.Services.AddSingleton<GameStateManager>();
 
 var host = builder.Build();
 
-// Initialize BlueprintCache asynchronously before starting the app
-var blueprintCache = host.Services.GetRequiredService<BlueprintCache>();
-await blueprintCache.InitializeAsync();
+try
+{
+    // Initialize BlueprintCache asynchronously before starting the app
+    var blueprintCache = host.Services.GetRequiredService<BlueprintCache>();
+    await blueprintCache.InitializeAsync();
+
+    // Hide loading screen after initialization
+    var jsRuntime = host.Services.GetRequiredService<IJSRuntime>();
+    await jsRuntime.InvokeVoidAsync("hideLoadingScreen");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error during initialization: {ex.Message}");
+}
 
 await host.RunAsync();
