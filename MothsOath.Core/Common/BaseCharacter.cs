@@ -68,8 +68,10 @@ public abstract class BaseCharacter
     {
         if (context.CanIncomingModifiers)
         {
-            var incomingModifiers = this.StatusEffects.OfType<IIncomingHealthModifierReactor>().ToList()
-                .Concat(this.PassiveEffects.OfType<IIncomingHealthModifierReactor>().ToList())
+            var incomingModifiers = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+                .OfType<IIncomingHealthModifierReactor>()
+                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                    .OfType<IIncomingHealthModifierReactor>())
                 .OrderByDescending(m => m.Priority);
 
             foreach (var modifier in incomingModifiers)
@@ -124,8 +126,10 @@ public abstract class BaseCharacter
 
         if (context.CanRecievedReactors)
         {
-            var damageReactors = this.StatusEffects.OfType<IHealthModifierReactor>().ToList()
-                .Concat(this.PassiveEffects.OfType<IHealthModifierReactor>().ToList())
+            var damageReactors = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+                .OfType<IHealthModifierReactor>()
+                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                    .OfType<IHealthModifierReactor>())
                 .OrderByDescending(m => m.Priority);
 
             foreach (var effect in damageReactors)
@@ -136,8 +140,10 @@ public abstract class BaseCharacter
 
         if (context.CanDealtReactors)
         {
-            var sourceDamageReactors = context.Source.StatusEffects.OfType<IModifiedHealthReactor>().ToList()
-                .Concat(context.Source.PassiveEffects.OfType<IModifiedHealthReactor>().ToList())
+            var sourceDamageReactors = (context.Source.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+                .OfType<IModifiedHealthReactor>()
+                .Concat((context.Source.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                    .OfType<IModifiedHealthReactor>())
                 .OrderByDescending(m => m.Priority);
 
             foreach (var effect in sourceDamageReactors)
@@ -181,8 +187,10 @@ public abstract class BaseCharacter
 
         if (context.CanRecievedReactors)
         {
-            var healthReactors = this.StatusEffects.OfType<IHealthModifierReactor>().ToList()
-                .Concat(this.PassiveEffects.OfType<IHealthModifierReactor>().ToList())
+            var healthReactors = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+                .OfType<IHealthModifierReactor>()
+                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                    .OfType<IHealthModifierReactor>())
                 .OrderByDescending(m => m.Priority);
 
             foreach (var effect in healthReactors)
@@ -193,8 +201,10 @@ public abstract class BaseCharacter
 
         if (context.CanDealtReactors)
         {
-            var sourceDamageReactors = context.Source.StatusEffects.OfType<IModifiedHealthReactor>().ToList()
-                .Concat(context.Source.PassiveEffects.OfType<IModifiedHealthReactor>().ToList())
+            var sourceDamageReactors = (context.Source.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+                .OfType<IModifiedHealthReactor>()
+                .Concat((context.Source.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                    .OfType<IModifiedHealthReactor>())
                 .OrderByDescending(m => m.Priority);
 
             foreach (var effect in sourceDamageReactors)
@@ -211,22 +221,24 @@ public abstract class BaseCharacter
 
     public void ApplyPureStatusEffect(BaseStatusEffect statusEffect)
     {
-        if (StatusEffects.Any(se => se.Id == statusEffect.Id))
+        if (StatusEffects?.Any(se => se.Id == statusEffect.Id) == true)
         {
             var existingEffect = StatusEffects.First(se => se.Id == statusEffect.Id);
             existingEffect.StackEffect(this, statusEffect);
             return;
         }
 
-        StatusEffects.Add(statusEffect);
+        StatusEffects?.Add(statusEffect);
     }
 
     public void ApplyStatusEffect(ActionContext context, StatusEffectPlan plan)
     {
         if (context.CanIncomingModifiers)
         {
-            var incomingModifiers = this.StatusEffects.OfType<IIncomingStatusEffectModifier>().ToList()
-                .Concat(this.PassiveEffects.OfType<IIncomingStatusEffectModifier>().ToList())
+            var incomingModifiers = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+                .OfType<IIncomingStatusEffectModifier>()
+                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                    .OfType<IIncomingStatusEffectModifier>())
                 .OrderByDescending(m => m.Priority);
 
             foreach (var modifier in incomingModifiers)
@@ -238,7 +250,7 @@ public abstract class BaseCharacter
         if (!context.CanProceed || !plan.StatusEffect.IsActive())
             return;
 
-        if (StatusEffects.Any(se => se.Id == plan.StatusEffect.Id))
+        if (StatusEffects?.Any(se => se.Id == plan.StatusEffect.Id) == true)
         {
             var existingEffect = StatusEffects.First(se => se.Id == plan.StatusEffect.Id);
             existingEffect.StackEffect(this, plan.StatusEffect);
@@ -250,8 +262,10 @@ public abstract class BaseCharacter
 
         if (context.CanRecievedReactors)
         {
-            var statusEffectReactorsTarget = this.StatusEffects.OfType<IStatusEffectAppliedReactor>().ToList()
-                .Concat(this.PassiveEffects.OfType<IStatusEffectAppliedReactor>().ToList())
+            var statusEffectReactorsTarget = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+                .OfType<IStatusEffectAppliedReactor>()
+                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                    .OfType<IStatusEffectAppliedReactor>())
                 .OrderByDescending(m => m.Priority);
 
             foreach (var reactor in statusEffectReactorsTarget)
@@ -292,8 +306,10 @@ public abstract class BaseCharacter
 
     private void CallDeathEffects(ActionContext context, MortuaryPlan plan)
     {
-        var deathReactors = this.StatusEffects.OfType<IDeathReactor>().ToList()
-            .Concat(this.PassiveEffects.OfType<IDeathReactor>().ToList())
+        var deathReactors = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+            .OfType<IDeathReactor>()
+            .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                .OfType<IDeathReactor>())
             .OrderByDescending(m => m.Priority);
 
         foreach (var effect in deathReactors)
@@ -313,8 +329,10 @@ public abstract class BaseCharacter
 
     public void ActivateTurnStartEffects(CombatState combatState)
     {
-        var effects = this.StatusEffects.OfType<ITurnStartReactor>().ToList()
-            .Concat(this.PassiveEffects.OfType<ITurnStartReactor>().ToList())
+        var effects = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+            .OfType<ITurnStartReactor>()
+            .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                .OfType<ITurnStartReactor>())
             .OrderByDescending(m => m.Priority);
 
         foreach (var effect in effects)
@@ -325,8 +343,10 @@ public abstract class BaseCharacter
 
     public void ActivateTurnEndEffects(CombatState combatState)
     {
-        var effects = this.StatusEffects.OfType<ITurnEndReactor>().ToList()
-            .Concat(this.PassiveEffects.OfType<ITurnEndReactor>().ToList())
+        var effects = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
+            .OfType<ITurnEndReactor>()
+            .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
+                .OfType<ITurnEndReactor>())
             .OrderByDescending(m => m.Priority);
 
         foreach (var effect in effects)

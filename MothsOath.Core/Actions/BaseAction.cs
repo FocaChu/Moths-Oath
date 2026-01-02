@@ -25,8 +25,7 @@ public abstract class BaseAction
         if (criticalChance <= 0)
             return plan;
 
-        int criticalRoll = new Random().Next(0, 100);
-        if (criticalRoll < criticalChance)
+        if (GameRandom.RollPercentage(criticalChance))
         {
             plan.HasCritical = true;
             plan.FinalValue = (int)(plan.BaseHealthAmount * criticalDamageMultiplier);

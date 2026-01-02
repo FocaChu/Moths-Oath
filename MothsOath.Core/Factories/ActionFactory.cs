@@ -1,5 +1,6 @@
 ﻿using MothsOath.Core.Abilities;
 using MothsOath.Core.Common;
+using MothsOath.Core.Common.Exceptions;
 
 namespace MothsOath.Core.Factories;
 
@@ -37,7 +38,7 @@ public class ActionFactory
             }
         }
 
-        Console.WriteLine($"AbilityFactory inicializado. {_abilities.Count} habilidades carregadas.");
+        Console.WriteLine($"ActionFactory inicializado. {_abilities.Count} habilidades carregadas.");
     }
 
     public BaseAction GetAbility(string abilityId)
@@ -47,9 +48,28 @@ public class ActionFactory
             return ability;
         }
 
-        Console.WriteLine($"[ERRO CRÍTICO] Habilidade com ID '{abilityId}' não encontrada no AbilityFactory!");
-
+        Console.WriteLine($"[ERRO] Habilidade com ID '{abilityId}' não encontrada no ActionFactory! Retornando NullAbility.");
         return new NullAbility(abilityId);
+    }
+
+    public BaseAction GetAbilityOrThrow(string abilityId)
+    {
+        if (_abilities.TryGetValue(abilityId, out var ability))
+        {
+            return ability;
+        }
+
+        throw new ActionNotFoundException(abilityId);
+    }
+
+    public bool HasAbility(string abilityId)
+    {
+        return _abilities.ContainsKey(abilityId);
+    }
+
+    public IReadOnlyDictionary<string, BaseAction> GetAllAbilities()
+    {
+        return _abilities;
     }
 }
 
@@ -57,12 +77,10 @@ public class NullAbility : BaseAction
 {
     public override string Id { get; }
 
-
     public NullAbility(string missingId)
     {
         Id = $"missing_ability_{missingId}";
     }
-
 
     public override void Execute(ActionContext context)
     {

@@ -23,8 +23,7 @@ public class BasicAttackAction : BaseAction
         if (plan.CanCritical)
             plan = CalculateCriticalValue(context, plan);
 
-        var rng = Random.Shared;
-        var target = context.FinalTargets[rng.Next(context.FinalTargets.Count)];
+        var target = GameRandom.GetRandomElement(context.FinalTargets);
 
         context.FinalTargets.Clear();
         context.FinalTargets.Add(target);

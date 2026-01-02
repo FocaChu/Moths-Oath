@@ -6,6 +6,7 @@ namespace MothsOath.Core.Behaviors;
 public class TargetRandomBehavior : IBehavior   
 {
     public string Id => "target_random_behavior";
+    
     public List<BaseCharacter> GetTargets(BaseCharacter source, CombatState context)
     {
         List<BaseCharacter> possibleTargets = context.GetAllCharacters()
@@ -17,9 +18,6 @@ public class TargetRandomBehavior : IBehavior
             return new List<BaseCharacter>();
         }
 
-        Random rand = new Random();
-        int index = rand.Next(possibleTargets.Count);
-
-        return new List<BaseCharacter> { possibleTargets[index] };
+        return new List<BaseCharacter> { GameRandom.GetRandomElement(possibleTargets) };
     }
 }

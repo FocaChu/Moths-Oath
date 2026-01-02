@@ -1,4 +1,5 @@
 ﻿using MothsOath.Core.Common;
+using MothsOath.Core.Common.Exceptions;
 using MothsOath.Core.Entities;
 using MothsOath.Core.Models.Blueprints;
 using MothsOath.Core.Models.Enums;
@@ -28,47 +29,54 @@ public class NpcFactory
     {
         if (!_npcBlueprints.TryGetValue(blueprintId, out var blueprint))
         {
-            throw new Exception($"Blueprint de NPC '{blueprintId}' não encontrado!");
+            throw new BlueprintNotFoundException(blueprintId, nameof(NpcBlueprint));
         }
 
-        var npcAllegiance = Allegiance.Neutral;
-
-        if (Enum.TryParse(blueprint.Allegiance, true, out Allegiance allegiance))
+        try
         {
-            npcAllegiance = allegiance;
+            var npcAllegiance = Allegiance.Neutral;
+
+            if (Enum.TryParse(blueprint.Allegiance, true, out Allegiance allegiance))
+            {
+                npcAllegiance = allegiance;
+            }
+
+            var stats = new Stats
+            {
+                MaxHealth = blueprint.MaxHealth,
+                CurrentHealth = blueprint.MaxHealth,
+                BaseStrength = blueprint.BaseStrength,
+                BaseKnowledge = blueprint.BaseKnowledge,
+                BaseDefense = blueprint.BaseDefense,
+                Regeneration = blueprint.BaseRegeneration,
+                BaseCriticalChance = blueprint.BaseCriticalChance,
+                BaseCriticalDamageMultiplier = blueprint.BaseCriticalDamageMultiplier,
+            };
+
+            var npc = new CharacterNPC
+            {
+                Name = blueprint.Name,
+                BiomeId = blueprint.BiomeId,
+                Allegiance = npcAllegiance,
+                Stats = stats,
+                XpReward = blueprint.XpReward,
+                GoldReward = blueprint.GoldReward,  
+                PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
+                Tags = _gameTagFactory.GetTags(blueprint.TagIds),
+                NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
+                SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),
+                BasicAbility = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
+                SpecialAbility = _abilityFactory.GetAbility(blueprint.SpecialAbilityId),
+                SpecialAbilityCooldown = blueprint.SpecialAbilityCooldown,
+                CurrentCooldown = blueprint.SpecialAbilityCooldown,
+            };
+
+            return npc;
         }
-
-        var stats = new Stats
+        catch (Exception ex) when (ex is not BlueprintNotFoundException)
         {
-            MaxHealth = blueprint.MaxHealth,
-            CurrentHealth = blueprint.MaxHealth,
-            BaseStrength = blueprint.BaseStrength,
-            BaseKnowledge = blueprint.BaseKnowledge,
-            BaseDefense = blueprint.BaseDefense,
-            Regeneration = blueprint.BaseRegeneration,
-            BaseCriticalChance = blueprint.BaseCriticalChance,
-            BaseCriticalDamageMultiplier = blueprint.BaseCriticalDamageMultiplier,
-        };
-
-        var npc = new CharacterNPC
-        {
-            Name = blueprint.Name,
-            BiomeId = blueprint.BiomeId,
-            Allegiance = npcAllegiance,
-            Stats = stats,
-            XpReward = blueprint.XpReward,
-            GoldReward = blueprint.GoldReward,  
-            PassiveEffects = _passiveEffectFactory.GetPassiveEffects(blueprint.PassiveEffectIds),
-            Tags = _gameTagFactory.GetTags(blueprint.TagIds),
-            NormalBehavior = _behaviorFactory.GetBehavior(blueprint.NormalBehaviorId),
-            SpecialBehavior = _behaviorFactory.GetBehavior(blueprint.SpecialBehaviorId),
-            BasicAbility = _abilityFactory.GetAbility(blueprint.BasicAttackAbilityId),
-            SpecialAbility = _abilityFactory.GetAbility(blueprint.SpecialAbilityId),
-            SpecialAbilityCooldown = blueprint.SpecialAbilityCooldown,
-            CurrentCooldown = blueprint.SpecialAbilityCooldown,
-        };
-
-        return npc;
+            throw new InvalidBlueprintException(blueprintId, $"Failed to create NPC from blueprint", ex);
+        }
     }
 
     public List<BaseCharacter> CreateNPCs(List<string> blueprintIds)
@@ -76,7 +84,18 @@ public class NpcFactory
         var enemies = new List<BaseCharacter>();
         foreach (var id in blueprintIds)
         {
-            enemies.Add(CreateNpc(id));
+            try
+            {
+                enemies.Add(CreateNpc(id));
+            }
+            catch (BlueprintNotFoundException ex)
+            {
+                Console.WriteLine($"[ERRO] {ex.Message}");
+            }
+            catch (InvalidBlueprintException ex)
+            {
+                Console.WriteLine($"[ERRO] {ex.Message}");
+            }
         }
         return enemies;
     }
@@ -91,19 +110,26 @@ public class NpcFactory
 
         if (blueprintIds.Count == 0)
         {
+            Console.WriteLine($"[AVISO] Nenhum inimigo encontrado para o bioma '{gameState.BiomeId}'.");
             return new List<BaseCharacter>();
         }
 
         var difficultyConfig = gameState.GetDifficultyConfig();
 
-        var count = Random.Shared.Next(difficultyConfig.MinEnemyCount, difficultyConfig.MaxEnemyCount + 1);
+        var count = GameRandom.Next(difficultyConfig.MinEnemyCount, difficultyConfig.MaxEnemyCount + 1);
         var result = new List<BaseCharacter>(count);
 
         for (var i = 0; i < count; i++)
         {
-            var index = Random.Shared.Next(blueprintIds.Count);
-            var id = blueprintIds[index];
-            result.Add(CreateNpc(id));
+            var id = GameRandom.GetRandomElement(blueprintIds);
+            try
+            {
+                result.Add(CreateNpc(id));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERRO] Falha ao criar inimigo '{id}': {ex.Message}");
+            }
         }
 
         foreach (var enemy in result)
@@ -117,5 +143,15 @@ public class NpcFactory
         }
 
         return result;
+    }
+
+    public bool HasNpc(string blueprintId)
+    {
+        return _npcBlueprints.ContainsKey(blueprintId);
+    }
+
+    public IReadOnlyCollection<string> GetAllNpcIds()
+    {
+        return _npcBlueprints.Keys;
     }
 }

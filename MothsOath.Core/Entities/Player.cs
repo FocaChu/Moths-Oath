@@ -55,9 +55,7 @@ public class Player : BaseCharacter
 
     public void ShuffleDeck()
     {
-        var rnd = new Random();
-
-        Deck = Deck.OrderBy(x => rnd.Next()).ToList();
+        GameRandom.Shuffle(Deck);
     }
 
     public void DrawCards(int numberOfCards)

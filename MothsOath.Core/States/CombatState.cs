@@ -145,13 +145,16 @@ public class CombatState : IGameState
         if (!defeatedAllies.Any())
             return;
 
+        // Process defeated allies first, then modify collections
         foreach (var defeated in defeatedAllies)
         {
-            Allies.Remove(defeated);
-            PlayerTeam.Remove(defeated);
             DeadPool.Add(defeated);
             Console.WriteLine($"Aliado '{defeated.Name}' foi derrotado!");
         }
+
+        // Now safely remove from collections
+        Allies.RemoveAll(a => !a.Stats.IsAlive);
+        PlayerTeam.RemoveAll(a => !a.Stats.IsAlive);
     }
 
     private void CheckForDeadEnemies()
@@ -161,21 +164,23 @@ public class CombatState : IGameState
         if (!defeatedEnemies.Any())
             return;
 
+        // Process defeated enemies and calculate rewards first
         foreach (var defeated in defeatedEnemies)
         {
-                if (defeated is CharacterNPC enemy)
-                {
-                    TotalGoldReward += enemy.GoldReward;
-                    TotalXPReward += enemy.XpReward;
-                    Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado! Ouro ganho: {enemy.GoldReward}, XP ganho: {enemy.XpReward}");
-                }
+            if (defeated is CharacterNPC enemy)
+            {
+                TotalGoldReward += enemy.GoldReward;
+                TotalXPReward += enemy.XpReward;
+                Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado! Ouro ganho: {enemy.GoldReward}, XP ganho: {enemy.XpReward}");
+            }
 
-                this.EnemiesDefeatedCount++;
-
-                Enemies.Remove(defeated);
-                DeadPool.Add(defeated);
-                Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado!");
+            this.EnemiesDefeatedCount++;
+            DeadPool.Add(defeated);
+            Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado!");
         }
+
+        // Now safely remove from collection
+        Enemies.RemoveAll(e => !e.Stats.IsAlive);
 
         CheckForCombatEnd();
     }
