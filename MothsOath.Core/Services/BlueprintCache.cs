@@ -11,6 +11,7 @@ public class BlueprintCache
     private Dictionary<string, JsonElement>? _cards;
     private Dictionary<string, NpcBlueprint>? _npcs;
     private Dictionary<string, JsonElement>? _tags;
+    private Dictionary<string, DiseaseBlueprint>? _diseases;
 
     public BlueprintCache(BlueprintLoader loader)
     {
@@ -21,9 +22,12 @@ public class BlueprintCache
     {
         _races = await _loader.LoadAllBlueprintsFromFilesAsync<RaceBlueprint>("Races");
         _archetypes = await _loader.LoadAllBlueprintsFromFilesAsync<ArchetypeBlueprint>("Archetypes");
-        _cards = await _loader.LoadAllRawBlueprintsAsync("Cards");
         _npcs = await _loader.LoadAllBlueprintsFromFilesAsync<NpcBlueprint>("NPCs");
-        _tags = await _loader.LoadAllRawBlueprintsAsync("Tags");
+        _diseases = await _loader.LoadAllBlueprintsFromFilesAsync<DiseaseBlueprint>("Diseases");
+        
+        // Load Cards and Tags as JsonElement
+        _cards = await _loader.LoadAllBlueprintsAsJsonAsync("Cards");
+        _tags = await _loader.LoadAllBlueprintsAsJsonAsync("Tags");
     }
 
     public Dictionary<string, RaceBlueprint> GetRaces()
@@ -49,6 +53,11 @@ public class BlueprintCache
     public Dictionary<string, JsonElement> GetTags()
     {
         return _tags ?? throw new InvalidOperationException("Blueprints não foram inicializados. Chame InitializeAsync primeiro.");
+    }
+
+    public Dictionary<string, DiseaseBlueprint> GetDiseases()
+    {
+        return _diseases ?? throw new InvalidOperationException("Blueprints não foram inicializados. Chame InitializeAsync primeiro.");
     }
 }
 

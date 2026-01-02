@@ -1,4 +1,4 @@
-Ôªøusing MothsOath.Core.Common.Exceptions;
+using MothsOath.Core.Common.Exceptions;
 using MothsOath.Core.Models.Blueprints.Common;
 using System.Text.Json;
 
@@ -13,6 +13,25 @@ public class BlueprintLoader
     {
         _httpClient = httpClient;
         _isWebAssembly = httpClient != null;
+    }
+
+    public async Task<Dictionary<string, JsonElement>> LoadAllBlueprintsAsJsonAsync(string folderPath)
+    {
+        try
+        {
+            if (_isWebAssembly && _httpClient != null)
+            {
+                return await LoadAsJsonFromHttpAsync(folderPath);
+            }
+            else
+            {
+                return LoadAsJsonFromFileSystem(folderPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new BlueprintLoadException(folderPath, "Unexpected error loading blueprints as JSON", ex);
+        }
     }
 
     public async Task<Dictionary<string, T>> LoadAllBlueprintsFromFilesAsync<T>(string folderPath) where T : IBlueprint
@@ -39,7 +58,7 @@ public class BlueprintLoader
         if (_isWebAssembly && _httpClient != null)
         {
             throw new InvalidOperationException(
-                "LoadAllBlueprintsFromFiles n√£o pode ser usado no WebAssembly. Use LoadAllBlueprintsFromFilesAsync e aguarde a inicializa√ß√£o ass√≠ncrona.");
+                "LoadAllBlueprintsFromFiles n„o pode ser usado no WebAssembly. Use LoadAllBlueprintsFromFilesAsync e aguarde a inicializaÁ„o assÌncrona.");
         }
 
         try
@@ -52,6 +71,133 @@ public class BlueprintLoader
         }
     }
 
+    private Dictionary<string, JsonElement> LoadAsJsonFromFileSystem(string folderPath)
+    {
+        var loadedBlueprints = new Dictionary<string, JsonElement>();
+
+        string assemblyLocation = AppDomain.CurrentDomain.BaseDirectory;
+        string absoluteFolderPath = Path.Combine(assemblyLocation, "Data", "Blueprints", folderPath);
+
+        if (!Directory.Exists(absoluteFolderPath))
+        {
+            Console.WriteLine($"[AVISO] O diretÛrio de blueprints n„o foi encontrado em: {absoluteFolderPath}. Nenhum blueprint ser· carregado de '{folderPath}'.");
+            return loadedBlueprints;
+        }
+
+        var manifestFiles = LoadManifestFromFileSystem(folderPath);
+        var blueprintFiles = manifestFiles.Count > 0
+            ? manifestFiles.Select(f => Path.Combine(absoluteFolderPath, f)).Where(File.Exists).ToArray()
+            : Directory.GetFiles(absoluteFolderPath, "*.json").Where(f => !f.EndsWith("manifest.json")).ToArray();
+
+        Console.WriteLine($"--- Carregando Blueprints JSON de '{folderPath}' ---");
+        Console.WriteLine($"Encontrados {blueprintFiles.Length} arquivos.");
+
+        foreach (var file in blueprintFiles)
+        {
+            try
+            {
+                var json = File.ReadAllText(file);
+                var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (!root.TryGetProperty("Id", out var idElement))
+                {
+                    Console.WriteLine($"[ERRO] Arquivo '{Path.GetFileName(file)}' n„o possui propriedade 'Id'.");
+                    continue;
+                }
+
+                string? id = idElement.GetString();
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    Console.WriteLine($"[ERRO] Arquivo '{Path.GetFileName(file)}' possui 'Id' vazio ou nulo.");
+                    continue;
+                }
+
+                if (loadedBlueprints.ContainsKey(id))
+                {
+                    Console.WriteLine($"[ERRO] Blueprint com Id '{id}' j· foi carregado. IDs devem ser ˙nicos.");
+                    continue;
+                }
+
+                loadedBlueprints[id] = root.Clone();
+                Console.WriteLine($"[OK] Carregado: {Path.GetFileName(file)} -> {id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERRO] Falha ao processar '{Path.GetFileName(file)}': {ex.Message}");
+            }
+        }
+
+        Console.WriteLine($"Carregamento finalizado. {loadedBlueprints.Count} de {blueprintFiles.Length} blueprints carregados.");
+        Console.WriteLine("--------------------------------------------------");
+        return loadedBlueprints;
+    }
+
+    private async Task<Dictionary<string, JsonElement>> LoadAsJsonFromHttpAsync(string folderPath)
+    {
+        var loadedBlueprints = new Dictionary<string, JsonElement>();
+
+        if (_httpClient == null)
+        {
+            return loadedBlueprints;
+        }
+
+        var knownFiles = await LoadManifestFromHttpAsync(folderPath);
+        var normalizedFolderPath = NormalizeFolderPath(folderPath);
+
+        Console.WriteLine($"--- Carregando Blueprints JSON de '{normalizedFolderPath}' (WebAssembly) ---");
+        Console.WriteLine($"Tentando carregar {knownFiles.Count} arquivos da pasta '{normalizedFolderPath}'.");
+
+        foreach (var fileName in knownFiles)
+        {
+            try
+            {
+                var url = $"Data/Blueprints/{normalizedFolderPath}/{fileName}";
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"[AVISO] Arquivo '{fileName}' n„o encontrado em '{url}'.");
+                    continue;
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (!root.TryGetProperty("Id", out var idElement))
+                {
+                    Console.WriteLine($"[ERRO] Arquivo '{fileName}' n„o possui propriedade 'Id'.");
+                    continue;
+                }
+
+                string? id = idElement.GetString();
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    Console.WriteLine($"[ERRO] Arquivo '{fileName}' possui 'Id' vazio ou nulo.");
+                    continue;
+                }
+
+                if (loadedBlueprints.ContainsKey(id))
+                {
+                    Console.WriteLine($"[ERRO] Blueprint com Id '{id}' j· foi carregado. IDs devem ser ˙nicos.");
+                    continue;
+                }
+
+                loadedBlueprints[id] = root.Clone();
+                Console.WriteLine($"[OK] Carregado: {fileName} -> {id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERRO] Falha ao processar '{fileName}': {ex.Message}");
+            }
+        }
+
+        Console.WriteLine($"Carregamento finalizado. {loadedBlueprints.Count} de {knownFiles.Count} blueprints carregados com sucesso.");
+        Console.WriteLine("--------------------------------------------------");
+        return loadedBlueprints;
+    }
+
     private Dictionary<string, T> LoadFromFileSystem<T>(string folderPath) where T : IBlueprint
     {
         var loadedBlueprints = new Dictionary<string, T>();
@@ -61,7 +207,7 @@ public class BlueprintLoader
 
         if (!Directory.Exists(absoluteFolderPath))
         {
-            Console.WriteLine($"[AVISO] O diret√≥rio de blueprints n√£o foi encontrado em: {absoluteFolderPath}. Nenhum blueprint do tipo '{typeof(T).Name}' ser√° carregado.");
+            Console.WriteLine($"[AVISO] O diretÛrio de blueprints n„o foi encontrado em: {absoluteFolderPath}. Nenhum blueprint do tipo '{typeof(T).Name}' ser· carregado.");
             return loadedBlueprints;
         }
 
@@ -85,11 +231,166 @@ public class BlueprintLoader
                 {
                     throw new InvalidBlueprintException(
                         Path.GetFileName(file), 
-                        "O blueprint deserializado √© nulo ou n√£o possui um 'Id' v√°lido.");
+                        "O blueprint deserializado È nulo ou n„o possui um 'Id' v·lido.");
                 }
 
                 if (loadedBlueprints.ContainsKey(blueprint.Id))
                 {
                     throw new InvalidBlueprintException(
                         blueprint.Id, 
-                        $"Um blueprint com o Id '{blueprint.Id}' j√° foi carregado. IDs devem ser √∫nicos para o tipo '{typeof(T).Name}'.");
+                        $"Um blueprint com o Id '{blueprint.Id}' j· foi carregado. IDs devem ser ˙nicos para o tipo '{typeof(T).Name}'.");
+                }
+
+                loadedBlueprints[blueprint.Id] = blueprint;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"[ERRO] Falha ao deserializar o arquivo '{Path.GetFileName(file)}'. JSON inv·lido: {ex.Message}");
+            }
+            catch (InvalidBlueprintException ex)
+            {
+                Console.WriteLine($"[ERRO] {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERRO] Falha ao processar o arquivo '{Path.GetFileName(file)}'. Detalhes: {ex.Message}");
+            }
+        }
+
+        Console.WriteLine($"Carregamento finalizado para '{typeof(T).Name}'. {loadedBlueprints.Count} de {blueprintFiles.Length} blueprints carregados com sucesso.");
+        Console.WriteLine("--------------------------------------------------");
+        return loadedBlueprints;
+    }
+
+    private async Task<Dictionary<string, T>> LoadFromHttpAsync<T>(string folderPath) where T : IBlueprint
+    {
+        var loadedBlueprints = new Dictionary<string, T>();
+
+        if (_httpClient == null)
+        {
+            return loadedBlueprints;
+        }
+
+        var knownFiles = await LoadManifestFromHttpAsync(folderPath);
+        var normalizedFolderPath = NormalizeFolderPath(folderPath);
+
+        Console.WriteLine($"--- Carregando Blueprints do Tipo: {typeof(T).Name} (WebAssembly) ---");
+        Console.WriteLine($"Tentando carregar {knownFiles.Count} arquivos da pasta '{normalizedFolderPath}'.");
+
+        foreach (var fileName in knownFiles)
+        {
+            try
+            {
+                var url = $"Data/Blueprints/{normalizedFolderPath}/{fileName}";
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"[AVISO] Arquivo '{fileName}' n„o encontrado em '{url}'.");
+                    continue;
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var blueprint = JsonSerializer.Deserialize<T>(json, options);
+
+                if (blueprint == null || string.IsNullOrWhiteSpace(blueprint.Id))
+                {
+                    throw new InvalidBlueprintException(fileName, "O blueprint deserializado È nulo ou n„o possui um 'Id' v·lido.");
+                }
+
+                if (loadedBlueprints.ContainsKey(blueprint.Id))
+                {
+                    throw new InvalidBlueprintException(blueprint.Id, $"Um blueprint com o Id '{blueprint.Id}' j· foi carregado. IDs devem ser ˙nicos para o tipo '{typeof(T).Name}'.");
+                }
+
+                loadedBlueprints[blueprint.Id] = blueprint;
+                Console.WriteLine($"[OK] Carregado: {fileName} -> {blueprint.Id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERRO] Falha ao processar o arquivo '{fileName}'. Detalhes: {ex.Message}");
+            }
+        }
+
+        Console.WriteLine($"Carregamento finalizado para '{typeof(T).Name}'. {loadedBlueprints.Count} de {knownFiles.Count} blueprints carregados com sucesso.");
+        Console.WriteLine("--------------------------------------------------");
+        return loadedBlueprints;
+    }
+
+    private string NormalizeFolderPath(string folderPath)
+    {
+        var normalized = folderPath.ToLower().Trim();
+        return normalized switch
+        {
+            "npcs" or "npc" => "NPCs",
+            "races" => "Races",
+            "archetypes" => "Archetypes",
+            "cards" => "Cards",
+            "diseases" => "Diseases",
+            "tags" => "Tags",
+            _ => folderPath 
+        };
+    }
+
+    private async Task<List<string>> LoadManifestFromHttpAsync(string folderPath)
+    {
+        if (_httpClient == null)
+        {
+            return new List<string>();
+        }
+
+        var normalizedFolderPath = NormalizeFolderPath(folderPath);
+
+        try
+        {
+            var manifestUrl = $"Data/Blueprints/{normalizedFolderPath}/manifest.json";
+            var response = await _httpClient.GetAsync(manifestUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[AVISO] Manifest n„o encontrado em '{manifestUrl}'. Retornando lista vazia.");
+                return new List<string>();
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var manifest = JsonSerializer.Deserialize<BlueprintManifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return manifest?.Files ?? new List<string>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERRO] Falha ao carregar manifest de '{folderPath}'. Detalhes: {ex.Message}");
+            return new List<string>();
+        }
+    }
+
+    private List<string> LoadManifestFromFileSystem(string folderPath)
+    {
+        string assemblyLocation = AppDomain.CurrentDomain.BaseDirectory;
+        string absoluteFolderPath = Path.Combine(assemblyLocation, "Data", "Blueprints", folderPath);
+        string manifestPath = Path.Combine(absoluteFolderPath, "manifest.json");
+
+        if (!File.Exists(manifestPath))
+        {
+            return new List<string>();
+        }
+
+        try
+        {
+            var json = File.ReadAllText(manifestPath);
+            var manifest = JsonSerializer.Deserialize<BlueprintManifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return manifest?.Files ?? new List<string>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[AVISO] Falha ao ler manifest.json em '{manifestPath}'. Detalhes: {ex.Message}");
+            return new List<string>();
+        }
+    }
+}
+
+public class BlueprintManifest
+{
+    public List<string> Files { get; set; } = new List<string>();
+}

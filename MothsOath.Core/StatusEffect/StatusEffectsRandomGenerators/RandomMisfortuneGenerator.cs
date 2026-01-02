@@ -15,4 +15,4 @@ public static class RandomMisfortuneGenerator
 
         return GameRandom.GetRandomElement(misfortunes);
     }
-}}
+}
