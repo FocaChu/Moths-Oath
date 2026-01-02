@@ -1,6 +1,6 @@
 ﻿using MothsOath.Core.Common.Plans;
 
-namespace MothsOath.Core.Common.EffectInterfaces.Healing;
+namespace MothsOath.Core.Common.EffectInterfaces.Health;
 
 public interface IHealthModifierReactor
 {

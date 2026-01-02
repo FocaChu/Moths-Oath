@@ -3,7 +3,7 @@ using MothsOath.Core.Common;
 using MothsOath.Core.Common.EffectInterfaces;
 using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.EffectInterfaces.Death;
-using MothsOath.Core.Common.EffectInterfaces.Healing;
+using MothsOath.Core.Common.EffectInterfaces.Health;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;

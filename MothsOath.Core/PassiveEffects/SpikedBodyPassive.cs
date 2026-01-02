@@ -1,5 +1,5 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces.Healing;
+using MothsOath.Core.Common.EffectInterfaces.Health;
 using MothsOath.Core.Common.Plans;
 namespace MothsOath.Core.PassiveEffects;
 
