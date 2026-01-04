@@ -2,8 +2,7 @@
 
 namespace MothsOath.Core.Common.EffectInterfaces.StatusEffect;
 
-public interface IIncomingStatusEffectModifier
+public interface IIncomingStatusEffectModifier : IEffectReactor
 {
-    int Priority { get; set; }
     void ModifyIncomingStatusEffect(ActionContext context, StatusEffectPlan plan, BaseCharacter target);
 }

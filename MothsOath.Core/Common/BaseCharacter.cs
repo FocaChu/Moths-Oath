@@ -3,6 +3,7 @@ using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.EffectInterfaces.Death;
 using MothsOath.Core.Common.EffectInterfaces.Health;
 using MothsOath.Core.Common.EffectInterfaces.StatusEffect;
+using MothsOath.Core.Common.Effects;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
 using MothsOath.Core.PassiveEffects;
@@ -30,7 +31,21 @@ public abstract class BaseCharacter
     public List<BasePassiveEffect> PassiveEffects { get; set; } = new List<BasePassiveEffect>();
     public List<BaseStatusEffect> StatusEffects { get; set; } = new List<BaseStatusEffect>();
 
+    private EffectCache? _effectCache;
+
     public event Action<BaseCharacter, int> OnDamageTaken;
+
+    /// <summary>
+    /// Gets the effect cache for this character. Lazy initializes if needed.
+    /// </summary>
+    public EffectCache GetEffectCache()
+    {
+        if (_effectCache == null)
+        {
+            _effectCache = new EffectCache(this);
+        }
+        return _effectCache;
+    }
 
     public virtual void Restore()
     {
@@ -66,19 +81,7 @@ public abstract class BaseCharacter
 
     public void HandleHealthModifier(ActionContext context, HealthModifierPlan plan)
     {
-        if (context.CanIncomingModifiers)
-        {
-            var incomingModifiers = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-                .OfType<IIncomingHealthModifierReactor>()
-                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                    .OfType<IIncomingHealthModifierReactor>())
-                .OrderByDescending(m => m.Priority);
-
-            foreach (var modifier in incomingModifiers)
-            {
-                modifier.ModifyIncomingHealthModifier(context, plan, this);
-            }
-        }
+        EffectPipelineExecutor.ExecuteIncomingHealthModifiers(this, context, plan);
 
         if (!plan.CanProceed || plan.FinalValue == 0)
             return;
@@ -124,38 +127,14 @@ public abstract class BaseCharacter
 
         Stats.CurrentHealth -= plan.FinalValue;
 
-        if (context.CanRecievedReactors)
+        EffectPipelineExecutor.ExecuteReceivedHealthReactors(this, context, plan);
+
+        EffectPipelineExecutor.ExecuteDealtHealthReactors(context.Source, context, plan, this);
+
+        if (!Stats.IsAlive && context.CanDeathReactors && mortuaryPlan != null)
         {
-            var damageReactors = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-                .OfType<IHealthModifierReactor>()
-                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                    .OfType<IHealthModifierReactor>())
-                .OrderByDescending(m => m.Priority);
-
-            foreach (var effect in damageReactors)
-            {
-                effect.ReactHealthModified(context, plan, this);
-            }
+            EffectPipelineExecutor.ExecuteDeathEffects(this, context, mortuaryPlan);
         }
-
-        if (context.CanDealtReactors)
-        {
-            var sourceDamageReactors = (context.Source.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-                .OfType<IModifiedHealthReactor>()
-                .Concat((context.Source.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                    .OfType<IModifiedHealthReactor>())
-                .OrderByDescending(m => m.Priority);
-
-            foreach (var effect in sourceDamageReactors)
-            {
-                effect.OnHealthModifierApplied(context, plan, this);
-            }
-        }
-
-        if (Stats.IsAlive || !context.CanDeathReactors || mortuaryPlan == null)
-            return;
-
-        CallDeathEffects(context, mortuaryPlan);
     }
 
     public void ReceivePureHeal(int amount)
@@ -185,38 +164,14 @@ public abstract class BaseCharacter
         int actualHealedAmount = Stats.CurrentHealth - healthBefore;
         plan.FinalValue = actualHealedAmount;
 
-        if (context.CanRecievedReactors)
+        EffectPipelineExecutor.ExecuteReceivedHealthReactors(this, context, plan);
+
+        EffectPipelineExecutor.ExecuteDealtHealthReactors(context.Source, context, plan, this);
+
+        if (!Stats.IsAlive && context.CanDeathReactors && mortuaryPlan != null)
         {
-            var healthReactors = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-                .OfType<IHealthModifierReactor>()
-                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                    .OfType<IHealthModifierReactor>())
-                .OrderByDescending(m => m.Priority);
-
-            foreach (var effect in healthReactors)
-            {
-                effect.ReactHealthModified(context, plan, this);
-            }
+            EffectPipelineExecutor.ExecuteDeathEffects(this, context, mortuaryPlan);
         }
-
-        if (context.CanDealtReactors)
-        {
-            var sourceDamageReactors = (context.Source.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-                .OfType<IModifiedHealthReactor>()
-                .Concat((context.Source.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                    .OfType<IModifiedHealthReactor>())
-                .OrderByDescending(m => m.Priority);
-
-            foreach (var effect in sourceDamageReactors)
-            {
-                effect.OnHealthModifierApplied(context, plan, this);
-            }
-        }
-
-        if (Stats.IsAlive || !context.CanDeathReactors || mortuaryPlan == null)
-            return;
-
-        CallDeathEffects(context, mortuaryPlan);
     }
 
     public void ApplyPureStatusEffect(BaseStatusEffect statusEffect)
@@ -233,24 +188,12 @@ public abstract class BaseCharacter
 
     public void ApplyStatusEffect(ActionContext context, StatusEffectPlan plan)
     {
-        if (context.CanIncomingModifiers)
-        {
-            var incomingModifiers = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-                .OfType<IIncomingStatusEffectModifier>()
-                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                    .OfType<IIncomingStatusEffectModifier>())
-                .OrderByDescending(m => m.Priority);
-
-            foreach (var modifier in incomingModifiers)
-            {
-                modifier.ModifyIncomingStatusEffect(context, plan, this);
-            }
-        }
+        EffectPipelineExecutor.ExecuteIncomingStatusEffectModifiers(this, context, plan);
 
         if (!context.CanProceed || !plan.StatusEffect.IsActive())
             return;
 
-        if (StatusEffects?.Any(se => se.Id == plan.StatusEffect.Id) == true)
+        if (StatusEffects.Any(se => se.Id == plan.StatusEffect.Id))
         {
             var existingEffect = StatusEffects.First(se => se.Id == plan.StatusEffect.Id);
             existingEffect.StackEffect(this, plan.StatusEffect);
@@ -258,33 +201,12 @@ public abstract class BaseCharacter
         else
         {
             StatusEffects.Add(plan.StatusEffect);
+            GetEffectCache().Invalidate();
         }
 
-        if (context.CanRecievedReactors)
-        {
-            var statusEffectReactorsTarget = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-                .OfType<IStatusEffectAppliedReactor>()
-                .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                    .OfType<IStatusEffectAppliedReactor>())
-                .OrderByDescending(m => m.Priority);
+        EffectPipelineExecutor.ExecuteStatusEffectAppliedReactors(this, context, plan);
 
-            foreach (var reactor in statusEffectReactorsTarget)
-            {
-                reactor.OnStatusEffectApplied(context, plan, this);
-            }
-        }
-
-        if (!context.CanRecievedReactors)
-            return;
-
-        var statusEffectReactors = context.Source.StatusEffects.OfType<IStatusEffectDoneReactor>().ToList()
-            .Concat(context.Source.PassiveEffects.OfType<IStatusEffectDoneReactor>().ToList())
-            .OrderByDescending(m => m.Priority);
-
-        foreach (var reactor in statusEffectReactors)
-        {
-            reactor.OnStatusEffectDone(context, plan, this);
-        }
+        EffectPipelineExecutor.ExecuteStatusEffectDoneReactors(context.Source, context, plan, this);
     }
 
     private int CalculateDamageAmount(int baseAmount)
@@ -329,30 +251,12 @@ public abstract class BaseCharacter
 
     public void ActivateTurnStartEffects(CombatState combatState)
     {
-        var effects = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-            .OfType<ITurnStartReactor>()
-            .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                .OfType<ITurnStartReactor>())
-            .OrderByDescending(m => m.Priority);
-
-        foreach (var effect in effects)
-        {
-            effect.OnTurnStart(this, combatState);
-        }
+        EffectPipelineExecutor.ExecuteTurnStartEffects(this, combatState);
     }
 
     public void ActivateTurnEndEffects(CombatState combatState)
     {
-        var effects = (this.StatusEffects ?? Enumerable.Empty<BaseStatusEffect>())
-            .OfType<ITurnEndReactor>()
-            .Concat((this.PassiveEffects ?? Enumerable.Empty<BasePassiveEffect>())
-                .OfType<ITurnEndReactor>())
-            .OrderByDescending(m => m.Priority);
-
-        foreach (var effect in effects)
-        {
-            effect.OnTurnEnd(this, combatState);
-        }
+        EffectPipelineExecutor.ExecuteTurnEndEffects(this, combatState);
     }
 
     public void ClearFadingStatusEffects(CombatState context)
@@ -360,14 +264,27 @@ public abstract class BaseCharacter
         if (!StatusEffects.Any())
             return;
 
-        var fadedEffects = this.StatusEffects.Where(se => se.Duration <= 0).ToList();
+        var fadedEffects = StatusEffects.Where(se => se.Duration <= 0).ToList();
 
-        var effects = fadedEffects.OfType<IFadingReactor>().ToList();
-        foreach (var effect in effects)
+        if (fadedEffects.Count > 0)
         {
-            effect.OnFading(this, context);
+            EffectPipelineExecutor.ExecuteFadingEffects(this, context, fadedEffects);
+            
+            StatusEffects.RemoveAll(se => !se.IsActive());
+            GetEffectCache().Invalidate();
         }
+    }
 
-        StatusEffects.RemoveAll(se => !se.IsActive());
+    /// <summary>
+    /// Ticks time on all active status effects.
+    /// This should be called AFTER all turn effects have been executed,
+    /// but BEFORE clearing faded effects.
+    /// </summary>
+    public void TickAllStatusEffects()
+    {
+        foreach (var statusEffect in StatusEffects)
+        {
+            statusEffect.TickTime(this);
+        }
     }
 }

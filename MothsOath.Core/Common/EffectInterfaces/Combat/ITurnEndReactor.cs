@@ -2,8 +2,7 @@
 
 namespace MothsOath.Core.Common.EffectInterfaces.Combat;
 
-public interface ITurnEndReactor
+public interface ITurnEndReactor : IEffectReactor
 {
-    int Priority { get; set; }
     void OnTurnEnd(BaseCharacter target, CombatState context);
 }

@@ -2,8 +2,7 @@
 
 namespace MothsOath.Core.Common.EffectInterfaces.Combat;
 
-public interface ICombatEndReactor
+public interface ICombatEndReactor : IEffectReactor
 {
-    int Priority { get; set; }
     void OnCombatEnd(CombatState state, BaseCharacter source);
 }

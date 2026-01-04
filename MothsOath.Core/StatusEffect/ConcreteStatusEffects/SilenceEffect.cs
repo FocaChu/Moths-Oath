@@ -1,13 +1,11 @@
 ﻿using MothsOath.Core.Common;
-using MothsOath.Core.Common.EffectInterfaces.Combat;
 using MothsOath.Core.Common.EffectInterfaces.Health;
 using MothsOath.Core.Common.Plans;
 using MothsOath.Core.Models.Enums;
-using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
-public class SilenceEffect : BaseStatusEffect, IOutgoingHealthModifierReactor, ITurnEndReactor
+public class SilenceEffect : BaseStatusEffect, IOutgoingHealthModifierReactor
 {
     public override string Id { get; set; } = "silence_effect";
 
@@ -34,10 +32,6 @@ public class SilenceEffect : BaseStatusEffect, IOutgoingHealthModifierReactor, I
     public void ModifyOutgoingHealthModifier(ActionContext context, HealthModifierPlan plan)
     {
         context.CanUseSpecial = false;
-    }
-
-    public void OnTurnEnd(BaseCharacter target, CombatState context)
-    {
-        base.TickTime(target);
+        Level--;
     }
 }

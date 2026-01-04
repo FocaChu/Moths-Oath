@@ -37,7 +37,5 @@ public class PoisonEffect : BaseStatusEffect, ITurnEndReactor
 
         target.ReceivePureDamage(Level);
         Console.WriteLine($"{target.Name} sofre {Level} de dano por veneno. HP:{target.Stats.CurrentHealth}");
-
-        base.TickTime(target);
     }
 }

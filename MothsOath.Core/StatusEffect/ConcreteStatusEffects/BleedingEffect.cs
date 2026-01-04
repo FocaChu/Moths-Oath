@@ -38,8 +38,6 @@ public class BleedingEffect : BaseStatusEffect, IHealthModifierReactor, ITurnEnd
 
         target.ReceivePureDamage(Level);
         Console.WriteLine($"{target.Name} sofre {Level} de dano por sangramento. HP:{target.Stats.CurrentHealth}");
-
-        base.TickTime(target);
     }
 
     public void ReactHealthModified(ActionContext context, HealthModifierPlan plan, BaseCharacter target)

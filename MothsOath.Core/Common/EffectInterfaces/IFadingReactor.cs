@@ -2,8 +2,7 @@
 
 namespace MothsOath.Core.Common.EffectInterfaces;
 
-public interface IFadingReactor
+public interface IFadingReactor : IEffectReactor
 {
-    int Priority { get; set; }
     void OnFading(BaseCharacter target, CombatState context);
 }

@@ -145,14 +145,12 @@ public class CombatState : IGameState
         if (!defeatedAllies.Any())
             return;
 
-        // Process defeated allies first, then modify collections
         foreach (var defeated in defeatedAllies)
         {
             DeadPool.Add(defeated);
             Console.WriteLine($"Aliado '{defeated.Name}' foi derrotado!");
         }
 
-        // Now safely remove from collections
         Allies.RemoveAll(a => !a.Stats.IsAlive);
         PlayerTeam.RemoveAll(a => !a.Stats.IsAlive);
     }
@@ -164,7 +162,6 @@ public class CombatState : IGameState
         if (!defeatedEnemies.Any())
             return;
 
-        // Process defeated enemies and calculate rewards first
         foreach (var defeated in defeatedEnemies)
         {
             if (defeated is CharacterNPC enemy)
@@ -179,7 +176,6 @@ public class CombatState : IGameState
             Console.WriteLine($"Inimigo '{defeated.Name}' foi derrotado!");
         }
 
-        // Now safely remove from collection
         Enemies.RemoveAll(e => !e.Stats.IsAlive);
 
         CheckForCombatEnd();
@@ -338,6 +334,7 @@ public class CombatState : IGameState
 
     private void ApplyStatusEffectsAtTurnEnd()
     {
+        // Phase 1: Execute turn end effects (without ticking time yet)
         foreach (var ally in Allies)
         {
             ally.ActivateTurnEndEffects(this);
@@ -353,11 +350,16 @@ public class CombatState : IGameState
 
         Player.ActivateTurnEndEffects(this);
 
+        // Phase 2: Tick time on all status effects after all turn end effects executed
+        TickAllStatusEffects();
+
+        // Phase 3: Clear faded effects and trigger their fading reactors
         ClearFadedEffects();
     }
 
     private void ApplyStatusEffectsAtTurnStart()
     {
+        // Phase 1: Execute turn start effects
         foreach (var ally in Allies)
         {
             ally.ActivateTurnStartEffects(this);
@@ -375,6 +377,28 @@ public class CombatState : IGameState
 
         CheckForDeadAllies();
         CheckForDeadEnemies();
+
+        // Phase 2: Clear any effects that became inactive during turn start
+        ClearFadedEffects();
+    }
+
+    /// <summary>
+    /// Ticks time on all status effects for all characters.
+    /// Should be called AFTER all turn end effects have executed.
+    /// </summary>
+    private void TickAllStatusEffects()
+    {
+        foreach (var ally in Allies)
+        {
+            ally.TickAllStatusEffects();
+        }
+
+        foreach (var enemy in Enemies)
+        {
+            enemy.TickAllStatusEffects();
+        }
+
+        Player.TickAllStatusEffects();
     }
 
     private void ClearFadedEffects()

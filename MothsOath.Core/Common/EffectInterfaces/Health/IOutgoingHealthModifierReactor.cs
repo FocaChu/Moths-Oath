@@ -2,8 +2,7 @@
 
 namespace MothsOath.Core.Common.EffectInterfaces.Health;
 
-public interface IOutgoingHealthModifierReactor
+public interface IOutgoingHealthModifierReactor : IEffectReactor
 {
-    int Priority { get; set; }
     void ModifyOutgoingHealthModifier(ActionContext context, HealthModifierPlan plan);
 }

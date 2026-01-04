@@ -2,9 +2,7 @@
 
 namespace MothsOath.Core.Common.EffectInterfaces.Death;
 
-public interface IDeathReactor
+public interface IDeathReactor : IEffectReactor
 {
-    int Priority { get; set; }
-
     void OnDeath(ActionContext context, MortuaryPlan plan, BaseCharacter victim);
 }

@@ -2,8 +2,7 @@
 
 namespace MothsOath.Core.Common.EffectInterfaces.Health;
 
-public interface IModifiedHealthReactor
+public interface IModifiedHealthReactor : IEffectReactor
 {
-    int Priority { get; set; }
     void OnHealthModifierApplied(ActionContext context, HealthModifierPlan plan, BaseCharacter target);
 }

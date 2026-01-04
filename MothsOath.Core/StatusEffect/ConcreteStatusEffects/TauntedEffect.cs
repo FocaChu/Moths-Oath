@@ -7,7 +7,7 @@ using MothsOath.Core.States;
 
 namespace MothsOath.Core.StatusEffect.ConcreteEffects;
 
-public class TauntedEffect : BaseStatusEffect, IOutgoingHealthModifierReactor, ITurnEndReactor
+public class TauntedEffect : BaseStatusEffect, IOutgoingHealthModifierReactor
 {
     public override string Id { get; set; } = "taunted_effect";
 
@@ -48,10 +48,5 @@ public class TauntedEffect : BaseStatusEffect, IOutgoingHealthModifierReactor, I
             return;
 
         context.FinalTargets = new List<BaseCharacter> { Source };
-    }
-
-    public void OnTurnEnd(BaseCharacter target, CombatState context)
-    {
-        base.TickTime(target);
     }
 }
